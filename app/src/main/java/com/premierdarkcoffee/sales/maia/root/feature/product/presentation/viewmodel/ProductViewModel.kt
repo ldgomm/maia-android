@@ -168,7 +168,7 @@ class ProductViewModel @Inject constructor(
         text: String? = null,
         token: String
     ) {
-        val url = getUrlFor(endpoint = "store-product", keywords = text)
+        val url = getUrlFor(endpoint = "maia-product", keywords = text)
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -227,7 +227,7 @@ class ProductViewModel @Inject constructor(
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                searchProductUseCase(getUrlFor(endpoint = "store-product/products", keywords = text), token).collect { result ->
+                searchProductUseCase(getUrlFor(endpoint = "maia-product/products", keywords = text), token).collect { result ->
                     result.onSuccess { products ->
                         // Get the list of products that already exist in _productsState
                         val existingProducts = _productsState.value.products.orEmpty()
@@ -329,7 +329,7 @@ class ProductViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 addEditedProductUseCase(
-                    getUrlFor(endpoint = "store-product"), PostProductRequest(storeKey, product.toProductDto()), token = token
+                    getUrlFor(endpoint = "maia-product"), PostProductRequest(storeKey, product.toProductDto()), token = token
                 ).collect { result ->
                     result.onSuccess {
                         withContext(Dispatchers.Main) {
@@ -366,7 +366,7 @@ class ProductViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 updateProductUseCase(
-                    getUrlFor(endpoint = "store-product"), PutProductRequest(storeKey, product.toProductDto()), token
+                    getUrlFor(endpoint = "maia-product"), PutProductRequest(storeKey, product.toProductDto()), token
                 ).collect { result ->
                     result.onSuccess {
                         withContext(Dispatchers.Main) {
@@ -395,7 +395,7 @@ class ProductViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 deleteProductUseCase(
-                    getUrlFor(endpoint = "store-product"), DeleteProductRequest(storeKey, product.id), token = token
+                    getUrlFor(endpoint = "maia-product"), DeleteProductRequest(storeKey, product.id), token = token
                 ).collect { result ->
                     result.onSuccess {
                         withContext(Dispatchers.Main) {

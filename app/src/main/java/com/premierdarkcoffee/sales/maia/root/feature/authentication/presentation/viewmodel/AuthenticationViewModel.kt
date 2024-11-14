@@ -70,7 +70,7 @@ class AuthenticationViewModel @Inject constructor(
             try {
                 val store: StoreDto = getFakeStore(userId)
                 Log.d(TAG, "AuthenticationViewModel | Store: $store")
-                createStoreUseCase(getUrlFor("sales-store"), PostStoreRequest(key = storeKey, store = store)).collect { result ->
+                createStoreUseCase(getUrlFor("cronos-store"), PostStoreRequest(key = storeKey, store = store)).collect { result ->
                     result.onSuccess { response ->
                         Log.d(TAG, "AuthenticationViewModel | signInWithFirebase: store created")
                         withContext(Dispatchers.Main) {
