@@ -113,6 +113,7 @@ fun getFakeStore(id: String): StoreDto {
         returnPolicy = "...",
         refundPolicy = "...",
         brands = emptyList(),
+        createdAt = System.currentTimeMillis(),
         status = StoreStatusDto(
             isActive = false,
             isVerified = false,
