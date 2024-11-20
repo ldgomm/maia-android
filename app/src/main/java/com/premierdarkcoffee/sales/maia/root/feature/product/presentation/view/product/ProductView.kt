@@ -99,7 +99,7 @@ fun ProductView(
                     )
 
                     Text(
-                        text = product.category.xi,
+                        text = product.category.subclass,
                         style = MaterialTheme.typography.labelSmall,
                         color = Color.White,
                         modifier = Modifier

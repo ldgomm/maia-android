@@ -149,6 +149,6 @@ fun subclassHasProducts(
     products: List<Product>?
 ): Boolean {
     return products?.any { product ->
-        product.category.mi == group?.name && product.category.ni == domain.name && product.category.xi == subclass.name
+        product.category.group == group?.name && product.category.domain == domain.name && product.category.subclass == subclass.name
     } ?: false
 }
