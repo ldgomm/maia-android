@@ -1,8 +1,6 @@
 package com.premierdarkcoffee.sales.maia.root.navigation.route
 
-import android.content.ContentValues.TAG
-import android.util.Log
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
@@ -11,26 +9,31 @@ import com.premierdarkcoffee.sales.maia.root.feature.authentication.presentation
 import com.premierdarkcoffee.sales.maia.root.feature.authentication.presentation.viewmodel.AuthenticationViewModel
 import com.premierdarkcoffee.sales.maia.root.navigation.AuthenticationRoute
 import com.premierdarkcoffee.sales.maia.root.util.helper.SecurePreferencesHelper
-import com.stevdzasan.onetap.rememberOneTapSignInState
+import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.authenticationRoute(onNavigateToProductsViewTriggered: () -> Unit) {
     composable<AuthenticationRoute> {
+
         val viewModel: AuthenticationViewModel = hiltViewModel()
-
-        val signedInState by viewModel.signedInState
-        val oneTapState = rememberOneTapSignInState()
-
+        val coroutineScope = rememberCoroutineScope()
         val context = LocalContext.current
 
-        AuthenticationView(oneTapState = oneTapState, signedInState = signedInState, onSignInWithGoogleButtonClicked = {
-            oneTapState.open()
-            viewModel.setSignInState(it)
-        }, onTokenIdReceived = { tokenId ->
-            viewModel.signInWithFirebase(tokenId = tokenId, onSuccess = { token ->
-                Log.d(TAG, "authenticationRoute: Token: $token")
-                SecurePreferencesHelper.setToken(context, token = token)
-                onNavigateToProductsViewTriggered()
-            }, onFailure = {})
-        }, onDialogDismissed = {})
+        AuthenticationView { email, password ->
+            var result = Pair(false, "Something went wrong. Please try again.") // Default response
+            coroutineScope.launch {
+                try {
+                    viewModel.signInWithEmail(email = email, password = password, onSuccess = { token ->
+                        result = Pair(true, "")
+                        SecurePreferencesHelper.setToken(context, token = token)
+                        onNavigateToProductsViewTriggered()
+                    }, onFailure = { exception ->
+                        result = Pair(false, exception.message ?: "Unexpected error occurred.")
+                    })
+                } catch (e: Exception) {
+                    result = Pair(false, e.message ?: "Unexpected error occurred.")
+                }
+            }
+            result
+        }
     }
 }
