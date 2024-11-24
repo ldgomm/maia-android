@@ -3,11 +3,9 @@ package com.premierdarkcoffee.sales.maia.root.feature.authentication.presentatio
 import android.app.Application
 import android.content.ContentValues.TAG
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
 import com.premierdarkcoffee.sales.maia.root.feature.authentication.domain.model.PostStoreRequest
 import com.premierdarkcoffee.sales.maia.root.feature.authentication.domain.usecase.CreateStoreUseCase
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.remote.dto.store.AddressDto
@@ -19,6 +17,8 @@ import com.premierdarkcoffee.sales.maia.root.util.function.getUrlFor
 import com.premierdarkcoffee.sales.maia.root.util.key.getMaiaKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -30,33 +30,45 @@ class AuthenticationViewModel @Inject constructor(
     private val createStoreUseCase: CreateStoreUseCase
 ) : AndroidViewModel(application) {
 
-    var signedInState = mutableStateOf(false)
-        private set
+    private val _isAuthenticated = MutableStateFlow(false)
+    val isAuthenticated: StateFlow<Boolean> = _isAuthenticated
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
 
     private val storeKey = getMaiaKey(getApplication<Application>().applicationContext)
 
-    fun setSignInState(state: Boolean) {
-        signedInState.value = state
-    }
-
-    fun signInWithFirebase(
-        tokenId: String,
+    fun signInWithEmail(
+        email: String,
+        password: String,
         onSuccess: (String) -> Unit,
         onFailure: (exception: Throwable) -> Unit
     ) {
+        if (!isValidEmail(email)) {
+            onFailure(IllegalArgumentException("Invalid email address"))
+            return
+        }
+
+        if (password.isEmpty()) {
+            onFailure(IllegalArgumentException("Password cannot be empty"))
+            return
+        }
+
         viewModelScope.launch {
+            _isLoading.value = true
             try {
-                val credential = GoogleAuthProvider.getCredential(tokenId, null)
-                val instance = FirebaseAuth.getInstance()
-                val task = instance.signInWithCredential(credential).await()
-                task.user?.let { user ->
-                    setSignInState(true)
+                val result = FirebaseAuth.getInstance()
+                    .signInWithEmailAndPassword(email, password)
+                    .await()
+
+                result.user?.let { user ->
                     handleStoreCreation(user.uid, onSuccess, onFailure)
-                } ?: run {
-                    onFailure(Exception("User ID is null"))
-                }
+                } ?: throw Exception("User ID is null")
             } catch (e: Exception) {
+                Log.e(TAG, "signInWithEmail failed: ${e.message}")
                 onFailure(e)
+            } finally {
+                _isLoading.value = false
             }
         }
     }
@@ -68,28 +80,37 @@ class AuthenticationViewModel @Inject constructor(
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val store: StoreDto = getFakeStore(userId)
-                Log.d(TAG, "AuthenticationViewModel | Store: $store")
-                createStoreUseCase(getUrlFor("cronos-store"), PostStoreRequest(key = storeKey, store = store)).collect { result ->
+                val store = getFakeStore(userId)
+                Log.d(TAG, "handleStoreCreation | Store: $store")
+
+                createStoreUseCase(
+                    url = getUrlFor("cronos-store"),
+                    request = PostStoreRequest(key = storeKey, store = store)
+                ).collect { result ->
                     result.onSuccess { response ->
-                        Log.d(TAG, "AuthenticationViewModel | signInWithFirebase: store created")
+                        Log.d(TAG, "handleStoreCreation | Store created successfully")
                         withContext(Dispatchers.Main) {
                             onSuccess(response.token)
                         }
                     }.onFailure { exception ->
-                        Log.e(TAG, "AuthenticationViewModel | signInWithFirebase: store wasn't created ${exception.message}")
+                        Log.e(TAG, "handleStoreCreation | Failed to create store: ${exception.message}")
                         withContext(Dispatchers.Main) {
                             onFailure(exception)
                         }
                     }
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "AuthenticationViewModel | Exception: ${e.message}")
+                Log.e(TAG, "handleStoreCreation | Exception: ${e.message}")
                 withContext(Dispatchers.Main) {
                     onFailure(e)
                 }
             }
         }
+    }
+
+    private fun isValidEmail(email: String): Boolean {
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
+        return email.matches(emailRegex.toRegex())
     }
 }
 
