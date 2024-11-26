@@ -77,7 +77,7 @@ fun AddEditProductView(
     setName: (String) -> Unit,
     setLabel: (String) -> Unit,
     setOwner: (String) -> Unit,
-    setYear: (Int) -> Unit,
+    setYear: (String) -> Unit,
     setModel: (String) -> Unit,
     setDescription: (String) -> Unit,
     setPrice: (Price) -> Unit,
@@ -124,12 +124,8 @@ fun AddEditProductView(
             TextFieldCard(stringResource(id = R.string.name_label), addEditProductState.name, setName)
             TextFieldCard(stringResource(id = R.string.label_label), addEditProductState.label, setLabel)
             TextFieldCard(stringResource(id = R.string.owner_label), addEditProductState.owner, setOwner)
-
 // Year
-            TextFieldCard(stringResource(id = R.string.year_label), addEditProductState.year.toString(), { year ->
-                setYear(year.toIntOrNull() ?: 0)
-            }, KeyboardOptions(keyboardType = KeyboardType.Number))
-
+            TextFieldCard(stringResource(id = R.string.year_label), addEditProductState.year, setYear)
             TextFieldCard(stringResource(id = R.string.model_label), addEditProductState.model, setModel)
             TextFieldCard(stringResource(id = R.string.description_label), addEditProductState.description, setDescription)
 
@@ -246,15 +242,15 @@ fun AddEditProductView(
 // Overview
             InformationListView(informationResultStateList)
 //
-//            Box(modifier = Modifier.padding(horizontal = 12.dp)) {
-//                KeywordSection(
-//                    addEditProductState = addEditProductState,
-//                    word = word,
-//                    onWordChange = { word = it },
-//                    addKeyword = addKeyword,
-//                    deleteKeyword = deleteKeyword
-//                )
-//            }
+            Box(modifier = Modifier.padding(horizontal = 12.dp)) {
+                KeywordSection(
+                    addEditProductState = addEditProductState,
+                    word = word,
+                    onWordChange = { word = it },
+                    addKeyword = addKeyword,
+                    deleteKeyword = deleteKeyword
+                )
+            }
 
 // Legal
             TextFieldCard(stringResource(id = R.string.legal_info_label), addEditProductState.legal.orEmpty(), setLegal)
@@ -447,77 +443,3 @@ fun KeywordSection(
         )
     }
 }
-
-
-/*
-suspend fun generateOverview(informationResultStateList: List<InformationResultState>,
-                             contentResolver: ContentResolver,
-                             completion: (List<Information>) -> Unit) {
-
-    val data = mutableListOf<Information>()
-    informationResultStateList.forEach { result ->
-        when {
-            result.path.isEmpty() && result.isCreated && result.isDeleted -> {
-                Log.d(TAG,
-                      "AddEditProductView | generateOverview: Image ignored for path(${result.path}), belongs(${result.belongs})")
-            }
-
-            result.path.isEmpty() && result.isCreated && !result.isDeleted -> {
-                result.image?.let { uri ->
-                    //If belongs shouldn't delete new path
-                    uploadImageToFirebase(contentResolver = contentResolver, uri) { newPath ->
-                        Log.d(TAG,
-                              "AddEditProductView | generateOverview: Image updated for path(${result.path}), belongs(${result.belongs})")
-                        Log.d(TAG, "AddEditProductView | generateOverview: Image added for path(${newPath}), belongs(${true})")
-                        data.add(result.toInformation(path = newPath, belongs = true))
-                    }
-                }
-            }
-
-            result.path.isEmpty() && !result.isCreated && result.isDeleted -> {
-                Log.d(TAG, "AddEditProductView | generateOverview: Ignored for path(${result.path}), belongs(${result.belongs})")
-            }
-
-            result.path.isEmpty() && !result.isCreated && !result.isDeleted -> {
-                Log.d(TAG, "AddEditProductView | generateOverview: Ignored for path(${result.path}), belongs(${result.belongs})")
-            }
-
-            result.path.isNotEmpty() && result.isCreated && result.isDeleted -> {
-                Log.d(TAG, "AddEditProductView | generateOverview: Ignored for path(${result.path}), belongs(${result.belongs})")
-            }
-
-            result.path.isNotEmpty() && result.isCreated && !result.isDeleted -> {
-                Log.d(TAG, "AddEditProductView | generateOverview: Ignored for path(${result.path}), belongs(${result.belongs})")
-            }
-
-            result.path.isNotEmpty() && !result.isCreated && result.isDeleted -> {
-                Log.d(TAG,
-                      "AddEditProductView | Image in generateOverview ignored for path(${result.path}), belongs(${result.belongs})")
-                if (shouldDeletePath(result.path)) {
-                    val storageRef = FirebaseStorage.getInstance().reference.child(result.path)
-                    storageRef.delete().addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            Log.d(TAG,
-                                  "AddEditProductView | generateOverview: Successfully deleted image at path: ${result.path}")
-                        } else {
-                            Log.e(TAG,
-                                  "AddEditProductView | generateOverview: Failed to delete image at path: ${result.path}",
-                                  it.exception)
-                        }
-                    }
-                }
-            }
-
-            result.path.isNotEmpty() && !result.isCreated && !result.isDeleted -> {
-                Log.d(TAG,
-                      "AddEditProductView | generateOverview: Image added for isCreated(${result.isCreated})," + " isDeleted(${result.isDeleted}), path(${result.path}), belongs(${result.belongs})")
-                val information = result.toInformation()
-                Log.d(TAG,
-                      "AddEditProductView | information path: ${information.image.path}, belongs: ${information.image.belongs})")
-                data.add(information)
-            }
-        }
-    }
-    completion(data)
-}
-*/

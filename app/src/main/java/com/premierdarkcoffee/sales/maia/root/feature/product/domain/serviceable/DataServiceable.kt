@@ -36,3 +36,6 @@ data class Group(
     val name: String,
     val domains: List<Domain>
 )
+
+
+

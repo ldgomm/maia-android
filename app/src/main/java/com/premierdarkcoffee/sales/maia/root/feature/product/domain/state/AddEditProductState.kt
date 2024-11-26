@@ -20,7 +20,7 @@ data class AddEditProductState(
     val name: String = "",
     val label: String = "",
     val owner: String = "",
-    val year: Int = 2024,
+    val year: String = "2024",
     val model: String = "",
     val description: String = "",
     val category: Category = Category("", "", ""),

@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.premierdarkcoffee.sales.maia.root.feature.chat.presentation.view.chat.titleStyle
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.state.ProductsState
+import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.ProductCardView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,7 +100,7 @@ fun SearchView(
                     productsState.products?.let { products ->
                         items(products.size) { index ->
                             val product = products[index]
-                            SearchCardView(product = product, onNavigateToProductView)
+                            ProductCardView(product = product, onNavigateToProductView)
                         }
                     }
                 }
@@ -112,7 +113,7 @@ fun SearchView(
                 productsState.products?.let { products ->
                     items(products.size) { index ->
                         val product = products[index]
-                        SearchCardView(product = product, onNavigateToProductView)
+                        ProductCardView(product = product, onNavigateToProductView)
                     }
                 }
             }

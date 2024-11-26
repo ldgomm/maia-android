@@ -3,6 +3,9 @@ package com.premierdarkcoffee.sales.maia.root.navigation.route
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -23,7 +26,7 @@ fun NavGraphBuilder.searchRoute(
         val productsState by viewModel.searchState.collectAsState()
         val searchText by viewModel.searchText.collectAsState()
 
-        var token: String = ""
+        var token: String by remember { mutableStateOf("") }
         val context = LocalContext.current
         LaunchedEffect(Unit) {
             SecurePreferencesHelper.getToken(context)?.let {

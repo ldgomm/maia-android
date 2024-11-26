@@ -9,7 +9,7 @@ data class ProductDto(
     val name: String,
     val label: String? = null,
     val owner: String? = null,
-    val year: Int? = null,
+    val year: String? = null,
     val model: String,
     val description: String,
     val category: CategoryDto,

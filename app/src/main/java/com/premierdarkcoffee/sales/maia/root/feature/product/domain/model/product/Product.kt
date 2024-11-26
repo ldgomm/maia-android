@@ -2,12 +2,12 @@ package com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.produ
 
 import com.premierdarkcoffee.sales.maia.root.feature.product.data.remote.dto.ProductDto
 
-data class Product(
+data class  Product(
     val id: String,
     val name: String,
     val label: String? = null,
     val owner: String? = null,
-    val year: Int? = null,
+    val year: String? = null,
     val model: String,
     val description: String,
     val category: Category,

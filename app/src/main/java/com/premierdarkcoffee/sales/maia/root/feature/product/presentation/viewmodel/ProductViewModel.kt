@@ -271,7 +271,7 @@ class ProductViewModel @Inject constructor(
             setName(product.name)
             setLabel(product.label ?: "")
             setOwner(product.owner ?: "")
-            setYear(product.year ?: 2024)
+            setYear(product.year ?: "2024")
             setModel(product.model)
             setDescription(product.description)
             setCategory(product.category)
@@ -441,7 +441,7 @@ class ProductViewModel @Inject constructor(
         _addEditProductState.value = _addEditProductState.value.copy(owner = owner)
     }
 
-    fun setYear(year: Int) {
+    fun setYear(year: String) {
         _addEditProductState.value = _addEditProductState.value.copy(year = year)
     }
 
