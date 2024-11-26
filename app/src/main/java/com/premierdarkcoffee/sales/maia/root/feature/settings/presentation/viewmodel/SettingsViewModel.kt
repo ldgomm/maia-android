@@ -37,7 +37,7 @@ class SettingsViewModel @Inject constructor(private val getStoreByIdUseCase: Get
     private fun getStore(token: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                getStoreByIdUseCase(getUrlFor(endpoint = "store", storeId = user?.uid), token).collect { result ->
+                getStoreByIdUseCase(getUrlFor(endpoint = "maia", storeId = user?.uid), token).collect { result ->
                     result.onSuccess { store ->
                         _storeState.update { storeState ->
                             storeState.copy(store = store.toStore())
