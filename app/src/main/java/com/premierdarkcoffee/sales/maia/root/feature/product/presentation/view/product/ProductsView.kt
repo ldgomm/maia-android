@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.premierdarkcoffee.sales.maia.R
+import com.premierdarkcoffee.sales.maia.root.feature.chat.presentation.view.chat.titleStyle
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.serviceable.Group
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.state.ProductsState
 
@@ -93,7 +94,7 @@ fun ProductsView(
         TopAppBar(
             title = {
                 Text(
-                    text = "${stringResource(id = R.string.products_label)} (${filteredProducts?.size ?: 0})", style = MaterialTheme.typography.titleLarge
+                    text = "${stringResource(id = R.string.products_label)} (${filteredProducts?.size ?: 0})", style = titleStyle
                 )
             }, scrollBehavior = scrollBehavior
         )
@@ -148,9 +149,9 @@ fun ProductsView(
                         expanded = groupExpanded, onExpandedChange = { groupExpanded = !groupExpanded }, modifier = Modifier.weight(1f)
                     ) {
                         TextField(
-                            value = selectedGroup?.substring(0, 5) ?: "",
+                            value = selectedGroup?.substring(0, 5) ?: "All",
                             onValueChange = {},
-                            label = { Text("Group") },
+//                            label = { Text("Group") },
                             readOnly = true,
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = groupExpanded) },
                             modifier = Modifier.menuAnchor()
@@ -173,9 +174,9 @@ fun ProductsView(
                             expanded = domainExpanded, onExpandedChange = { domainExpanded = !domainExpanded }, modifier = Modifier.weight(1f)
                         ) {
                             TextField(
-                                value = selectedDomain?.substring(0, 5) ?: "",
+                                value = selectedDomain?.substring(0, 5) ?: "All",
                                 onValueChange = {},
-                                label = { Text("Domain") },
+//                                label = { Text("Domain") },
                                 readOnly = true,
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = domainExpanded) },
                                 modifier = Modifier.menuAnchor()
@@ -198,9 +199,9 @@ fun ProductsView(
                             expanded = subclassExpanded, onExpandedChange = { subclassExpanded = !subclassExpanded }, modifier = Modifier.weight(1f)
                         ) {
                             TextField(
-                                value = selectedSubclass?.substring(0, 5) ?: "",
+                                value = selectedSubclass?.substring(0, 5) ?: "All",
                                 onValueChange = {},
-                                label = { Text("Subclass") },
+//                                label = { Text("Subclass") },
                                 readOnly = true,
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = subclassExpanded) },
                                 modifier = Modifier.menuAnchor()

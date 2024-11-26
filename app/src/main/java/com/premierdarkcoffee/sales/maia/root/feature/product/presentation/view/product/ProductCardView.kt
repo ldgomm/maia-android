@@ -55,9 +55,9 @@ fun ProductCardView(
         onClick = { onNavigateToProductView(Gson().toJson(product)) },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 4.dp),
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.elevatedCardElevation(8.dp)
+        elevation = CardDefaults.elevatedCardElevation(2.dp)
     ) {
         Row(
             modifier = Modifier

@@ -90,12 +90,9 @@ fun ProductView(
                         .height(400.dp)
                 ) {
                     AsyncImage(
-                        model = it,
-                        contentDescription = product.name,
-                        modifier = Modifier
+                        model = it, contentDescription = product.name, modifier = Modifier
                             .fillMaxWidth()
-                            .height(400.dp),
-                        contentScale = ContentScale.Fit
+                            .height(400.dp), contentScale = ContentScale.Fit
                     )
 
                     Text(
@@ -115,9 +112,7 @@ fun ProductView(
             // Label, publisher, year
             SectionView(title = stringResource(id = R.string.label_label)) {
                 Text(
-                    text = product.label ?: "",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                    text = product.label ?: "", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
 
@@ -132,9 +127,7 @@ fun ProductView(
             } else {
                 SectionView(title = stringResource(id = R.string.owner_label)) {
                     Text(
-                        text = product.owner ?: "",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                        text = product.owner ?: "", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
             }
@@ -142,9 +135,7 @@ fun ProductView(
             if (product.model.length > 3) {
                 SectionView(title = stringResource(id = R.string.model_label)) {
                     Text(
-                        text = product.model,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                        text = product.model, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
             }
@@ -152,13 +143,10 @@ fun ProductView(
 // Description
             SectionView(title = stringResource(id = R.string.description_label)) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = product.description,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                        text = product.description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                     Spacer(modifier = Modifier.weight(1f))
                 }
@@ -177,9 +165,7 @@ fun ProductView(
                             ElevatedCard(
                                 modifier = Modifier
                                     .width(300.dp) // Set a fixed width for each card to make them more consistent in size
-                                    .padding(end = 16.dp),
-                                shape = MaterialTheme.shapes.medium,
-                                elevation = CardDefaults.elevatedCardElevation(4.dp)
+                                    .padding(end = 16.dp), shape = MaterialTheme.shapes.medium, elevation = CardDefaults.elevatedCardElevation(4.dp)
                             ) {
                                 Column(modifier = Modifier.padding(16.dp)) {
                                     AsyncImage(
@@ -218,20 +204,16 @@ fun ProductView(
 
             SectionView(title = stringResource(id = R.string.details_label)) {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()
                 ) {
                     ProductDetailRow(
-                        label = stringResource(id = R.string.price_label),
-                        value = "${product.price.amount} ${product.price.currency}"
+                        label = stringResource(id = R.string.price_label), value = "${product.price.amount} ${product.price.currency}"
                     )
                     ProductDetailRow(
-                        label = stringResource(id = R.string.stock_label),
-                        value = "${product.stock}"
+                        label = stringResource(id = R.string.stock_label), value = "${product.stock}"
                     )
                     ProductDetailRow(
-                        label = stringResource(id = R.string.origin_label),
-                        value = product.origin
+                        label = stringResource(id = R.string.origin_label), value = product.origin
                     )
                 }
             }
@@ -239,50 +221,48 @@ fun ProductView(
             product.specifications?.let { specifications ->
                 SectionView(title = stringResource(id = R.string.specifications_label)) {
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxWidth()
+                        verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()
                     ) {
                         ProductDetailRow(
-                            label = stringResource(id = R.string.colours_label),
-                            value = specifications.colours.joinToString(", ")
+                            label = stringResource(id = R.string.colours_label), value = specifications.colours.joinToString(", ")
                         )
                         specifications.finished?.let { finished ->
                             ProductDetailRow(
-                                label = stringResource(id = R.string.finished_label),
-                                value = finished
+                                label = stringResource(id = R.string.finished_label), value = finished
                             )
                         }
                         specifications.inBox?.let { inBox ->
                             ProductDetailRow(
-                                label = stringResource(id = R.string.in_box_label),
-                                value = inBox.joinToString(", ")
+                                label = stringResource(id = R.string.in_box_label), value = inBox.joinToString(", ")
                             )
                         }
                         specifications.size?.let { size ->
                             ProductDetailRow(
-                                label = stringResource(id = R.string.size_label),
-                                value = "${size.width}x${size.height}x${size.depth} ${size.unit}"
+                                label = stringResource(id = R.string.size_label), value = "${size.width}x${size.height}x${size.depth} ${size.unit}"
                             )
                         }
                         specifications.weight?.let { weight ->
                             ProductDetailRow(
-                                label = stringResource(id = R.string.weight_label),
-                                value = "${weight.weight} ${weight.unit}"
+                                label = stringResource(id = R.string.weight_label), value = "${weight.weight} ${weight.unit}"
                             )
                         }
                     }
                 }
             }
 
+            product.keywords?.let { keywords ->
+                SectionView("Keywords") {
+                    Text(keywords.joinToString(", "), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSecondaryContainer)
+                }
+            }
+
             product.warranty?.let { warranty ->
                 SectionView(title = stringResource(id = R.string.warranty_label)) {
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxWidth()
+                        verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()
                     ) {
                         ProductDetailRow(
-                            label = stringResource(id = R.string.warranty_duration_label, warranty.months),
-                            value = warranty.details.joinToString(", ")
+                            label = stringResource(id = R.string.warranty_duration_label, warranty.months), value = warranty.details.joinToString(", ")
                         )
                     }
                 }
@@ -291,9 +271,7 @@ fun ProductView(
             product.legal?.let { legal ->
                 SectionView(title = stringResource(id = R.string.legal_label)) {
                     Text(
-                        text = legal,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                        text = legal, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
             }
@@ -301,9 +279,7 @@ fun ProductView(
             product.warning?.let { warning ->
                 SectionView(title = stringResource(id = R.string.warning_label)) {
                     Text(
-                        text = warning,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                        text = warning, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
             }
@@ -317,19 +293,13 @@ fun ProductDetailRow(
     value: String
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = label,
-            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
-            color = MaterialTheme.colorScheme.onSecondaryContainer
+            text = label, style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold), color = MaterialTheme.colorScheme.onSecondaryContainer
         )
         Text(
-            text = value,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSecondaryContainer
+            text = value, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSecondaryContainer
         )
     }
 }

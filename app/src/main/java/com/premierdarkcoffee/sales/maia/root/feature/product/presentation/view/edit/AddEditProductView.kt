@@ -180,9 +180,7 @@ fun AddEditProductView(
             )
 
             TextFieldCard(
-                stringResource(id = R.string.without_interest_label),
-                addEditProductState.price.creditCard?.withoutInterest.toString(),
-                { withoutInterest ->
+                stringResource(id = R.string.without_interest_label), addEditProductState.price.creditCard?.withoutInterest.toString(), { withoutInterest ->
                     setPrice(
                         addEditProductState.price.copy(
                             creditCard = CreditCard(
@@ -192,13 +190,10 @@ fun AddEditProductView(
                             )
                         )
                     )
-                },
-                KeyboardOptions(keyboardType = KeyboardType.Number)
+                }, KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             TextFieldCard(
-                stringResource(id = R.string.with_interest_label),
-                addEditProductState.price.creditCard?.withInterest.toString(),
-                { withInterest ->
+                stringResource(id = R.string.with_interest_label), addEditProductState.price.creditCard?.withInterest.toString(), { withInterest ->
                     setPrice(
                         addEditProductState.price.copy(
                             creditCard = CreditCard(
@@ -208,13 +203,10 @@ fun AddEditProductView(
                             )
                         )
                     )
-                },
-                KeyboardOptions(keyboardType = KeyboardType.Number)
+                }, KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             TextFieldCard(
-                stringResource(id = R.string.free_months_label),
-                addEditProductState.price.creditCard?.freeMonths.toString(),
-                { freeMonths ->
+                stringResource(id = R.string.free_months_label), addEditProductState.price.creditCard?.freeMonths.toString(), { freeMonths ->
                     setPrice(
                         addEditProductState.price.copy(
                             creditCard = CreditCard(
@@ -224,8 +216,7 @@ fun AddEditProductView(
                             )
                         )
                     )
-                },
-                KeyboardOptions(keyboardType = KeyboardType.Number)
+                }, KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             Divider()
             Box(
@@ -244,11 +235,7 @@ fun AddEditProductView(
 //
             Box(modifier = Modifier.padding(horizontal = 12.dp)) {
                 KeywordSection(
-                    addEditProductState = addEditProductState,
-                    word = word,
-                    onWordChange = { word = it },
-                    addKeyword = addKeyword,
-                    deleteKeyword = deleteKeyword
+                    addEditProductState = addEditProductState, word = word, onWordChange = { word = it }, addKeyword = addKeyword, deleteKeyword = deleteKeyword
                 )
             }
 
@@ -317,11 +304,7 @@ fun TextFieldCard(
                  shape = MaterialTheme.shapes.medium,
                  elevation = CardDefaults.elevatedCardElevation(four)) {
         TextField(
-            value = text,
-            onValueChange = onTextChanged,
-            label = { Text(label) },
-            keyboardOptions = keyboardOptions,
-            modifier = Modifier.fillMaxWidth()
+            value = text, onValueChange = onTextChanged, label = { Text(label) }, keyboardOptions = keyboardOptions, modifier = Modifier.fillMaxWidth()
         )
     }
 }
@@ -420,9 +403,12 @@ fun KeywordSection(
             )
 
             Button(
-                onClick = { addKeyword(word) }, enabled = word.isNotEmpty(), modifier = Modifier.align(Alignment.CenterVertically)
+                onClick = {
+                    addKeyword(word)
+                    onWordChange("")
+                }, enabled = word.isNotEmpty(), modifier = Modifier.align(Alignment.CenterVertically)
             ) {
-                Text("Add", color = MaterialTheme.colorScheme.tertiary)
+                Text("Add")
             }
         }
 
