@@ -15,6 +15,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -23,7 +25,7 @@ fun BulletPointList(bulletPoints: List<String>) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         bulletPoints.forEach { point ->
-            Row {
+            Row(modifier = Modifier.semantics { contentDescription = "Bullet Point" }) {
                 Text("•", modifier = Modifier.padding(end = 8.dp))
                 Text(text = point, style = MaterialTheme.typography.bodyMedium)
             }

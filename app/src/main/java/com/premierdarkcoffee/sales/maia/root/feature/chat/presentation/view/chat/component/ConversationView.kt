@@ -7,10 +7,8 @@ package com.premierdarkcoffee.sales.maia.root.feature.chat.presentation.view.cha
 //  Created by José Ruiz on 13/7/24.
 //
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.text.format.DateFormat
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
@@ -53,17 +51,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.google.gson.Gson
 import com.premierdarkcoffee.sales.maia.R
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.entity.message.MessageEntity
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.remote.dto.message.MessageDto
 import com.premierdarkcoffee.sales.maia.root.feature.chat.domain.model.message.Message
-import com.premierdarkcoffee.sales.maia.root.feature.chat.presentation.view.chat.titleStyle
 import com.premierdarkcoffee.sales.maia.root.feature.product.data.remote.dto.ProductDto
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -85,6 +84,12 @@ fun ConversationView(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
+    // Pre-loading localized strings for reuse and accessibility support
+    val typeMessageHint = stringResource(id = R.string.type_message_hint)
+    val sendButtonDescription = stringResource(id = R.string.send_button_description)
+    val messageDateLabel = stringResource(id = R.string.message_date)
+    val clientIdLabel = stringResource(id = R.string.client_id)
+
     val groupedMessages: List<Pair<Date, List<Message>>> = groupMessagesByDay(messages).toSortedMap().map { (key, value) ->
         key to value.sortedBy { it.date }
     }
@@ -98,10 +103,9 @@ fun ConversationView(
 
     Scaffold(topBar = {
         TopAppBar(title = {
-            Text(
-                text = messages.firstOrNull()?.clientId?.substring(startIndex = 0, endIndex = 6)?.lowercase() ?: "",
-                style = titleStyle
-            )
+            Text(text = messages.firstOrNull()?.clientId?.substring(startIndex = 0, endIndex = 6)?.lowercase() ?: "",
+                 style = MaterialTheme.typography.titleMedium,
+                 modifier = Modifier.semantics { contentDescription = "$clientIdLabel ${messages.firstOrNull()?.clientId}" })
         })
     }) { paddingValues ->
         Column(
@@ -109,7 +113,7 @@ fun ConversationView(
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            // Message list
+            // Message list with accessibility
             Column(
                 modifier = Modifier
                     .verticalScroll(scrollState)
@@ -118,15 +122,18 @@ fun ConversationView(
                 groupedMessages.forEach { (day, messages) ->
                     // Display day name in the center
                     Box(
-                        modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .semantics { contentDescription = "$messageDateLabel ${day.time.formatDayDate(context)}" },
+                        contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = day.time.formatDayDate(context),
-                            fontSize = 12.sp,
+                            style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier
                                 .padding(4.dp)
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(Color(0xFF008080).copy(alpha = 0.2f))
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
                                 .padding(horizontal = 12.dp),
                             textAlign = TextAlign.Center
                         )
@@ -147,7 +154,7 @@ fun ConversationView(
                 }
             }
 
-            // Input row
+            // Input row with accessibility
             Row(
                 modifier = Modifier
                     .padding(8.dp)
@@ -155,32 +162,33 @@ fun ConversationView(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Input field
+                // Input field with localization and accessibility
                 OutlinedTextField(
                     value = inputText,
                     onValueChange = { inputText = it },
                     modifier = Modifier
                         .weight(1f)
-                        .background(Color.Transparent, shape = RoundedCornerShape(8.dp))
-                        .padding(8.dp),
-                    placeholder = { Text("Type a message...", color = Color.Gray) },
+                        .padding(8.dp)
+                        .semantics { contentDescription = typeMessageHint },
+                    placeholder = {
+                        Text(typeMessageHint, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                    },
                     singleLine = true,
-                    shape = RoundedCornerShape(8.dp),
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Send),
                     keyboardActions = KeyboardActions(onSend = {
                         messages.firstOrNull()?.let { value ->
                             val message = MessageDto(
                                 text = inputText, fromClient = false, clientId = value.clientId, storeId = value.storeId
                             )
-                            Log.d(TAG, "ConversationView: $message")
                             onSendMessageToStoreButtonClicked(message)
                             inputText = ""
                         }
                     })
                 )
+
                 Spacer(modifier = Modifier.width(4.dp))
 
-                // Send button visibility animation
+                // Send button with accessibility and animation
                 AnimatedVisibility(
                     visible = inputText.isNotEmpty(),
                     enter = expandIn(expandFrom = Alignment.Center) + fadeIn(),
@@ -191,14 +199,15 @@ fun ConversationView(
                             val message = MessageDto(
                                 text = inputText, fromClient = false, clientId = value.clientId, storeId = value.storeId
                             )
-                            Log.d(TAG, "ConversationView: $message")
                             onSendMessageToStoreButtonClicked(message)
                             inputText = ""
                         }
-                    }, modifier = Modifier.size(48.dp)) {
+                    }, modifier = Modifier
+                        .size(48.dp)
+                        .semantics { contentDescription = sendButtonDescription }) {
                         Icon(
                             ImageVector.vectorResource(R.drawable.send),
-                            contentDescription = "Send button",
+                            contentDescription = sendButtonDescription,
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(24.dp)
                         )
@@ -208,6 +217,7 @@ fun ConversationView(
         }
     }
 }
+
 
 fun groupMessagesByDay(messages: List<Message>): Map<Date, List<Message>> {
     return messages.groupBy { it.day }

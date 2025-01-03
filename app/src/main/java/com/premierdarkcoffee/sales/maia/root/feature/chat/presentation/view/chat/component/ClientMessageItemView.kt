@@ -7,7 +7,6 @@ package com.premierdarkcoffee.sales.maia.root.feature.chat.presentation.view.cha
 //  Created by José Ruiz on 13/7/24.
 //
 
-import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -38,11 +37,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.premierdarkcoffee.sales.maia.R
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.entity.message.MessageEntity
 import com.premierdarkcoffee.sales.maia.root.feature.chat.domain.model.message.Message
 import com.premierdarkcoffee.sales.maia.root.feature.chat.domain.model.message.MessageStatus
@@ -60,9 +61,14 @@ fun ClientMessageItemView(
     val expanded by remember { mutableStateOf(true) }
     val context = LocalContext.current
 
-    LaunchedEffect(message.status != MessageStatus.READ) {
+    // Accessibility friendly localized strings
+    val messageStatusRead = stringResource(id = R.string.message_status_read)
+    val messageDateLabel = stringResource(id = R.string.message_date)
+
+    // Launch effect for marking the message as read
+    LaunchedEffect(key1 = message.status) {
         if (message.status != MessageStatus.READ) {
-            Log.d(TAG, "ClientMessageItemView: Message status ${message.status}")
+            Log.d("ClientMessageItemView", "Message status: ${message.status}")
             markMessageAsReadLaunchedEffect(message.toMessageEntity())
         }
     }
@@ -76,6 +82,7 @@ fun ClientMessageItemView(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.Start
             ) {
+                // Message Row with text and date
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
@@ -92,24 +99,35 @@ fun ClientMessageItemView(
                             .fillMaxWidth()
                             .wrapContentHeight()
                     ) {
+                        // Message Text with Adaptive Text Size and Accessibility Support
                         Text(
                             text = message.text,
-                            fontSize = 16.sp,
+                            style = MaterialTheme.typography.bodyLarge, // Scalable text size
                             modifier = Modifier
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(Color.Gray.copy(alpha = 0.2f))
-                                .padding(8.dp),
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                                .padding(8.dp)
+                                .semantics {
+                                    contentDescription = message.text
+                                },
                             textAlign = TextAlign.Start
                         )
 
+                        // Message Date with Scalable Font and Accessibility
                         Text(
-                            text = message.date.formatMessageDate(context),
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                            text = "$messageDateLabel ${message.date.formatMessageDate(context)}",
+                            style = MaterialTheme.typography.bodySmall, // Scalable text size
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                            modifier = Modifier
+                                .semantics {
+                                    contentDescription = "$messageDateLabel ${message.date.formatMessageDate(context)}"
+                                }
                         )
                     }
                     Spacer(modifier = Modifier.width(60.dp))
                 }
+
+                // Product Details with Animation and Accessibility Support
                 AnimatedVisibility(
                     visible = expanded && product != null,
                     enter = expandVertically(animationSpec = tween(durationMillis = 500)) + fadeIn(),
@@ -119,20 +137,49 @@ fun ClientMessageItemView(
                         modifier = Modifier
                             .offset(x = (-12).dp)
                             .padding(end = 60.dp)
-                    ) {  // Offset 10 to the left
+                    ) {
                         Spacer(modifier = Modifier.height(4.dp))
                         product?.let {
-                            ProductItemView(product, onNavigateToProductView)
+                            ProductItemView(
+                                product = product,
+                                onNavigateToProductView = onNavigateToProductView
+                            )
                         }
                     }
                 }
-
             }
         }
 
-        MessageType.IMAGE -> TODO()
-        MessageType.VIDEO -> TODO()
-        MessageType.AUDIO -> TODO()
-        MessageType.FILE -> TODO()
+        MessageType.IMAGE -> {
+            Text(
+                text = stringResource(id = R.string.image_message_received),
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.semantics { contentDescription = "Image message" }
+            )
+        }
+
+        MessageType.VIDEO -> {
+            Text(
+                text = stringResource(id = R.string.video_message_received),
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.semantics { contentDescription = "Video message" }
+            )
+        }
+
+        MessageType.AUDIO -> {
+            Text(
+                text = stringResource(id = R.string.audio_message_received),
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.semantics { contentDescription = "Audio message" }
+            )
+        }
+
+        MessageType.FILE -> {
+            Text(
+                text = stringResource(id = R.string.file_message_received),
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.semantics { contentDescription = "File message" }
+            )
+        }
     }
 }

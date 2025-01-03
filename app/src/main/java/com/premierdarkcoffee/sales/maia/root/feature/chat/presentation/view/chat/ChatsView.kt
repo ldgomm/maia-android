@@ -16,12 +16,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.premierdarkcoffee.sales.maia.R
 import com.premierdarkcoffee.sales.maia.root.feature.chat.domain.model.message.Message
 import com.premierdarkcoffee.sales.maia.root.feature.chat.domain.model.message.MessageStatus
 import com.premierdarkcoffee.sales.maia.root.feature.chat.presentation.view.chat.component.ConversationItemView
@@ -42,32 +45,42 @@ fun ChatsView(
     messages: List<Message>,
     onConversationItemViewClicked: (String) -> Unit
 ) {
-    // Group messages by storeId
+    // Group messages by clientId and sort them by the latest message date
     val sortedGroupedMessages = remember(messages) {
-        messages.groupBy { it.clientId }.mapValues { entry -> entry.value.sortedBy { it.date } }.toList()
+        messages.groupBy { it.clientId }
+            .mapValues { entry -> entry.value.sortedBy { it.date } }
+            .toList()
             .sortedByDescending { it.second.lastOrNull()?.date }
     }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    Scaffold(modifier = Modifier
-        .background(MaterialTheme.colorScheme.surface)
-        .statusBarsPadding()
-        .navigationBarsPadding()
-        .nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
-        TopAppBar(title = { Text("Chats", style = titleStyle) })
-    }) { paddingValues ->
+    // Localized string for title
+    val chatsTitle = stringResource(id = R.string.chats_title)
+
+    Scaffold(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.surface)
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = chatsTitle,
+                        style = titleStyle,
+                        modifier = Modifier.semantics { contentDescription = chatsTitle }
+                    )
+                }
+            )
+        }
+    ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
-                .padding(
-                    top = paddingValues.calculateTopPadding(),
-                    start = paddingValues.calculateLeftPadding(LayoutDirection.Ltr),
-                    end = paddingValues.calculateRightPadding(LayoutDirection.Ltr),
-                    bottom = paddingValues.calculateBottomPadding()
-                )
+                .padding(paddingValues)
                 .padding(8.dp)
                 .fillMaxSize()
         ) {
-            // Display each store's last message
             sortedGroupedMessages.forEach { (clientId, clientMessages) ->
                 item {
                     val lastMessage = clientMessages.lastOrNull()
@@ -75,11 +88,11 @@ fun ChatsView(
                         val sentOrDeliveredCount = clientMessages.count {
                             (it.status == MessageStatus.SENT || it.status == MessageStatus.DELIVERED) && it.fromClient
                         }
-                        ConversationItemView(message = message,
-                                             sentOrDeliveredCount = sentOrDeliveredCount,
-                                             onConversationItemViewClicked = {
-                                                 onConversationItemViewClicked(clientId)
-                                             })
+                        ConversationItemView(
+                            message = message,
+                            sentOrDeliveredCount = sentOrDeliveredCount,
+                            onConversationItemViewClicked = { onConversationItemViewClicked(clientId) }
+                        )
                     }
                 }
             }
