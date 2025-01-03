@@ -18,7 +18,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -44,14 +44,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.google.firebase.storage.FirebaseStorage
 import com.premierdarkcoffee.sales.maia.R
-import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.CreditCard
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Image
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Offer
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Price
@@ -59,9 +59,6 @@ import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.produc
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.state.AddEditProductState
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.state.InformationResultState
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.common.SectionView
-import com.premierdarkcoffee.sales.maia.root.util.constant.Constant.eleven
-import com.premierdarkcoffee.sales.maia.root.util.constant.Constant.four
-import com.premierdarkcoffee.sales.maia.root.util.constant.Constant.six
 import com.premierdarkcoffee.sales.maia.root.util.function.shouldDeletePath
 import com.premierdarkcoffee.sales.maia.root.util.function.uploadImageToFirebase
 import kotlinx.coroutines.CoroutineScope
@@ -69,6 +66,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditProductView(
     addEditProductState: AddEditProductState,
@@ -93,14 +91,14 @@ fun AddEditProductView(
     val context = LocalContext.current
     var mainImageHasChanged by remember { mutableStateOf(false) }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+
     val photoPickerLauncher = rememberLauncherForActivityResult(contract = PickVisualMedia()) {
         selectedImageUri = it
         mainImageHasChanged = true
     }
 
     val scope = rememberCoroutineScope()
-    val scrollBehavior = rememberScrollState()
-
+    val scrollState = rememberScrollState()
     var word by remember { mutableStateOf("") }
 
     Scaffold(modifier = Modifier
@@ -109,146 +107,81 @@ fun AddEditProductView(
         .navigationBarsPadding(),
              topBar = { TopBar(addEditProductState.name) }) { paddingValues ->
         Column(
-            Modifier
+            modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollBehavior)
-                .padding(top = paddingValues.calculateTopPadding())
-                .padding(horizontal = paddingValues.calculateLeftPadding(LayoutDirection.Ltr))
-                .padding(horizontal = paddingValues.calculateLeftPadding(LayoutDirection.Rtl))
-                .padding(bottom = paddingValues.calculateBottomPadding())
+                .verticalScroll(scrollState)
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp)
         ) {
+            // Image Section
             ImageCard(product.image.url, selectedImageUri) {
                 photoPickerLauncher.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly))
             }
 
-            TextFieldCard(stringResource(id = R.string.name_label), addEditProductState.name, setName)
-            TextFieldCard(stringResource(id = R.string.label_label), addEditProductState.label, setLabel)
-            TextFieldCard(stringResource(id = R.string.owner_label), addEditProductState.owner, setOwner)
-// Year
-            TextFieldCard(stringResource(id = R.string.year_label), addEditProductState.year, setYear)
-            TextFieldCard(stringResource(id = R.string.model_label), addEditProductState.model, setModel)
-            TextFieldCard(stringResource(id = R.string.description_label), addEditProductState.description, setDescription)
+            // Input Fields for Product Details
+            TextFieldCard(stringResource(R.string.name_label), addEditProductState.name, setName)
+            TextFieldCard(stringResource(R.string.label_label), addEditProductState.label, setLabel)
+            TextFieldCard(stringResource(R.string.owner_label), addEditProductState.owner, setOwner)
+            TextFieldCard(stringResource(R.string.year_label), addEditProductState.year, setYear)
+            TextFieldCard(stringResource(R.string.model_label), addEditProductState.model, setModel)
+            TextFieldCard(stringResource(R.string.description_label), addEditProductState.description, setDescription)
 
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp)
-            )
-// Price
-            Divider()
+            Divider(modifier = Modifier.padding(vertical = 12.dp))
+
+            // Price Section
             TextFieldCard(
-                stringResource(id = R.string.price_amount_label), addEditProductState.price.amount.toString(), { amount ->
-                    setPrice(addEditProductState.price.copy(amount = amount.toDoubleOrNull() ?: 0.0))
-                }, KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                stringResource(R.string.price_amount_label),
+                addEditProductState.price.amount.toString(),
+                { setPrice(addEditProductState.price.copy(amount = it.toDoubleOrNull() ?: 0.0)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
             )
 
+            // Offer Section
             SectionView(title = stringResource(id = R.string.offer_label)) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = stringResource(id = R.string.is_in_offer_label),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                        text = stringResource(id = R.string.is_in_offer_label), style = MaterialTheme.typography.bodyLarge
                     )
                     Switch(checked = addEditProductState.price.offer.isActive, onCheckedChange = {
-                        setPrice(
-                            addEditProductState.price.copy(
-                                offer = Offer(
-                                    isActive = it, discount = addEditProductState.price.offer.discount
-                                )
-                            )
-                        )
+                        setPrice(addEditProductState.price.copy(offer = Offer(it, addEditProductState.price.offer.discount)))
                     })
                 }
             }
 
             TextFieldCard(
-                stringResource(id = R.string.discount_label), addEditProductState.price.offer.discount.toString(), { discount ->
-                    setPrice(
-                        addEditProductState.price.copy(
-                            offer = Offer(
-                                addEditProductState.price.offer.isActive, discount = discount.toIntOrNull() ?: 0
-                            )
-                        )
-                    )
-                }, KeyboardOptions(keyboardType = KeyboardType.Number)
+                stringResource(R.string.discount_label),
+                addEditProductState.price.offer.discount.toString(),
+                { setPrice(addEditProductState.price.copy(offer = Offer(true, it.toIntOrNull() ?: 0))) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
+            Divider(modifier = Modifier.padding(vertical = 12.dp))
+
+            // Stock Section
             TextFieldCard(
-                stringResource(id = R.string.without_interest_label), addEditProductState.price.creditCard?.withoutInterest.toString(), { withoutInterest ->
-                    setPrice(
-                        addEditProductState.price.copy(
-                            creditCard = CreditCard(
-                                withoutInterest = withoutInterest.toIntOrNull() ?: 0,
-                                withInterest = addEditProductState.price.creditCard?.withInterest ?: 0,
-                                freeMonths = addEditProductState.price.creditCard?.freeMonths ?: 0
-                            )
-                        )
-                    )
-                }, KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
-            TextFieldCard(
-                stringResource(id = R.string.with_interest_label), addEditProductState.price.creditCard?.withInterest.toString(), { withInterest ->
-                    setPrice(
-                        addEditProductState.price.copy(
-                            creditCard = CreditCard(
-                                withoutInterest = addEditProductState.price.creditCard?.withoutInterest ?: 0,
-                                withInterest = withInterest.toIntOrNull() ?: 0,
-                                freeMonths = addEditProductState.price.creditCard?.freeMonths ?: 0
-                            )
-                        )
-                    )
-                }, KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
-            TextFieldCard(
-                stringResource(id = R.string.free_months_label), addEditProductState.price.creditCard?.freeMonths.toString(), { freeMonths ->
-                    setPrice(
-                        addEditProductState.price.copy(
-                            creditCard = CreditCard(
-                                withoutInterest = addEditProductState.price.creditCard?.withoutInterest ?: 0,
-                                withInterest = addEditProductState.price.creditCard?.withInterest ?: 0,
-                                freeMonths = freeMonths.toIntOrNull() ?: 0
-                            )
-                        )
-                    )
-                }, KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
-            Divider()
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp)
+                stringResource(R.string.stock_label),
+                addEditProductState.stock.toString(),
+                { setStock(it.toIntOrNull() ?: 0) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
-// Stock
-            TextFieldCard(stringResource(id = R.string.stock_label), addEditProductState.stock.toString(), { stock ->
-                setStock(stock.toIntOrNull() ?: 0)
-            }, KeyboardOptions(keyboardType = KeyboardType.Number))
-
-// Overview
-            InformationListView(informationResultStateList)
-//
+            // Keyword Section
             Box(modifier = Modifier.padding(horizontal = 12.dp)) {
-                KeywordSection(
-                    addEditProductState = addEditProductState, word = word, onWordChange = { word = it }, addKeyword = addKeyword, deleteKeyword = deleteKeyword
-                )
+                KeywordSection(addEditProductState, word, { word = it }, addKeyword, deleteKeyword)
             }
 
-// Legal
+            // Legal and Warning Information
             TextFieldCard(stringResource(id = R.string.legal_info_label), addEditProductState.legal.orEmpty(), setLegal)
-
-// Warning
             TextFieldCard(stringResource(id = R.string.warning_info_label), addEditProductState.warning.orEmpty(), setWarning)
 
+            // Submit Button
             SubmitButton(
                 mainImageHasChanged, addEditProductState, selectedImageUri, context, scope, setImage, addProduct, updateProduct
             )
-
         }
     }
 }
@@ -268,21 +201,24 @@ fun ImageCard(
     selectedImageUri: Uri?,
     onClick: () -> Unit
 ) {
+    // Localized string for accessibility
+    val imageDescription = stringResource(id = R.string.image_card_description)
+
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = six)
-            .padding(horizontal = eleven),
+            .padding(vertical = 6.dp, horizontal = 11.dp),
         shape = MaterialTheme.shapes.medium,
-        elevation = CardDefaults.elevatedCardElevation(four)
+        elevation = CardDefaults.elevatedCardElevation(4.dp)
     ) {
         AsyncImage(
             model = selectedImageUri ?: imageUrl,
-            contentDescription = null,
+            contentDescription = imageDescription,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(150.dp)
-                .clickable { onClick() },
+                .clickable { onClick() }
+                .semantics { contentDescription = imageDescription },
             contentScale = ContentScale.Crop
         )
     }
@@ -296,15 +232,22 @@ fun TextFieldCard(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onClick: (() -> Unit)? = null
 ) {
-    ElevatedCard(modifier = Modifier
-        .clickable { onClick?.invoke() }
-        .fillMaxWidth()
-        .padding(vertical = six)
-        .padding(horizontal = eleven),
-                 shape = MaterialTheme.shapes.medium,
-                 elevation = CardDefaults.elevatedCardElevation(four)) {
+    ElevatedCard(
+        modifier = Modifier
+            .clickable { onClick?.invoke() }
+            .fillMaxWidth()
+            .padding(vertical = 6.dp, horizontal = 11.dp),
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.elevatedCardElevation(4.dp)
+    ) {
         TextField(
-            value = text, onValueChange = onTextChanged, label = { Text(label) }, keyboardOptions = keyboardOptions, modifier = Modifier.fillMaxWidth()
+            value = text,
+            onValueChange = onTextChanged,
+            label = { Text(label) },
+            keyboardOptions = keyboardOptions,
+            modifier = Modifier
+                .fillMaxWidth()
+                .semantics { contentDescription = label }
         )
     }
 }
@@ -372,60 +315,5 @@ fun SubmitButton(
         }, enabled = !isProcessing
     ) {
         Text(stringResource(id = R.string.submit_label))
-    }
-}
-
-
-@Composable
-fun KeywordSection(
-    addEditProductState: AddEditProductState,
-    word: String,
-    onWordChange: (String) -> Unit,
-    addKeyword: (String) -> Unit,
-    deleteKeyword: (Int) -> Unit
-) {
-    Column {
-        // Header
-        Text(text = "Keywords", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 8.dp))
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
-        ) {
-            TextField(
-                value = word,
-                onValueChange = onWordChange,
-                label = { Text("Please enter only the main words") },
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp)
-            )
-
-            Button(
-                onClick = {
-                    addKeyword(word)
-                    onWordChange("")
-                }, enabled = word.isNotEmpty(), modifier = Modifier.align(Alignment.CenterVertically)
-            ) {
-                Text("Add")
-            }
-        }
-
-        LazyRow(modifier = Modifier.fillMaxWidth()) {
-            items(addEditProductState.keywords) { keyword ->
-                val index = addEditProductState.keywords.indexOf(keyword)
-                KeywordBubble(keyword = keyword) {
-                    deleteKeyword(index)
-                }
-            }
-        }
-
-        // Footer
-        Text(
-            text = "Please add only the main words that describe your product",
-            style = MaterialTheme.typography.labelSmall,
-            modifier = Modifier.padding(top = 8.dp)
-        )
     }
 }
