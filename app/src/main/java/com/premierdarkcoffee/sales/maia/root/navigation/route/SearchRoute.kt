@@ -21,7 +21,8 @@ fun NavGraphBuilder.searchRoute(
     onNavigateToProductView: (String) -> Unit
 ) {
     composable<SearchRoute> { backStackEntry ->
-        val viewModel = backStackEntry.sharedViewModel<ProductViewModel>(navController = navController)
+        val viewModel =
+            backStackEntry.sharedViewModel<ProductViewModel>(navController = navController)
 
         val productsState by viewModel.searchState.collectAsState()
         val searchText by viewModel.searchText.collectAsState()

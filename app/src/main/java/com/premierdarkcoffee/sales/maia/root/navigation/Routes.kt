@@ -55,4 +55,3 @@ object TermsOfUseRoute
 
 @Serializable
 object PrivacyPolicyRoute
-

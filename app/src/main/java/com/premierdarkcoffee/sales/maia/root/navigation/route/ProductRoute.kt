@@ -17,7 +17,8 @@ fun NavGraphBuilder.productRoute(
     onAddOrUpdateEditedProductButtonClick: (String) -> Unit
 ) {
     composable<ProductRoute> { backStackEntry ->
-        val viewModel = backStackEntry.sharedViewModel<ProductViewModel>(navController = navController)
+        val viewModel =
+            backStackEntry.sharedViewModel<ProductViewModel>(navController = navController)
         val args = backStackEntry.toRoute<ProductRoute>()
         val product = Gson().fromJson(args.product, ProductDto::class.java).toProduct()
 

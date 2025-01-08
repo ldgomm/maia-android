@@ -23,7 +23,9 @@ fun NavigationGraph(
     startDestination: Any,
     modifier: Modifier = Modifier
 ) {
-    NavHost(navController = navController, startDestination = startDestination, modifier = modifier) {
+    NavHost(
+        navController = navController, startDestination = startDestination, modifier = modifier
+    ) {
         authenticationRoute(onNavigateToProductsViewTriggered = {
             navController.popBackStack()
             navController.navigate(ProductsRoute)
@@ -58,18 +60,26 @@ fun NavigationGraph(
             navController.navigate(ConversationRoute(clientId = clientId))
         })
 
-        conversationRoute(navController = navController, onNavigateToProductView = { productJson: String ->
-            navController.navigate(ProductRoute(productJson))
-        })
+        conversationRoute(navController = navController,
+                          onNavigateToProductView = { productJson: String ->
+                              navController.navigate(ProductRoute(productJson))
+                          })
 
-        storeRoute(
-            navController = navController,
-            onNavigateToSettingsIconButtonClicked = { navController.navigate(SettingsRoute) })
+        storeRoute(navController = navController,
+                   onNavigateToSettingsIconButtonClicked = { navController.navigate(SettingsRoute) })
 
         settingsRoute(navController,
-                      onNavigateToPrivacyPolicyButtonClicked = { navController.navigate(PrivacyPolicyRoute) },
+                      onNavigateToPrivacyPolicyButtonClicked = {
+                          navController.navigate(
+                              PrivacyPolicyRoute
+                          )
+                      },
                       onNavigateToTermsOfUseButtonClicked = { navController.navigate(TermsOfUseRoute) },
-                      onNavigateToAccountDeletionButtonClicked = { navController.navigate(AccountDeletionRoute) },
+                      onNavigateToAccountDeletionButtonClicked = {
+                          navController.navigate(
+                              AccountDeletionRoute
+                          )
+                      },
                       onLogoutButtonClicked = {
                           navController.navigate(AuthenticationRoute) {
                               popUpTo(0) {

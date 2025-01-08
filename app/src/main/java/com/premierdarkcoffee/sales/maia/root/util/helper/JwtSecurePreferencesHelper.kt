@@ -18,7 +18,8 @@ object JwtSecurePreferencesHelper {
     private const val KEY_NAME = "jwt"
 
     private fun getSecurePreferences(context: Context): SharedPreferences {
-        val masterKey = MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build()
+        val masterKey =
+            MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build()
 
         return EncryptedSharedPreferences.create(
             context,
@@ -44,7 +45,3 @@ object JwtSecurePreferencesHelper {
         getSecurePreferences(context).edit().remove(KEY_NAME).apply()
     }
 }
-
-
-
-
