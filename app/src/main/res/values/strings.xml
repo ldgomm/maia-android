@@ -70,4 +70,81 @@
     <string name="account_deletion">Account Deletion</string>
     <string name="products_label">My products: </string>
 
+    <string name="logo_description">Maia Logo</string>
+    <string name="welcome_message">Welcome</string>
+    <string name="email_label">Email</string>
+    <string name="password_label">Password</string>
+    <string name="sign_in_button">Sign In</string>
+    <string name="sign_in_success">Sign-in successful!</string>
+    <string name="forgot_password">Forgot your password?</string>
+    <string name="ok_button">OK</string>
+    <string name="auth_title">Authentication</string>
+
+    <string name="welcome_text">Welcome</string>
+    <string name="sign_in_successful">Sign-in successful!</string>
+    <string name="ok">OK</string>
+
+    <string name="message_status_read">Message read</string>
+    <string name="message_date">Message date</string>
+    <string name="new_messages_label">new messages</string>
+    <string name="store_icon_description">Store Icon</string>
+
+    <string name="image_message_received">Image message received</string>
+    <string name="video_message_received">Video message received</string>
+    <string name="audio_message_received">Audio message received</string>
+    <string name="file_message_received">File message received</string>
+
+    <string name="type_message_hint">Type a message...</string>
+    <string name="send_button_description">Send message</string>
+    <string name="client_id">Client ID</string>
+
+    <string name="original_price_label">Original price</string>
+    <string name="current_price_label">Current price</string>
+
+    <string name="chats_title">Chats</string>
+
+    <string name="keywords_label">Keywords</string>
+    <string name="enter_keyword_hint">Please enter only the main words</string>
+    <string name="add_button_label">Add</string>
+    <string name="keyword_helper_text">Please add only the main words that describe your product</string>
+
+    <string name="image_card_description">Product Image</string>
+
+    <string name="information_card_image_description">%1$s image</string>
+
+    <string name="delete_keyword_description">Delete %1$s keyword</string>
+
+    <string name="products_title">Products</string>
+    <string name="search_placeholder">Search products...</string>
+    <string name="clear_search">Clear search text</string>
+    <string name="no_products_found">No products found</string>
+    <string name="all_groups">All Groups</string>
+
+    <string name="product_image_description">%1$s product image</string>
+
+    <string name="back_button">Back</string>
+    <string name="edit_button">Edit Product</string>
+    <string name="no_label_available">No label available</string>
+
+    <string name="search_title">Search Products</string>
+    <string name="clear_search_text">Clear search text</string>
+
+    <string name="account_deletion_title">Account Deletion</string>
+    <string name="deletion_process_text">
+        If you wish to delete your account in Maia, you can do so within the app by navigating to the Settings section.
+    </string>
+    <string name="important_note_text">
+        Please note: Deleting your account is an irreversible action. This process will permanently delete your account, including all store data and products associated with your account.
+    </string>
+    <string name="backup_recommendation_text">
+        Before proceeding with account deletion, we recommend that you ensure you have backed up any necessary data or information.
+    </string>
+    <string name="contact_information_text">
+        If you have any questions or need assistance, please contact us at account@premierdarkcoffee.com.
+    </string>
+    <string name="response_time_notice_text">
+        Please note that while we strive to respond to all inquiries as quickly as possible, there may be times when responses take a couple of days.
+    </string>
+    <string name="footer_text">© 2025 Maia, Premier Dark Coffee. All Rights Reserved.</string>
+
 </resources>

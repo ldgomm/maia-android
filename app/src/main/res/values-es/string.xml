@@ -70,4 +70,81 @@
     <string name="account_deletion">Eliminación de cuenta</string>
     <string name="products_label">Mis productos: </string>
 
+    <string name="logo_description">Logo de Maia</string>
+    <string name="welcome_message">Bienvenido</string>
+    <string name="email_label">Correo electrónico</string>
+    <string name="password_label">Contraseña</string>
+    <string name="sign_in_button">Iniciar sesión</string>
+    <string name="sign_in_success">¡Inicio de sesión exitoso!</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="ok_button">Aceptar</string>
+    <string name="auth_title">Autenticación</string>
+
+    <string name="welcome_text">Bienvenido</string>
+    <string name="sign_in_successful">¡Inicio de sesión exitoso!</string>
+    <string name="ok">OK</string>
+
+    <string name="message_status_read">Message read</string>
+    <string name="message_date">Message date</string>
+    <string name="new_messages_label">nuevos mensajes</string>
+    <string name="store_icon_description">Ícono de la tienda</string>
+
+    <string name="image_message_received">Imagen recibida</string>
+    <string name="video_message_received">Video recibido</string>
+    <string name="audio_message_received">Audio recibido</string>
+    <string name="file_message_received">Archivo recibido</string>
+
+    <string name="type_message_hint">Escribe un mensaje...</string>
+    <string name="send_button_description">Enviar mensaje</string>
+    <string name="client_id">ID del cliente</string>
+
+    <string name="original_price_label">Precio original</string>
+    <string name="current_price_label">Precio actual</string>
+
+    <string name="chats_title">Conversaciones</string>
+
+    <string name="keywords_label">Palabras clave</string>
+    <string name="enter_keyword_hint">Por favor, ingrese solo las palabras principales</string>
+    <string name="add_button_label">Agregar</string>
+    <string name="keyword_helper_text">Por favor, agregue solo las palabras principales que describan su producto</string>
+
+    <string name="image_card_description">Imagen del producto</string>
+
+    <string name="information_card_image_description">Imagen de %1$s</string>
+
+    <string name="delete_keyword_description">Eliminar la palabra clave %1$s</string>
+
+    <string name="products_title">Productos</string>
+    <string name="search_placeholder">Buscar productos...</string>
+    <string name="clear_search">Borrar texto de búsqueda</string>
+    <string name="no_products_found">No se encontraron productos</string>
+    <string name="all_groups">Todos los grupos</string>
+
+    <string name="product_image_description">Imagen del producto %1$s</string>
+
+    <string name="back_button">Atrás</string>
+    <string name="edit_button">Editar Producto</string>
+    <string name="no_label_available">No disponible</string>
+
+    <string name="search_title">Buscar Productos</string>
+    <string name="clear_search_text">Borrar texto de búsqueda</string>
+
+    <string name="account_deletion_title">Eliminación de Cuenta</string>
+    <string name="deletion_process_text">
+        Si desea eliminar su cuenta en Maia, puede hacerlo dentro de la aplicación navegando a la sección de Configuraciones.
+    </string>
+    <string name="important_note_text">
+        Tenga en cuenta: Eliminar su cuenta es una acción irreversible. Este proceso eliminará permanentemente su cuenta.
+    </string>
+    <string name="backup_recommendation_text">
+        Antes de proceder con la eliminación de la cuenta, recomendamos hacer una copia de seguridad de sus datos.
+    </string>
+    <string name="contact_information_text">
+        Si tiene alguna pregunta o necesita ayuda, comuníquese con nosotros a account@premierdarkcoffee.com.
+    </string>
+    <string name="response_time_notice_text">
+        Tenga en cuenta que aunque nos esforzamos por responder rápidamente, las respuestas pueden tardar unos días.
+    </string>
+    <string name="footer_text">© 2025 Maia, Premier Dark Coffee. Todos los derechos reservados.</string>
+
 </resources>
