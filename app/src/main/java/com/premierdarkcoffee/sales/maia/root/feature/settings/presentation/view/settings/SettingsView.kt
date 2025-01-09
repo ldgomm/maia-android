@@ -20,10 +20,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
 import com.premierdarkcoffee.sales.maia.R
+import com.premierdarkcoffee.sales.maia.root.feature.chat.presentation.view.chat.titleStyle
 import com.premierdarkcoffee.sales.maia.root.util.helper.JwtSecurePreferencesHelper
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,16 +39,20 @@ fun SettingsView(
 ) {
     val context = LocalContext.current
 
-    Scaffold(topBar = {
-        TopAppBar(title = { Text(text = stringResource(id = R.string.settings_title)) })
-    }) { paddingValues ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = stringResource(id = R.string.settings_title), style = titleStyle) }
+            )
+        }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            // Section 1: Privacy Policy and Terms and Conditions
+            // Section 1: General Settings
             SettingsSection(
                 title = stringResource(id = R.string.general_title),
                 items = listOf(
@@ -57,7 +64,7 @@ fun SettingsView(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Section 2: Log Out Button
+            // Section 2: Log Out Button with a red highlight for better visibility
             SettingsSection(
                 title = stringResource(id = R.string.account_title),
                 items = listOf(
@@ -79,16 +86,28 @@ fun SettingsSection(
     buttonColors: ButtonColors = ButtonDefaults.buttonColors()
 ) {
     Text(
-        text = title, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 8.dp)
+        text = title,
+        style = MaterialTheme.typography.titleMedium,
+        modifier = Modifier
+            .padding(bottom = 8.dp)
+            .semantics { contentDescription = title }
     )
 
     items.forEach { (label, action) ->
         Button(
-            onClick = action, colors = buttonColors, modifier = Modifier
+            onClick = action,
+            colors = buttonColors,
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp)
+                .semantics { contentDescription = label }
         ) {
-            Text(label, modifier = Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.tertiary, textAlign = TextAlign.Start)
+            Text(
+                text = label,
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.tertiary,
+                textAlign = TextAlign.Start
+            )
         }
     }
 }
