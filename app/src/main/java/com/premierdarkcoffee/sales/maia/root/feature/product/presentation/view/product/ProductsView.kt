@@ -38,6 +38,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -62,23 +65,45 @@ fun ProductsView(
     val isRefreshing by remember { mutableStateOf(false) }
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing)
 
-    // State variables for filtering
+    // -- State variables for filtering --
     var selectedGroup by rememberSaveable { mutableStateOf<String?>(null) }
     var selectedDomain by rememberSaveable { mutableStateOf<String?>(null) }
     var selectedSubclass by rememberSaveable { mutableStateOf<String?>(null) }
 
-    // Variables to control the dropdown menus
+    // -- Variables to control the dropdown menus --
     var groupExpanded by remember { mutableStateOf(false) }
     var domainExpanded by remember { mutableStateOf(false) }
     var subclassExpanded by remember { mutableStateOf(false) }
 
-    // Get domains and subclasses based on selections
-    val selectedGroupObj = groups.find { it.name == selectedGroup }
-    val domains = selectedGroupObj?.domains ?: emptyList()
-    val selectedDomainObj = domains.find { it.name == selectedDomain }
-    val subclasses = selectedDomainObj?.subclasses ?: emptyList()
+    // Grab all products (or empty list if null)
+    val allProducts = productsState.products ?: emptyList()
 
-    // Filter products based on selections and search text
+    // -- 1. Filter Groups that contain at least one product --
+    val filteredGroups = groups.filter { group ->
+        allProducts.any { product -> product.category.group == group.name }
+    }
+
+    // Find the group object that matches the user’s selection, if any
+    val selectedGroupObj = filteredGroups.find { it.name == selectedGroup }
+
+    // -- 2. Filter Domains within the selected Group that contain at least one product --
+    val filteredDomains = selectedGroupObj?.domains?.filter { domain ->
+        allProducts.any { product ->
+            product.category.group == selectedGroup && product.category.domain == domain.name
+        }
+    } ?: emptyList()
+
+    // Find the domain object that matches the user’s selection, if any
+    val selectedDomainObj = filteredDomains.find { it.name == selectedDomain }
+
+    // -- 3. Filter Subclasses within the selected Domain that contain at least one product --
+    val filteredSubclasses = selectedDomainObj?.subclasses?.filter { subclass ->
+        allProducts.any { product ->
+            product.category.group == selectedGroup && product.category.domain == selectedDomain && product.category.subclass == subclass.name
+        }
+    } ?: emptyList()
+
+    // -- Finally, filter products based on selections + search text --
     val filteredProducts = productsState.products?.filter { product ->
         (selectedGroup == null || product.category.group == selectedGroup) && (selectedDomain == null || product.category.domain == selectedDomain) && (selectedSubclass == null || product.category.subclass == selectedSubclass) && (searchProductText.isEmpty() || product.name.contains(
             searchProductText,
@@ -91,10 +116,11 @@ fun ProductsView(
         .statusBarsPadding()
         .navigationBarsPadding()
         .nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
+        val productsTitle = stringResource(id = R.string.products_title)
         TopAppBar(
             title = {
                 Text(
-                    text = "${stringResource(id = R.string.products_label)} (${filteredProducts?.size ?: 0})", style = titleStyle
+                    text = "$productsTitle (${filteredProducts?.size ?: 0})", maxLines = 1, overflow = TextOverflow.Ellipsis, style = titleStyle
                 )
             }, scrollBehavior = scrollBehavior
         )
@@ -107,20 +133,29 @@ fun ProductsView(
             Column(
                 Modifier
                     .fillMaxSize()
-                    .padding(16.dp) // Adjust padding as needed
+                    .padding(16.dp)
             ) {
-                // Search Bar
+                // -- Search Bar --
+                val searchPlaceholder = stringResource(id = R.string.search_placeholder)
+                val clearSearchTextX = stringResource(id = R.string.clear_search)
+
                 SearchBar(query = searchProductText,
                           onQueryChange = onSearchTextChange,
                           onSearch = { active = false },
                           active = active,
                           onActiveChange = { active = it },
-                          modifier = Modifier.fillMaxWidth(),
-                          placeholder = { Text("Search products") },
-                          leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = null) },
+                          modifier = Modifier
+                              .fillMaxWidth()
+                              .semantics { contentDescription = searchPlaceholder },
+                          placeholder = { Text(searchPlaceholder) },
+                          leadingIcon = {
+                              Icon(
+                                  imageVector = Icons.Default.Search, contentDescription = searchPlaceholder
+                              )
+                          },
                           trailingIcon = {
                               if (active) {
-                                  Icon(imageVector = Icons.Default.Close, contentDescription = null, modifier = Modifier.clickable {
+                                  Icon(imageVector = Icons.Default.Close, contentDescription = clearSearchTextX, modifier = Modifier.clickable {
                                       if (searchProductText.isNotEmpty()) {
                                           clearSearchText()
                                       } else {
@@ -129,6 +164,7 @@ fun ProductsView(
                                   })
                               }
                           }) {
+                    // If the user has tapped on the SearchBar, show an expanded list
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
                         productsState.products?.let { products ->
                             items(products) { product ->
@@ -140,7 +176,9 @@ fun ProductsView(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Filters Row
+                // -- Filters Row (Group, Domain, Subclass) --
+                val allGroupsLabel = stringResource(id = R.string.all_groups)
+
                 Row(
                     modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -149,16 +187,15 @@ fun ProductsView(
                         expanded = groupExpanded, onExpandedChange = { groupExpanded = !groupExpanded }, modifier = Modifier.weight(1f)
                     ) {
                         TextField(
-                            value = selectedGroup?.substring(0, 5) ?: "All",
+                            value = selectedGroup ?: allGroupsLabel,
                             onValueChange = {},
-//                            label = { Text("Group") },
                             readOnly = true,
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = groupExpanded) },
                             modifier = Modifier.menuAnchor()
                         )
                         ExposedDropdownMenu(expanded = groupExpanded, onDismissRequest = { groupExpanded = false }) {
-                            groups.forEach { group ->
-                                DropdownMenuItem(text = { Text(text = group.name) }, onClick = {
+                            filteredGroups.forEach { group ->
+                                DropdownMenuItem(text = { Text(group.name) }, onClick = {
                                     selectedGroup = group.name
                                     selectedDomain = null
                                     selectedSubclass = null
@@ -168,22 +205,21 @@ fun ProductsView(
                         }
                     }
 
-                    // Domain Dropdown
+                    // Domain Dropdown (Conditionally Displayed)
                     if (selectedGroup != null) {
                         ExposedDropdownMenuBox(
                             expanded = domainExpanded, onExpandedChange = { domainExpanded = !domainExpanded }, modifier = Modifier.weight(1f)
                         ) {
                             TextField(
-                                value = selectedDomain?.substring(0, 5) ?: "All",
+                                value = selectedDomain ?: allGroupsLabel,
                                 onValueChange = {},
-//                                label = { Text("Domain") },
                                 readOnly = true,
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = domainExpanded) },
                                 modifier = Modifier.menuAnchor()
                             )
                             ExposedDropdownMenu(expanded = domainExpanded, onDismissRequest = { domainExpanded = false }) {
-                                domains.forEach { domain ->
-                                    DropdownMenuItem(text = { Text(text = domain.name) }, onClick = {
+                                filteredDomains.forEach { domain ->
+                                    DropdownMenuItem(text = { Text(domain.name) }, onClick = {
                                         selectedDomain = domain.name
                                         selectedSubclass = null
                                         domainExpanded = false
@@ -193,22 +229,21 @@ fun ProductsView(
                         }
                     }
 
-                    // Subclass Dropdown
+                    // Subclass Dropdown (Conditionally Displayed)
                     if (selectedDomain != null) {
                         ExposedDropdownMenuBox(
                             expanded = subclassExpanded, onExpandedChange = { subclassExpanded = !subclassExpanded }, modifier = Modifier.weight(1f)
                         ) {
                             TextField(
-                                value = selectedSubclass?.substring(0, 5) ?: "All",
+                                value = selectedSubclass ?: allGroupsLabel,
                                 onValueChange = {},
-//                                label = { Text("Subclass") },
                                 readOnly = true,
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = subclassExpanded) },
                                 modifier = Modifier.menuAnchor()
                             )
                             ExposedDropdownMenu(expanded = subclassExpanded, onDismissRequest = { subclassExpanded = false }) {
-                                subclasses.forEach { subclass ->
-                                    DropdownMenuItem(text = { Text(text = subclass.name) }, onClick = {
+                                filteredSubclasses.forEach { subclass ->
+                                    DropdownMenuItem(text = { Text(subclass.name) }, onClick = {
                                         selectedSubclass = subclass.name
                                         subclassExpanded = false
                                     })
@@ -220,9 +255,13 @@ fun ProductsView(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Display filtered products
+                // -- Display filtered products or "No products found" message --
+                val noProductsFound = stringResource(id = R.string.no_products_found)
+
                 if (filteredProducts.isNullOrEmpty()) {
-                    Text("No products found", style = MaterialTheme.typography.bodyLarge)
+                    Text(text = noProductsFound,
+                         style = MaterialTheme.typography.bodyLarge,
+                         modifier = Modifier.semantics { contentDescription = noProductsFound })
                 } else {
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
                         items(filteredProducts) { product ->
@@ -233,4 +272,5 @@ fun ProductsView(
             }
         }
     }
+
 }

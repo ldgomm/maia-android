@@ -27,14 +27,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.google.gson.Gson
+import com.premierdarkcoffee.sales.maia.R
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Product
 import com.premierdarkcoffee.sales.maia.root.util.extension.formatDate
 import java.text.NumberFormat
@@ -45,52 +48,51 @@ fun ProductCardView(
     product: Product,
     onNavigateToProductView: (String) -> Unit
 ) {
-
+    val context = LocalContext.current
     val numberFormat = NumberFormat.getCurrencyInstance().apply {
         currency = Currency.getInstance(product.price.currency)
     }
     val originalPrice = product.price.amount / (1 - product.price.offer.discount / 100.0)
 
-    ElevatedCard(
-        onClick = { onNavigateToProductView(Gson().toJson(product)) },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.elevatedCardElevation(2.dp)
+    // Localized strings for accessibility and dynamic labels
+    val discountLabel = stringResource(id = R.string.discount_label, product.price.offer.discount)
+    val currentPriceLabel = stringResource(id = R.string.current_price_label)
+    val originalPriceLabel = stringResource(id = R.string.original_price_label)
+
+    ElevatedCard(onClick = { onNavigateToProductView(Gson().toJson(product)) },
+                 modifier = Modifier
+                     .fillMaxWidth()
+                     .padding(vertical = 4.dp)
+                     .semantics { contentDescription = "${product.name}, $currentPriceLabel ${numberFormat.format(product.price.amount)}" },
+                 shape = RoundedCornerShape(12.dp),
+                 elevation = CardDefaults.elevatedCardElevation(2.dp)
     ) {
         Row(
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
         ) {
+            // Product Image with accessibility support
             AsyncImage(
                 model = product.image.url,
-                contentDescription = product.name,
+                contentDescription = stringResource(id = R.string.product_image_description, product.name),
                 modifier = Modifier
-                    .size(72.dp) // Increased size for larger image
+                    .size(72.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentScale = ContentScale.Crop
             )
+
             Spacer(modifier = Modifier.width(16.dp))
+
+            // Product Info Section
             Column(verticalArrangement = Arrangement.Center, modifier = Modifier.weight(1f)) {
                 Text(
-                    text = product.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(bottom = 4.dp)
+                    text = product.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface
                 )
                 product.label?.let {
                     Text(
-                        text = it,
-                        style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier
-                            .padding(bottom = 4.dp)
-                            .padding(end = 4.dp)
+                        text = it, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface
                     )
                 }
                 Text(
@@ -98,8 +100,7 @@ fun ProductCardView(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(end = 4.dp)
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = product.date.formatDate(),
@@ -108,31 +109,29 @@ fun ProductCardView(
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
+
+            // Pricing Section
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 if (product.price.offer.isActive) {
-                    Text(
-                        text = "${product.price.offer.discount}% OFF",
-                        style = TextStyle(fontSize = 10.sp),
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(Color.Red.copy(alpha = 0.7f))
-                            .padding(horizontal = 4.dp, vertical = 2.dp)
-                    )
+                    Text(text = discountLabel,
+                         style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                         color = Color.White,
+                         modifier = Modifier
+                             .clip(RoundedCornerShape(4.dp))
+                             .background(Color.Red.copy(alpha = 0.7f))
+                             .padding(horizontal = 4.dp, vertical = 2.dp)
+                             .semantics { contentDescription = discountLabel })
                 }
                 Text(
                     text = numberFormat.format(product.price.amount),
-                    style = TextStyle(fontSize = 11.sp),
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(top = 4.dp)
                 )
                 Text(
-                    text = numberFormat.format(originalPrice),
-                    style = TextStyle(fontSize = 8.sp).copy(textDecoration = TextDecoration.LineThrough),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(top = 2.dp)
+                    text = numberFormat.format(originalPrice), style = MaterialTheme.typography.bodySmall.copy(
+                        textDecoration = TextDecoration.LineThrough
+                    ), color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 2.dp)
                 )
             }
         }
