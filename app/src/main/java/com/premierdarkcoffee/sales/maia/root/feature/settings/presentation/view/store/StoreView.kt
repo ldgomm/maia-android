@@ -37,8 +37,9 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.google.android.gms.maps.model.LatLng
 import com.premierdarkcoffee.sales.maia.R
-import com.premierdarkcoffee.sales.maia.root.feature.chat.domain.model.store.StoreStatus
 import com.premierdarkcoffee.sales.maia.root.feature.chat.domain.model.store.Store
+import com.premierdarkcoffee.sales.maia.root.feature.chat.domain.model.store.StoreStatus
+import com.premierdarkcoffee.sales.maia.root.feature.chat.presentation.view.chat.titleStyle
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.common.SectionView
 import com.premierdarkcoffee.sales.maia.root.util.view.MapView
 
@@ -50,7 +51,7 @@ fun StoreView(
 ) {
 
     Scaffold(topBar = {
-        TopAppBar(title = { Text(text = store.name) }, actions = {
+        TopAppBar(title = { Text(text = store.name, style = titleStyle) }, actions = {
             IconButton(onClick = onNavigateToSettingsIconButtonClicked) {
                 Icon(imageVector = ImageVector.vectorResource(R.drawable.settings), contentDescription = stringResource(id = R.string.settings_icon))
             }

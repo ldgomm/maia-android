@@ -27,9 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.premierdarkcoffee.sales.maia.R
 import com.premierdarkcoffee.sales.maia.root.feature.chat.domain.model.message.Message
 import com.premierdarkcoffee.sales.maia.root.feature.chat.domain.model.message.MessageType.AUDIO
 import com.premierdarkcoffee.sales.maia.root.feature.chat.domain.model.message.MessageType.FILE
@@ -45,38 +48,60 @@ import java.util.Locale
 fun StoreMessageItemView(message: Message) {
 
     val context = LocalContext.current
+
+    // Localized strings for accessibility and support
+    val messageDateLabel = stringResource(id = R.string.message_date)
+    val imageMessageLabel = stringResource(id = R.string.image_message_received)
+    val videoMessageLabel = stringResource(id = R.string.video_message_received)
+    val audioMessageLabel = stringResource(id = R.string.audio_message_received)
+    val fileMessageLabel = stringResource(id = R.string.file_message_received)
+
     when (message.type) {
         TEXT -> {
             Spacer(Modifier.padding(horizontal = 60.dp))
             Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(end = 12.dp)
-                        .padding(top = 8.dp)
+                        .padding(end = 12.dp, top = 8.dp)
                         .fillMaxWidth(0.8f)
                         .wrapContentWidth(Alignment.End),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.End
                 ) {
+                    // Message Bubble with Adaptive Text and Accessibility
                     Text(
-                        text = message.text, fontSize = 16.sp, modifier = Modifier
+                        text = message.text,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier
                             .clip(RoundedCornerShape(12.dp))
                             .background(
                                 MaterialTheme.colorScheme.primary.copy(
                                     if (isSystemInDarkTheme()) 0.2f else 0.9f
                                 )
                             )
-                            .padding(8.dp), color = Color.White, textAlign = TextAlign.Start
+                            .padding(8.dp)
+                            .semantics { contentDescription = message.text },
+                        color = Color.White,
+                        textAlign = TextAlign.Start
                     )
 
+                    // Message Date with Accessibility
                     Row(
-                        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = message.date.formatMessageDate(context), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                            text = "$messageDateLabel ${message.date.formatMessageDate(context)}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                            modifier = Modifier
+                                .semantics { contentDescription = "$messageDateLabel ${message.date.formatMessageDate(context)}" }
                         )
                     }
                 }
@@ -84,22 +109,39 @@ fun StoreMessageItemView(message: Message) {
         }
 
         IMAGE -> {
-            Text("Image")
+            Text(
+                text = imageMessageLabel,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.semantics { contentDescription = imageMessageLabel }
+            )
         }
 
         VIDEO -> {
-            Text("Video")
+            Text(
+                text = videoMessageLabel,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.semantics { contentDescription = videoMessageLabel }
+            )
         }
 
         AUDIO -> {
-            Text("Audio")
+            Text(
+                text = audioMessageLabel,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.semantics { contentDescription = audioMessageLabel }
+            )
         }
 
         FILE -> {
-            Text("File")
+            Text(
+                text = fileMessageLabel,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.semantics { contentDescription = fileMessageLabel }
+            )
         }
     }
 }
+
 
 fun Long.formatMessageDate(context: Context): String {
     val currentTime = System.currentTimeMillis()
