@@ -1,4 +1,4 @@
-package com.premierdarkcoffee.sales.maia.root.feature.settings.presentation.view.settings
+package com.premierdarkcoffee.sales.maia.root.feature.settings.presentation.view.settings.info
 
 //
 //  TermsOfUseView.kt
@@ -19,6 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.premierdarkcoffee.sales.maia.root.feature.settings.presentation.view.settings.BulletPointList
+import com.premierdarkcoffee.sales.maia.root.feature.settings.presentation.view.settings.SettingsSectionView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
