@@ -11,11 +11,7 @@ import kotlinx.serialization.Serializable
 
 interface DataServiceable {
 
-    fun addGroup(
-        url: String,
-        request: Group
-    ): Flow<Result<Group>>
-
+    fun addGroup(url: String, request: Group): Flow<Result<Group>>
 
     fun getGroups(
         url: String,
@@ -26,16 +22,7 @@ interface DataServiceable {
 data class Subclass(val name: String)
 
 @Serializable
-data class Domain(
-    val name: String,
-    val subclasses: List<Subclass>
-)
+data class Domain(val name: String, val subclasses: List<Subclass>)
 
 @Serializable
-data class Group(
-    val name: String,
-    val domains: List<Domain>
-)
-
-
-
+data class Group(val name: String, val domains: List<Domain>)

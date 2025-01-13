@@ -26,27 +26,23 @@ fun NavGraphBuilder.authenticationRoute(onNavigateToProductsViewTriggered: () ->
         var signInResult by remember { mutableStateOf(Pair(false, "Default message.")) }
 
         // Pass handleSignIn as a lambda that updates signInResult asynchronously
-        AuthenticationView(
-            handleSignIn = { email, password ->
-                coroutineScope.launch {
-                    try {
-                        viewModel.signInWithEmail(email = email, password = password, onSuccess = { token ->
-                            // Mark as success
-                            signInResult = Pair(true, "Authentication successfully.")
-                            // Store the JWT
-                            JwtSecurePreferencesHelper.setJwt(context, jwt = token)
-                            // Navigate away
-                            onNavigateToProductsViewTriggered()
-                        }, onFailure = { exception ->
-                            signInResult = Pair(
-                                false, exception.message ?: "Unexpected error occurred."
-                            )
-                        })
-                    } catch (e: Exception) {
-                        signInResult = Pair(false, e.message ?: "Unexpected error occurred.")
-                    }
+        AuthenticationView(handleSignIn = { email, password ->
+            coroutineScope.launch {
+                try {
+                    viewModel.signInWithEmail(email = email, password = password, onSuccess = { token ->
+                        // Mark as success
+                        signInResult = Pair(true, "Authentication successfully.")
+                        // Store the JWT
+                        JwtSecurePreferencesHelper.setJwt(context, jwt = token)
+                        // Navigate away
+                        onNavigateToProductsViewTriggered()
+                    }, onFailure = { exception ->
+                        signInResult = Pair(false, exception.message ?: "Unexpected error occurred.")
+                    })
+                } catch (e: Exception) {
+                    signInResult = Pair(false, e.message ?: "Unexpected error occurred.")
                 }
-            }, signInResult = signInResult
-        )
+            }
+        }, signInResult = signInResult)
     }
 }
