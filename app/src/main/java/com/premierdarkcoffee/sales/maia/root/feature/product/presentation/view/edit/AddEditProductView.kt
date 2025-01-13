@@ -39,7 +39,6 @@ import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.produc
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Price
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Product
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.state.AddEditProductState
-import com.premierdarkcoffee.sales.maia.root.feature.product.domain.state.InformationResultState
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.common.SectionView
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.edit.components.ImageCard
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.edit.components.SubmitButton
@@ -47,25 +46,23 @@ import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.e
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.edit.components.TopBar
 
 @Composable
-fun AddEditProductView(
-    addEditProductState: AddEditProductState,
-    product: Product,
-    setName: (String) -> Unit,
-    setLabel: (String) -> Unit,
-    setOwner: (String) -> Unit,
-    setYear: (String) -> Unit,
-    setModel: (String) -> Unit,
-    setDescription: (String) -> Unit,
-    setPrice: (Price) -> Unit,
-    setStock: (Int) -> Unit,
-    setImage: (Image) -> Unit,
-    addKeyword: (String) -> Unit,
-    deleteKeyword: (Int) -> Unit,
-    setLegal: (String?) -> Unit,
-    setWarning: (String?) -> Unit,
-    addProduct: (Product) -> Unit,
-    updateProduct: (Product) -> Unit
-) {
+fun AddEditProductView(addEditProductState: AddEditProductState,
+                       product: Product,
+                       setName: (String) -> Unit,
+                       setLabel: (String) -> Unit,
+                       setOwner: (String) -> Unit,
+                       setYear: (String) -> Unit,
+                       setModel: (String) -> Unit,
+                       setDescription: (String) -> Unit,
+                       setPrice: (Price) -> Unit,
+                       setStock: (Int) -> Unit,
+                       setImage: (Image) -> Unit,
+                       addKeyword: (String) -> Unit,
+                       deleteKeyword: (Int) -> Unit,
+                       setLegal: (String?) -> Unit,
+                       setWarning: (String?) -> Unit,
+                       addProduct: (Product) -> Unit,
+                       updateProduct: (Product) -> Unit) {
     val context = LocalContext.current
     var mainImageHasChanged by remember { mutableStateOf(false) }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
@@ -84,13 +81,11 @@ fun AddEditProductView(
         .statusBarsPadding()
         .navigationBarsPadding(),
              topBar = { TopBar(addEditProductState.name) }) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp)
-        ) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+            .padding(paddingValues)
+            .padding(horizontal = 16.dp)) {
             // Image Section
             ImageCard(product.image.url, selectedImageUri) {
                 photoPickerLauncher.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly))
@@ -107,45 +102,35 @@ fun AddEditProductView(
             Divider(modifier = Modifier.padding(vertical = 12.dp))
 
             // Price Section
-            TextFieldCard(
-                stringResource(R.string.price_amount_label),
-                addEditProductState.price.amount.toString(),
-                { setPrice(addEditProductState.price.copy(amount = it.toDoubleOrNull() ?: 0.0)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-            )
+            TextFieldCard(stringResource(R.string.price_amount_label),
+                          addEditProductState.price.amount.toString(),
+                          { setPrice(addEditProductState.price.copy(amount = it.toDoubleOrNull() ?: 0.0)) },
+                          keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
 
             // Offer Section
             SectionView(title = stringResource(id = R.string.offer_label)) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.is_in_offer_label), style = MaterialTheme.typography.bodyLarge
-                    )
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(text = stringResource(id = R.string.is_in_offer_label), style = MaterialTheme.typography.bodyLarge)
                     Switch(checked = addEditProductState.price.offer.isActive, onCheckedChange = {
                         setPrice(addEditProductState.price.copy(offer = Offer(it, addEditProductState.price.offer.discount)))
                     })
                 }
             }
 
-            TextFieldCard(
-                stringResource(R.string.discount_label),
-                addEditProductState.price.offer.discount.toString(),
-                { setPrice(addEditProductState.price.copy(offer = Offer(true, it.toIntOrNull() ?: 0))) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
+            TextFieldCard(stringResource(R.string.discount_label),
+                          addEditProductState.price.offer.discount.toString(),
+                          { setPrice(addEditProductState.price.copy(offer = Offer(true, it.toIntOrNull() ?: 0))) },
+                          keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
 
             Divider(modifier = Modifier.padding(vertical = 12.dp))
 
             // Stock Section
-            TextFieldCard(
-                stringResource(R.string.stock_label),
-                addEditProductState.stock.toString(),
-                { setStock(it.toIntOrNull() ?: 0) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
+            TextFieldCard(stringResource(R.string.stock_label),
+                          addEditProductState.stock.toString(),
+                          { setStock(it.toIntOrNull() ?: 0) },
+                          keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
 
             // Keyword Section
             Box(modifier = Modifier.padding(horizontal = 12.dp)) {
@@ -157,9 +142,14 @@ fun AddEditProductView(
             TextFieldCard(stringResource(id = R.string.warning_info_label), addEditProductState.warning.orEmpty(), setWarning)
 
             // Submit Button
-            SubmitButton(
-                mainImageHasChanged, addEditProductState, selectedImageUri, context, scope, setImage, addProduct, updateProduct
-            )
+            SubmitButton(mainImageHasChanged,
+                         addEditProductState,
+                         selectedImageUri,
+                         context,
+                         scope,
+                         setImage,
+                         addProduct,
+                         updateProduct)
         }
     }
 }

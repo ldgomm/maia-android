@@ -21,10 +21,7 @@ import com.premierdarkcoffee.sales.maia.root.navigation.AddEditProductRoute
 import com.premierdarkcoffee.sales.maia.root.util.function.sharedViewModel
 import com.premierdarkcoffee.sales.maia.root.util.helper.JwtSecurePreferencesHelper
 
-fun NavGraphBuilder.addEditProductRoute(
-    navController: NavHostController,
-    onBackToProductsActionTriggered: () -> Unit
-) {
+fun NavGraphBuilder.addEditProductRoute(navController: NavHostController, onBackToProductsActionTriggered: () -> Unit) {
     composable<AddEditProductRoute> { backStackEntry ->
         val viewModel = backStackEntry.sharedViewModel<ProductViewModel>(navController = navController)
         val args = backStackEntry.toRoute<AddEditProductRoute>()
@@ -55,19 +52,19 @@ fun NavGraphBuilder.addEditProductRoute(
                            setYear = viewModel::setYear,
                            setModel = viewModel::setModel,
                            setDescription = viewModel::setDescription,
-            // category
+                // category
                            setPrice = viewModel::setPrice,
                            setStock = viewModel::setStock,
                            setImage = viewModel::setImage,
-            // origin
-            // date
-            // overview
-            // keywords
+                // origin
+                // date
+                // overview
+                // keywords
                            addKeyword = viewModel::addKeyword,
                            deleteKeyword = viewModel::deleteKeyword,
-            // codes
-            // specifications
-            // warranty
+                // codes
+                // specifications
+                // warranty
                            setLegal = viewModel::setLegal,
                            setWarning = viewModel::setWarning,
                            addProduct = { value ->
