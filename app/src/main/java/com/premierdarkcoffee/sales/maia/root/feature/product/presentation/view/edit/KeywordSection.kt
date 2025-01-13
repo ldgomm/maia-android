@@ -28,13 +28,11 @@ import com.premierdarkcoffee.sales.maia.R
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.state.AddEditProductState
 
 @Composable
-fun KeywordSection(
-    addEditProductState: AddEditProductState,
-    word: String,
-    onWordChange: (String) -> Unit,
-    addKeyword: (String) -> Unit,
-    deleteKeyword: (Int) -> Unit
-) {
+fun KeywordSection(addEditProductState: AddEditProductState,
+                   word: String,
+                   onWordChange: (String) -> Unit,
+                   addKeyword: (String) -> Unit,
+                   deleteKeyword: (Int) -> Unit) {
     // Localized strings for accessibility and support
     val keywordHeader = stringResource(id = R.string.keywords_label)
     val enterKeywordHint = stringResource(id = R.string.enter_keyword_hint)
@@ -43,40 +41,32 @@ fun KeywordSection(
 
     Column {
         // Header with Accessibility
-        Text(
-            text = keywordHeader,
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier
-                .padding(bottom = 8.dp)
-                .semantics { contentDescription = keywordHeader }
-        )
+        Text(text = keywordHeader,
+             style = MaterialTheme.typography.titleMedium,
+             modifier = Modifier
+                 .padding(bottom = 8.dp)
+                 .semantics { contentDescription = keywordHeader })
 
         // Input Section with Accessibility
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
-        ) {
-            TextField(
-                value = word,
-                onValueChange = onWordChange,
-                label = { Text(enterKeywordHint) },
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp)
-                    .semantics { contentDescription = enterKeywordHint }
-            )
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp)) {
+            TextField(value = word,
+                      onValueChange = onWordChange,
+                      label = { Text(enterKeywordHint) },
+                      modifier = Modifier
+                          .weight(1f)
+                          .padding(end = 8.dp)
+                          .semantics { contentDescription = enterKeywordHint })
 
-            Button(
-                onClick = {
-                    addKeyword(word)
-                    onWordChange("")
-                },
-                enabled = word.isNotEmpty(),
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .semantics { contentDescription = addButtonLabel }
-            ) {
+            Button(onClick = {
+                addKeyword(word)
+                onWordChange("")
+            },
+                   enabled = word.isNotEmpty(),
+                   modifier = Modifier
+                       .align(Alignment.CenterVertically)
+                       .semantics { contentDescription = addButtonLabel }) {
                 Text(addButtonLabel)
             }
         }
@@ -91,12 +81,10 @@ fun KeywordSection(
         }
 
         // Footer with Accessibility
-        Text(
-            text = keywordHelperText,
-            style = MaterialTheme.typography.labelSmall,
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .semantics { contentDescription = keywordHelperText }
-        )
+        Text(text = keywordHelperText,
+             style = MaterialTheme.typography.labelSmall,
+             modifier = Modifier
+                 .padding(top = 8.dp)
+                 .semantics { contentDescription = keywordHelperText })
     }
 }

@@ -32,67 +32,55 @@ fun InformationCardView(resultState: InformationResultState) {
     // Localized string for accessibility
     val imageDescription = stringResource(id = R.string.information_card_image_description, resultState.title)
 
-    ElevatedCard(
-        modifier = Modifier
-            .width(250.dp)
-            .semantics { contentDescription = "${resultState.title}, ${resultState.subtitle}" },
-        shape = RoundedCornerShape(11.dp),
-        elevation = CardDefaults.elevatedCardElevation(4.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(2.dp)
-                .fillMaxSize()
-        ) {
+    ElevatedCard(modifier = Modifier
+        .width(250.dp)
+        .semantics { contentDescription = "${resultState.title}, ${resultState.subtitle}" },
+                 shape = RoundedCornerShape(11.dp),
+                 elevation = CardDefaults.elevatedCardElevation(4.dp)) {
+        Column(modifier = Modifier
+            .padding(2.dp)
+            .fillMaxSize()) {
             // Image with accessibility support
-            Image(
-                painter = rememberAsyncImagePainter(resultState.path),
-                contentDescription = imageDescription,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .padding(bottom = 8.dp),
-                contentScale = ContentScale.Crop
-            )
+            Image(painter = rememberAsyncImagePainter(resultState.path),
+                  contentDescription = imageDescription,
+                  modifier = Modifier
+                      .fillMaxWidth()
+                      .height(150.dp)
+                      .padding(bottom = 8.dp),
+                  contentScale = ContentScale.Crop)
 
             Spacer(modifier = Modifier.height(8.dp))
 
             // Title with scalable text and accessibility
-            Text(
-                text = resultState.title,
-                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .semantics { contentDescription = resultState.title }
-            )
+            Text(text = resultState.title,
+                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                 maxLines = 1,
+                 overflow = TextOverflow.Ellipsis,
+                 modifier = Modifier
+                     .padding(horizontal = 8.dp)
+                     .semantics { contentDescription = resultState.title })
 
             Spacer(modifier = Modifier.height(4.dp))
 
             // Subtitle with scalable text and accessibility
-            Text(
-                text = resultState.subtitle,
-                style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .semantics { contentDescription = resultState.subtitle }
-            )
+            Text(text = resultState.subtitle,
+                 style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray),
+                 maxLines = 1,
+                 overflow = TextOverflow.Ellipsis,
+                 modifier = Modifier
+                     .padding(horizontal = 8.dp)
+                     .semantics { contentDescription = resultState.subtitle })
 
             Spacer(modifier = Modifier.height(4.dp))
 
             // Description with accessibility and scalability
-            Text(
-                text = resultState.description,
-                style = MaterialTheme.typography.bodySmall,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .semantics { contentDescription = resultState.description }
-            )
+            Text(text = resultState.description,
+                 style = MaterialTheme.typography.bodySmall,
+                 maxLines = 3,
+                 overflow = TextOverflow.Ellipsis,
+                 modifier = Modifier
+                     .padding(horizontal = 8.dp)
+                     .semantics { contentDescription = resultState.description })
         }
     }
 }
