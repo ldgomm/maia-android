@@ -1,6 +1,10 @@
 package com.premierdarkcoffee.sales.maia.root.navigation.route
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
@@ -18,22 +22,31 @@ fun NavGraphBuilder.authenticationRoute(onNavigateToProductsViewTriggered: () ->
         val coroutineScope = rememberCoroutineScope()
         val context = LocalContext.current
 
-        AuthenticationView { email, password ->
-            var result = Pair(false, "Something went wrong. Please try again.") // Default response
-            coroutineScope.launch {
-                try {
-                    viewModel.signInWithEmail(email = email, password = password, onSuccess = { token ->
-                        result = Pair(true, "")
-                        JwtSecurePreferencesHelper.setJwt(context, jwt = token)
-                        onNavigateToProductsViewTriggered()
-                    }, onFailure = { exception ->
-                        result = Pair(false, exception.message ?: "Unexpected error occurred.")
-                    })
-                } catch (e: Exception) {
-                    result = Pair(false, e.message ?: "Unexpected error occurred.")
+        // Remembered state to hold the sign-in result
+        var signInResult by remember { mutableStateOf(Pair(false, "Default message.")) }
+
+        // Pass handleSignIn as a lambda that updates signInResult asynchronously
+        AuthenticationView(
+            handleSignIn = { email, password ->
+                coroutineScope.launch {
+                    try {
+                        viewModel.signInWithEmail(email = email, password = password, onSuccess = { token ->
+                            // Mark as success
+                            signInResult = Pair(true, "Authentication successfully.")
+                            // Store the JWT
+                            JwtSecurePreferencesHelper.setJwt(context, jwt = token)
+                            // Navigate away
+                            onNavigateToProductsViewTriggered()
+                        }, onFailure = { exception ->
+                            signInResult = Pair(
+                                false, exception.message ?: "Unexpected error occurred."
+                            )
+                        })
+                    } catch (e: Exception) {
+                        signInResult = Pair(false, e.message ?: "Unexpected error occurred.")
+                    }
                 }
-            }
-            result
-        }
+            }, signInResult = signInResult
+        )
     }
 }

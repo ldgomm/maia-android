@@ -1,7 +1,6 @@
 package com.premierdarkcoffee.sales.maia.root.feature.authentication.presentation.viewmodel
 
 import android.app.Application
-import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -42,7 +41,7 @@ class AuthenticationViewModel @Inject constructor(
         email: String,
         password: String,
         onSuccess: (String) -> Unit,
-        onFailure: (exception: Throwable) -> Unit
+        onFailure: (Throwable) -> Unit
     ) {
         if (!isValidEmail(email)) {
             onFailure(IllegalArgumentException("Invalid email address"))
@@ -58,6 +57,7 @@ class AuthenticationViewModel @Inject constructor(
             _isLoading.value = true
             try {
                 val result = FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).await()
+
                 result.user?.let { user ->
                     handleStoreCreation(user.uid, onSuccess, onFailure)
                 } ?: throw Exception("User ID is null")
@@ -108,7 +108,12 @@ class AuthenticationViewModel @Inject constructor(
         val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
         return email.matches(emailRegex.toRegex())
     }
+
+    companion object {
+        private const val TAG = "AuthenticationViewModel"
+    }
 }
+
 
 fun getFakeStore(id: String): StoreDto {
     return StoreDto(
