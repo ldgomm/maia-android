@@ -125,7 +125,7 @@ fun ProductView(
                 )
             }
 
-// Owner and Year Section
+            // Owner and Year Section
             SectionView(title = stringResource(id = R.string.owner_label)) {
                 Text(
                     text = if (product.year != null) "${product.owner}, ${product.year}" else product.owner ?: "",
@@ -135,7 +135,7 @@ fun ProductView(
                 )
             }
 
-// Description Section
+            // Description Section
             SectionView(title = stringResource(id = R.string.description_label)) {
                 Text(
                     text = product.description,
@@ -145,7 +145,7 @@ fun ProductView(
                 )
             }
 
-// Overview Section with Cards
+            // Overview Section with Cards
             if (product.overview.isNotEmpty()) {
                 LazyRow(
                     modifier = Modifier
@@ -212,7 +212,7 @@ fun ProductView(
                 }
             }
 
-// Product Specifications Section
+            // Product Specifications Section
             product.specifications?.let { specifications ->
                 SectionView(title = stringResource(id = R.string.specifications_label)) {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -248,7 +248,7 @@ fun ProductView(
                 }
             }
 
-// Keywords Section
+            // Keywords Section
             product.keywords?.let { keywords ->
                 SectionView(title = stringResource(id = R.string.keywords_label)) {
                     Text(
@@ -259,7 +259,7 @@ fun ProductView(
                 }
             }
 
-// Warranty Section
+            // Warranty Section
             product.warranty?.let { warranty ->
                 SectionView(title = stringResource(id = R.string.warranty_label)) {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -271,7 +271,7 @@ fun ProductView(
                 }
             }
 
-// Legal Information Section
+            // Legal Information Section
             product.legal?.let { legal ->
                 SectionView(title = stringResource(id = R.string.legal_label)) {
                     Text(
@@ -282,7 +282,7 @@ fun ProductView(
                 }
             }
 
-// Warning Section
+            // Warning Section
             product.warning?.let { warning ->
                 SectionView(title = stringResource(id = R.string.warning_label)) {
                     Text(

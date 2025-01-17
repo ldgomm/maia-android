@@ -57,15 +57,15 @@ fun ProductCardView(
     // Localized strings for accessibility and dynamic labels
     val discountLabel = stringResource(id = R.string.discount_label, product.price.offer.discount)
     val currentPriceLabel = stringResource(id = R.string.current_price_label)
-    val originalPriceLabel = stringResource(id = R.string.original_price_label)
 
-    ElevatedCard(onClick = { onNavigateToProductView(Gson().toJson(product)) },
-                 modifier = Modifier
-                     .fillMaxWidth()
-                     .padding(vertical = 4.dp)
-                     .semantics { contentDescription = "${product.name}, $currentPriceLabel ${numberFormat.format(product.price.amount)}" },
-                 shape = RoundedCornerShape(12.dp),
-                 elevation = CardDefaults.elevatedCardElevation(2.dp)
+    ElevatedCard(
+        onClick = { onNavigateToProductView(Gson().toJson(product)) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+            .semantics { contentDescription = "${product.name}, $currentPriceLabel ${numberFormat.format(product.price.amount)}" },
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.elevatedCardElevation(2.dp)
     ) {
         Row(
             modifier = Modifier

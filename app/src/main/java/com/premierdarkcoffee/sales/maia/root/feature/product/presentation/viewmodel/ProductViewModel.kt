@@ -35,7 +35,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -48,13 +47,11 @@ class ProductViewModel @Inject constructor(
     private val addEditedProductUseCase: AddProductUseCase,
     private val updateProductUseCase: UpdateProductUseCase,
     private val deleteProductUseCase: DeleteProductUseCase,
-
     private val searchProductUseCase: SearchProductUseCase,
-
     private val getGroupsUseCase: GetGroupsUseCase
-
 ) : AndroidViewModel(application) {
 
+    // 1) Main UI state
     // StateFlow to manage the list of products and their loading state
     private val _productsState = MutableStateFlow(ProductsState())
     val productsState: StateFlow<ProductsState> = _productsState
@@ -70,15 +67,19 @@ class ProductViewModel @Inject constructor(
     private val _informationResultStateList = MutableStateFlow<List<InformationResultState>>(emptyList())
     val informationResultStateList: StateFlow<List<InformationResultState>> = _informationResultStateList.asStateFlow()
 
+    // 2) Search text input
     // StateFlow to manage the search text input
     private val _searchProductText = MutableStateFlow("")
     val searchProductText = _searchProductText.asStateFlow()
+
+    // 3) Keep a separate (full) list of products for local filtering
+    private var _allProducts: List<Product> = emptyList()
 
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
 
     // Firebase Authentication current user
-//    private val user = FirebaseAuth.getInstance().currentUser
+    //    private val user = FirebaseAuth.getInstance().currentUser
 
     private val _groups = MutableStateFlow<List<Group>>(emptyList())
     val groups: StateFlow<List<Group>> = _groups
@@ -86,128 +87,149 @@ class ProductViewModel @Inject constructor(
     // Store key associated with the application instance
     private val storeKey = getMaiaKey(getApplication<Application>().applicationContext)
 
-    init {
-        // Initialize by fetching products and observing search text changes
-//        getProducts(user?.uid ?: "")
-//        observeSearchProductTextChanges(user?.uid ?: "")
-//        observeSearchTextChanges()
-    }
-
+    // 4) Initialize data
     fun initData(token: String) {
-        getProducts(token = token)
-        observeSearchProductTextChanges(token = token)
+        getStoreProducts(token)
+        observeSearchProductTextChanges(token)
         observeSearchTextChanges(token)
         getGroups()
     }
 
-    private fun getGroups() {
-        val url = getUrlFor(endpoint = "data/groups")
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                getGroupsUseCase(url).collect { result ->
-                    result.onSuccess { groups ->
-                        _groups.value = groups
-                    }.onFailure { exception ->
-                        Log.e(TAG, "Error in getting groups: ${exception.message}")
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Exception in getting groups: ${e.message}")
-            }
-        }
-    }
-
     /**
-     * Observes changes in the search text input and triggers a product search
-     * if the text meets the required criteria.
-     *
-     * @param storeId The ID of the store associated with the search.
+     * Observe the user’s search input with a debounce.
+     * If the text has >= 3 chars, we do a local filter.
+     * If fewer than 3 chars, we restore the full list.
      */
     @OptIn(FlowPreview::class)
-    private fun observeSearchProductTextChanges(
-        token: String
-    ) {
+    private fun observeSearchProductTextChanges(token: String) {
         viewModelScope.launch {
-            _searchProductText.debounce(300).distinctUntilChanged().filter { it.length >= 3 }.collect { searchText ->
-                searchStoreProduct(text = searchText, token = token)
-            }
+            _searchProductText.debounce(300)             // Wait 300ms after the last text change
+                .distinctUntilChanged()    // Only act if the text is truly different
+                .collect { query ->
+                    if (query.isBlank() || query.length < 3) {
+                        // Fewer than 3 chars => show all products
+                        restoreAllProducts()
+                    } else {
+                        // Local filter
+                        filterProducts(query)
+                    }
+                }
         }
     }
 
     /**
-     * Triggers a search for products in the store based on the search text.
-     *
-     * @param storeId The ID of the store to search within.
-     * @param text The search text input.
+     * Fetch the full product list from the server (no search text).
      */
-    private fun searchStoreProduct(
-        text: String,
-        token: String
-    ) {
-        executeProductSearch(text = text, token = token)
+    private fun getStoreProducts(token: String) {
+        executeSearchProducts(token = token)
     }
 
     /**
-     * Fetches products from the store or all stores if no storeId is provided.
-     *
-     * @param storeId The ID of the store to fetch products from, or null to fetch all products.
+     * Actually call the use case to get (or search) products from the server.
+     * This is your existing code, but for *local* filtering you really only
+     * need it to fetch the full list once. If you want, you can remove the
+     * `text` parameter entirely and always fetch all products here.
      */
-    private fun getProducts(
-        token: String
-    ) {
-        executeProductSearch(token = token)
-    }
-
-    /**
-     * Executes the product search or fetch operation.
-     *
-     * @param storeId The ID of the store to fetch products from, or null for all stores.
-     * @param text The search text input, or null to fetch all products.
-     */
-    private fun executeProductSearch(
-        text: String? = null,
-        token: String
+    private fun executeSearchProducts(
+        token: String,
+        text: String? = null
     ) {
         val url = getUrlFor(endpoint = "maia-product", keywords = text)
+        // `getUrlFor` presumably builds a URL.
+        // If you only want to fetch all products, ignore the `text` param.
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 getProductsUseCase(url, token).collect { result ->
-                    result.onSuccess { products ->
+                    result.onSuccess { productDtos ->
+                        // Convert Dtos to domain models
+                        val products = productDtos.map { it.toProduct() }
+
+                        // Keep a local copy for filtering
+                        _allProducts = products
+
+                        // Update UI state with the full list
                         _productsState.update { productState ->
-                            productState.copy(products = products.map { it.toProduct() })
+                            productState.copy(products = products)
                         }
                     }.onFailure { exception ->
                         Log.e(TAG, "Error in product search: ${exception.message}")
                     }
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Exception in executeProductSearch: ${e.message}")
+                Log.e(TAG, "Exception in executeSearchProducts: ${e.message}")
             }
         }
     }
 
     /**
-     * Updates the search text value.
-     *
-     * @param text The new search text input.
+     * When the user types into a TextField (or search UI), call this function.
      */
     fun onSearchProductTextChange(text: String) {
         _searchProductText.value = text
+    }
+
+    /**
+     * If you have a clear search button, call this to reset the search.
+     */
+    fun clearSearchProductText() {
+        _searchProductText.value = ""
+    }
+
+    /**
+     * Restore the full product list from _allProducts
+     */
+    private fun restoreAllProducts() {
+        _productsState.update { state ->
+            state.copy(products = _allProducts)
+        }
+    }
+
+    /**
+     * Filter the locally-stored _allProducts by the user’s query.
+     * Show products matching at least one term. Then sort them so
+     * that products with a higher match count appear first.
+     */
+    private fun filterProducts(query: String) {
+        // Split the user query into words (e.g. "cronos bike" -> ["cronos", "bike"])
+        val terms = query.lowercase().split("\\s+".toRegex())  // Split on any whitespace
+            .filter { it.isNotBlank() }
+
+        // 1) Calculate how many of the terms each product matches
+        val matchedList = _allProducts.map { product ->
+            val matchCount = terms.count { term -> productMatchesTerm(product, term) }
+            product to matchCount
+        }
+            // 2) Keep only those with at least one match
+            //    Then sort descending by matchCount
+            .filter { (_, matchCount) -> matchCount > 0 }.sortedByDescending { (_, matchCount) -> matchCount }
+
+        // 3) Extract the Product objects in new order
+        val filteredProducts = matchedList.map { it.first }
+
+        // 4) Update the UI state
+        _productsState.update { state ->
+            state.copy(products = filteredProducts)
+        }
+    }
+
+    /**
+     * Check if a single product matches a single term.
+     * If the product field is null, treat it as an empty string.
+     */
+    private fun productMatchesTerm(
+        product: Product,
+        term: String
+    ): Boolean {
+        return product.name.lowercase().contains(term) || product.label?.lowercase()?.contains(term) == true || product.description.lowercase()
+            .contains(term) || product.owner?.lowercase()?.contains(term) == true || product.model.lowercase().contains(term)
     }
 
     fun onRefresh(token: String) {
         _productsState.update { state ->
             state.copy(products = emptyList())
         }
-        executeProductSearch(token = token)
-    }
-
-    /**
-     * Clears the current search text.
-     */
-    fun clearSearchProductText() {
-        _searchProductText.value = ""
+        executeSearchProducts(token = token)
     }
 
     @OptIn(FlowPreview::class)
@@ -286,21 +308,6 @@ class ProductViewModel @Inject constructor(
             setWarranty(product.warranty)
             setLegal(product.legal)
             setWarning(product.warning)
-
-//            product.overview.forEach { result ->
-//                result.image.path?.let { path ->
-//                    val informationResult = InformationResultState(
-//                        id = result.id,
-//                        title = result.title,
-//                        subtitle = result.subtitle,
-//                        description = result.description,
-//                        path = path,
-//                        belongs = result.image.belongs,
-//                        place = result.place
-//                    )
-//                    addInformationResult(informationResult)
-//                }
-//            }
         }
     }
 
@@ -583,5 +590,22 @@ class ProductViewModel @Inject constructor(
      */
     fun setWarning(warning: String?) {
         _addEditProductState.value = _addEditProductState.value.copy(warning = warning)
+    }
+
+    private fun getGroups() {
+        val url = getUrlFor(endpoint = "data/groups")
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                getGroupsUseCase(url).collect { result ->
+                    result.onSuccess { groups ->
+                        _groups.value = groups
+                    }.onFailure { exception ->
+                        Log.e(TAG, "Error in getting groups: ${exception.message}")
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Exception in getting groups: ${e.message}")
+            }
+        }
     }
 }

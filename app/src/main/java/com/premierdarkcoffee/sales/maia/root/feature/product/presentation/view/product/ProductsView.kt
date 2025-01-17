@@ -106,8 +106,7 @@ fun ProductsView(
     // -- Finally, filter products based on selections + search text --
     val filteredProducts = productsState.products?.filter { product ->
         (selectedGroup == null || product.category.group == selectedGroup) && (selectedDomain == null || product.category.domain == selectedDomain) && (selectedSubclass == null || product.category.subclass == selectedSubclass) && (searchProductText.isEmpty() || product.name.contains(
-            searchProductText,
-            ignoreCase = true
+            searchProductText, ignoreCase = true
         ))
     }
 
@@ -149,9 +148,7 @@ fun ProductsView(
                               .semantics { contentDescription = searchPlaceholder },
                           placeholder = { Text(searchPlaceholder) },
                           leadingIcon = {
-                              Icon(
-                                  imageVector = Icons.Default.Search, contentDescription = searchPlaceholder
-                              )
+                              Icon(imageVector = Icons.Default.Search, contentDescription = searchPlaceholder)
                           },
                           trailingIcon = {
                               if (active) {
@@ -272,5 +269,4 @@ fun ProductsView(
             }
         }
     }
-
 }
