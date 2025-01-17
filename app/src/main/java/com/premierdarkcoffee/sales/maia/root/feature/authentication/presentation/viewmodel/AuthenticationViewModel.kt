@@ -13,7 +13,7 @@ import com.premierdarkcoffee.sales.maia.root.feature.chat.data.remote.dto.store.
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.remote.dto.store.StoreDto
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.remote.dto.store.StoreStatusDto
 import com.premierdarkcoffee.sales.maia.root.feature.product.data.remote.dto.ImageDto
-import com.premierdarkcoffee.sales.maia.root.util.function.getUrlFor
+import com.premierdarkcoffee.sales.maia.root.util.function.getUrlForEndpoint
 import com.premierdarkcoffee.sales.maia.root.util.key.getMaiaKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -81,7 +81,7 @@ class AuthenticationViewModel @Inject constructor(
                 Log.d(TAG, "handleStoreCreation | Store: $store")
 
                 createStoreUseCase(
-                    url = getUrlFor("cronos-store"), request = PostStoreRequest(key = storeKey, store = store)
+                    url = getUrlForEndpoint("cronos-store"), request = PostStoreRequest(key = storeKey, store = store)
                 ).collect { result ->
                     result.onSuccess { response ->
                         Log.d(TAG, "handleStoreCreation | Store created successfully")

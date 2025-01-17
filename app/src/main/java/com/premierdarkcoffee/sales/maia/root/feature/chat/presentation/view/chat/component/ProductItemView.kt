@@ -46,8 +46,6 @@ fun ProductItemView(
     product: Product,
     onNavigateToProductView: (String) -> Unit
 ) {
-    val context = LocalContext.current
-
     // Localized strings for accessibility and internationalization
     val discountLabel = stringResource(id = R.string.discount_label)
     val originalPriceLabel = stringResource(id = R.string.original_price_label)

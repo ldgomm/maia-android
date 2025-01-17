@@ -30,6 +30,7 @@ fun SearchCardView(
     product: Product,
     onNavigateToProductView: (String) -> Unit
 ) {
+
     ElevatedCard(
         onClick = { onNavigateToProductView(Gson().toJson(product)) },
         modifier = Modifier

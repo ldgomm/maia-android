@@ -47,7 +47,6 @@ fun ConversationItemView(
     sentOrDeliveredCount: Int,
     onConversationItemViewClicked: () -> Unit
 ) {
-    val context = LocalContext.current
     val messageDateLabel = stringResource(id = R.string.message_date)
     val storeIconDescription = stringResource(id = R.string.store_icon_description)
     val newMessagesLabel = stringResource(id = R.string.new_messages_label)

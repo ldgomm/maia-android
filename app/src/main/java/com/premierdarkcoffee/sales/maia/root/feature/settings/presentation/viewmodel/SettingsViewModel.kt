@@ -14,7 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.premierdarkcoffee.sales.maia.root.feature.settings.domain.state.StoreState
 import com.premierdarkcoffee.sales.maia.root.feature.settings.domain.usecase.GetStoreByIdUseCase
-import com.premierdarkcoffee.sales.maia.root.util.function.getUrlFor
+import com.premierdarkcoffee.sales.maia.root.util.function.getUrlForEndpoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +37,7 @@ class SettingsViewModel @Inject constructor(private val getStoreByIdUseCase: Get
     private fun getStore(token: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                getStoreByIdUseCase(getUrlFor(endpoint = "maia", storeId = user?.uid), token).collect { result ->
+                getStoreByIdUseCase(getUrlForEndpoint(endpoint = "maia", storeId = user?.uid), token).collect { result ->
                     result.onSuccess { store ->
                         _storeState.update { storeState ->
                             storeState.copy(store = store.toStore())

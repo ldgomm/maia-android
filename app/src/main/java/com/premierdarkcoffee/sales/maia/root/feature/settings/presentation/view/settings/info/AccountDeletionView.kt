@@ -36,7 +36,6 @@ fun AccountDeletionView(modifier: Modifier = Modifier) {
     val contactInformationText = stringResource(id = R.string.contact_information_text)
     val responseTimeNoticeText = stringResource(id = R.string.response_time_notice_text)
     val footerText = stringResource(id = R.string.footer_text)
-    val contactEmail = "account@premierdarkcoffee.com"
 
     Scaffold(topBar = {
         TopAppBar(title = { Text(text = accountDeletionTitle) })

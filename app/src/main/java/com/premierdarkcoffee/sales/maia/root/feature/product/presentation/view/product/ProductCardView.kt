@@ -48,7 +48,6 @@ fun ProductCardView(
     product: Product,
     onNavigateToProductView: (String) -> Unit
 ) {
-    val context = LocalContext.current
     val numberFormat = NumberFormat.getCurrencyInstance().apply {
         currency = Currency.getInstance(product.price.currency)
     }

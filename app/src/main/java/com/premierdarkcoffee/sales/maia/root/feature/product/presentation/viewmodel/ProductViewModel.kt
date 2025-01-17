@@ -25,7 +25,7 @@ import com.premierdarkcoffee.sales.maia.root.feature.product.domain.usecase.GetG
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.usecase.GetProductsUseCase
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.usecase.SearchProductUseCase
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.usecase.UpdateProductUseCase
-import com.premierdarkcoffee.sales.maia.root.util.function.getUrlFor
+import com.premierdarkcoffee.sales.maia.root.util.function.getUrlForEndpoint
 import com.premierdarkcoffee.sales.maia.root.util.key.getMaiaKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -134,7 +134,7 @@ class ProductViewModel @Inject constructor(
         token: String,
         text: String? = null
     ) {
-        val url = getUrlFor(endpoint = "maia-product", keywords = text)
+        val url = getUrlForEndpoint(endpoint = "maia-product", keywords = text)
         // `getUrlFor` presumably builds a URL.
         // If you only want to fetch all products, ignore the `text` param.
 
@@ -249,7 +249,7 @@ class ProductViewModel @Inject constructor(
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                searchProductUseCase(getUrlFor(endpoint = "maia-product/products", keywords = text), token).collect { result ->
+                searchProductUseCase(getUrlForEndpoint(endpoint = "maia-product/products", keywords = text), token).collect { result ->
                     result.onSuccess { products ->
                         // Get the list of products that already exist in _productsState
                         val existingProducts = _productsState.value.products.orEmpty()
@@ -291,9 +291,9 @@ class ProductViewModel @Inject constructor(
         viewModelScope.launch {
             setId(product.id)
             setName(product.name)
-            setLabel(product.label ?: "")
-            setOwner(product.owner ?: "")
-            setYear(product.year ?: "2024")
+            product.label?.let { setLabel(it) }
+            product.owner?.let { setOwner(it) }
+            product.year?.let { setYear(it) }
             setModel(product.model)
             setDescription(product.description)
             setCategory(product.category)
@@ -336,7 +336,7 @@ class ProductViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 addEditedProductUseCase(
-                    getUrlFor(endpoint = "maia-product"), PostProductRequest(storeKey, product.toProductDto()), token = token
+                    getUrlForEndpoint(endpoint = "maia-product"), PostProductRequest(storeKey, product.toProductDto()), token = token
                 ).collect { result ->
                     result.onSuccess {
                         withContext(Dispatchers.Main) {
@@ -373,7 +373,7 @@ class ProductViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 updateProductUseCase(
-                    getUrlFor(endpoint = "maia-product"), PutProductRequest(storeKey, product.toProductDto()), token
+                    getUrlForEndpoint(endpoint = "maia-product"), PutProductRequest(storeKey, product.toProductDto()), token
                 ).collect { result ->
                     result.onSuccess {
                         withContext(Dispatchers.Main) {
@@ -402,7 +402,7 @@ class ProductViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 deleteProductUseCase(
-                    getUrlFor(endpoint = "maia-product"), DeleteProductRequest(storeKey, product.id), token = token
+                    getUrlForEndpoint(endpoint = "maia-product"), DeleteProductRequest(storeKey, product.id), token = token
                 ).collect { result ->
                     result.onSuccess {
                         withContext(Dispatchers.Main) {
@@ -593,7 +593,7 @@ class ProductViewModel @Inject constructor(
     }
 
     private fun getGroups() {
-        val url = getUrlFor(endpoint = "data/groups")
+        val url = getUrlForEndpoint(endpoint = "data/groups")
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 getGroupsUseCase(url).collect { result ->

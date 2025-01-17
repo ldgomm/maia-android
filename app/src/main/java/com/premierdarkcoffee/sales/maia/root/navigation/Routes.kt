@@ -33,11 +33,9 @@ data class AddEditProductRoute(val product: String)
 @Serializable
 data object SearchRoute : Route(resourceId = R.string.search, icon = Icons.Sharp.Search)
 
-
 @Serializable
 data object ChatsRoute : Route(resourceId = R.string.chats, icon = Icons.Sharp.Email)
 
-// Conversation route with an optional storeId parameter
 @Serializable
 data class ConversationRoute(val clientId: String? = null)
 
