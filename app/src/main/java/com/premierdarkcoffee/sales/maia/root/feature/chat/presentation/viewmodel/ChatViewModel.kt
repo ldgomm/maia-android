@@ -21,7 +21,6 @@ class ChatViewModel @Inject constructor(
     private val sendMessageToClientUseCase: SendMessageToClientUseCase,
     private val markMessageAsReadUseCase: MarkMessageAsReadUseCase,
     private val fetchRemoteMessageUseCase: FetchMessageUseCase,
-//    private val fetchLocalMessagesUseCase: FetchLocalMessagesUseCase
 ) : ViewModel() {
 
     // State flows to manage chat messages, messages, typing status, and cart products
@@ -49,7 +48,6 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 markMessageAsReadUseCase.invoke(message) {
-//                    getLocalMessages()
                 }
             }
         }

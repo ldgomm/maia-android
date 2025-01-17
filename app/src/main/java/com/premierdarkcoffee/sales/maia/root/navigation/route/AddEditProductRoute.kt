@@ -27,13 +27,10 @@ fun NavGraphBuilder.addEditProductRoute(
 ) {
     composable<AddEditProductRoute> { backStackEntry ->
         val viewModel = backStackEntry.sharedViewModel<ProductViewModel>(navController = navController)
-
         val args = backStackEntry.toRoute<AddEditProductRoute>()
+        val product = Gson().fromJson(args.product, ProductDto::class.java).toProduct()
 
         val addOrUpdateProductState by viewModel.addEditProductState.collectAsState()
-        val informationResultStateList by viewModel.informationResultStateList.collectAsState()
-
-        val product = Gson().fromJson(args.product, ProductDto::class.java).toProduct()
 
         // Use a State to capture the token asynchronously
         var token: String? by remember { mutableStateOf(null) }
@@ -51,7 +48,6 @@ fun NavGraphBuilder.addEditProductRoute(
         }
 
         AddEditProductView(addEditProductState = addOrUpdateProductState,
-                           informationResultStateList = informationResultStateList,
                            product = product,
                            setName = viewModel::setName,
                            setLabel = viewModel::setLabel,

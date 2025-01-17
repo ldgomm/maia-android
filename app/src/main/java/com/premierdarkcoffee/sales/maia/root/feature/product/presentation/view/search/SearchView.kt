@@ -53,7 +53,6 @@ fun SearchView(
     val searchTitle = stringResource(id = R.string.search_title)
     val searchPlaceholder = stringResource(id = R.string.search_placeholder)
     val clearSearchTextLabel = stringResource(id = R.string.clear_search_text)
-    val noProductsFound = stringResource(id = R.string.no_products_found)
 
     Scaffold(modifier = Modifier
         .background(MaterialTheme.colorScheme.surface)

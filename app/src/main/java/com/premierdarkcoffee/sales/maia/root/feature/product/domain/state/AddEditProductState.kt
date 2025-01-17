@@ -23,11 +23,9 @@ data class AddEditProductState(
     val year: String = "2024",
     val model: String = "",
     val description: String = "",
-    val category: Category = Category("", "", ""),
+    val category: Category = Category(group = "", domain = "", subclass = ""),
     val price: Price = Price(
-        amount = 0.0,
-        offer = Offer(isActive = true, discount = 10),
-        creditCard = CreditCard(withoutInterest = 0, withInterest = 0, freeMonths = 0)
+        amount = 0.0, offer = Offer(isActive = true, discount = 10), creditCard = CreditCard(withoutInterest = 0, withInterest = 0, freeMonths = 0)
     ),
     val stock: Int = 0,
     var image: Image = Image(path = "", url = "", belongs = false),

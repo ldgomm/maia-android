@@ -29,33 +29,40 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun NewChatItem(imageRes: Int,
-                title: String,
-                subtitle: String,
-                date: String,
-                hasVerification: Boolean = false,
-                onNewChatButtonClicked: () -> Unit) {
+fun NewChatItem(
+    imageRes: Int,
+    title: String,
+    subtitle: String,
+    date: String,
+    hasVerification: Boolean = false,
+    onNewChatButtonClicked: () -> Unit
+) {
     Row(modifier = Modifier
         .fillMaxWidth()
         .background(Color.LightGray.copy(0.05f), shape = RoundedCornerShape(8.dp))
         .padding(8.dp)
-        .clickable { onNewChatButtonClicked() }, verticalAlignment = Alignment.CenterVertically) {
+        .clickable { onNewChatButtonClicked() }, verticalAlignment = Alignment.CenterVertically
+    ) {
         // Image and verification icon
         Box {
-            Image(painter = painterResource(id = imageRes),
-                  contentDescription = null,
-                  modifier = Modifier
-                      .size(50.dp)
-                      .background(Color.Blue.copy(0.1f), shape = CircleShape)
-                      .padding(8.dp))
+            Image(
+                painter = painterResource(id = imageRes),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(50.dp)
+                    .background(Color.Blue.copy(0.1f), shape = CircleShape)
+                    .padding(8.dp)
+            )
             if (hasVerification) {
-                Icon(imageVector = Icons.Default.CheckCircle,
-                     contentDescription = null,
-                     tint = Color.Blue,
-                     modifier = Modifier
-                         .size(16.dp)
-                         .align(Alignment.TopEnd)
-                         .offset(x = 5.dp, y = (-5).dp))
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    tint = Color.Blue,
+                    modifier = Modifier
+                        .size(16.dp)
+                        .align(Alignment.TopEnd)
+                        .offset(x = 5.dp, y = (-5).dp)
+                )
             }
         }
         Spacer(modifier = Modifier.width(8.dp))
