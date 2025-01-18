@@ -41,15 +41,13 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class ProductViewModel @Inject constructor(
-    application: Application,
-    private val getProductsUseCase: GetProductsUseCase,
-    private val addEditedProductUseCase: AddProductUseCase,
-    private val updateProductUseCase: UpdateProductUseCase,
-    private val deleteProductUseCase: DeleteProductUseCase,
-    private val searchProductUseCase: SearchProductUseCase,
-    private val getGroupsUseCase: GetGroupsUseCase
-) : AndroidViewModel(application) {
+class ProductViewModel @Inject constructor(application: Application,
+                                           private val getProductsUseCase: GetProductsUseCase,
+                                           private val addEditedProductUseCase: AddProductUseCase,
+                                           private val updateProductUseCase: UpdateProductUseCase,
+                                           private val deleteProductUseCase: DeleteProductUseCase,
+                                           private val searchProductUseCase: SearchProductUseCase,
+                                           private val getGroupsUseCase: GetGroupsUseCase) : AndroidViewModel(application) {
 
     // 1) Main UI state
     // StateFlow to manage the list of products and their loading state
@@ -130,10 +128,7 @@ class ProductViewModel @Inject constructor(
      * need it to fetch the full list once. If you want, you can remove the
      * `text` parameter entirely and always fetch all products here.
      */
-    private fun executeSearchProducts(
-        token: String,
-        text: String? = null
-    ) {
+    private fun executeSearchProducts(token: String, text: String? = null) {
         val url = getUrlForEndpoint(endpoint = "maia-product", keywords = text)
         // `getUrlFor` presumably builds a URL.
         // If you only want to fetch all products, ignore the `text` param.
@@ -217,12 +212,10 @@ class ProductViewModel @Inject constructor(
      * Check if a single product matches a single term.
      * If the product field is null, treat it as an empty string.
      */
-    private fun productMatchesTerm(
-        product: Product,
-        term: String
-    ): Boolean {
-        return product.name.lowercase().contains(term) || product.label?.lowercase()?.contains(term) == true || product.description.lowercase()
-            .contains(term) || product.owner?.lowercase()?.contains(term) == true || product.model.lowercase().contains(term)
+    private fun productMatchesTerm(product: Product, term: String): Boolean {
+        return product.name.lowercase().contains(term) || product.label?.lowercase()
+            ?.contains(term) == true || product.description.lowercase().contains(term) || product.owner?.lowercase()
+            ?.contains(term) == true || product.model.lowercase().contains(term)
     }
 
     fun onRefresh(token: String) {
@@ -233,9 +226,7 @@ class ProductViewModel @Inject constructor(
     }
 
     @OptIn(FlowPreview::class)
-    private fun observeSearchTextChanges(
-        token: String
-    ) {
+    private fun observeSearchTextChanges(token: String) {
         viewModelScope.launch {
             _searchText.debounce(100).distinctUntilChanged().collect { searchText ->
                 executeSearch(searchText, token)
@@ -243,13 +234,11 @@ class ProductViewModel @Inject constructor(
         }
     }
 
-    private fun executeSearch(
-        text: String,
-        token: String
-    ) {
+    private fun executeSearch(text: String, token: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                searchProductUseCase(getUrlForEndpoint(endpoint = "maia-product/products", keywords = text), token).collect { result ->
+                searchProductUseCase(getUrlForEndpoint(endpoint = "maia-product/products", keywords = text),
+                                     token).collect { result ->
                     result.onSuccess { products ->
                         // Get the list of products that already exist in _productsState
                         val existingProducts = _productsState.value.products.orEmpty()
@@ -327,17 +316,12 @@ class ProductViewModel @Inject constructor(
      * @param onSuccess A callback invoked upon successful addition.
      * @param onFailure A callback invoked when the addition fails.
      */
-    fun addProduct(
-        product: Product,
-        token: String,
-        onSuccess: () -> Unit,
-        onFailure: () -> Unit
-    ) {
+    fun addProduct(product: Product, token: String, onSuccess: () -> Unit, onFailure: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                addEditedProductUseCase(
-                    getUrlForEndpoint(endpoint = "maia-product"), PostProductRequest(storeKey, product.toProductDto()), token = token
-                ).collect { result ->
+                addEditedProductUseCase(getUrlForEndpoint(endpoint = "maia-product"),
+                                        PostProductRequest(storeKey, product.toProductDto()),
+                                        token = token).collect { result ->
                     result.onSuccess {
                         withContext(Dispatchers.Main) {
                             onSuccess()
@@ -364,17 +348,12 @@ class ProductViewModel @Inject constructor(
      * @param onSuccess A callback invoked upon successful update.
      * @param onFailure A callback invoked when the update fails.
      */
-    fun updateProduct(
-        product: Product,
-        token: String,
-        onSuccess: () -> Unit,
-        onFailure: () -> Unit
-    ) {
+    fun updateProduct(product: Product, token: String, onSuccess: () -> Unit, onFailure: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                updateProductUseCase(
-                    getUrlForEndpoint(endpoint = "maia-product"), PutProductRequest(storeKey, product.toProductDto()), token
-                ).collect { result ->
+                updateProductUseCase(getUrlForEndpoint(endpoint = "maia-product"),
+                                     PutProductRequest(storeKey, product.toProductDto()),
+                                     token).collect { result ->
                     result.onSuccess {
                         withContext(Dispatchers.Main) {
                             onSuccess()
@@ -393,17 +372,12 @@ class ProductViewModel @Inject constructor(
         }
     }
 
-    fun deleteProduct(
-        product: Product,
-        token: String,
-        onSuccess: () -> Unit,
-        onFailure: () -> Unit
-    ) {
+    fun deleteProduct(product: Product, token: String, onSuccess: () -> Unit, onFailure: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                deleteProductUseCase(
-                    getUrlForEndpoint(endpoint = "maia-product"), DeleteProductRequest(storeKey, product.id), token = token
-                ).collect { result ->
+                deleteProductUseCase(getUrlForEndpoint(endpoint = "maia-product"),
+                                     DeleteProductRequest(storeKey, product.id),
+                                     token = token).collect { result ->
                     result.onSuccess {
                         withContext(Dispatchers.Main) {
                             onSuccess()
