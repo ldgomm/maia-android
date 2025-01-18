@@ -51,15 +51,13 @@ import com.premierdarkcoffee.sales.maia.root.feature.product.domain.state.Produc
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductsView(
-    productsState: ProductsState,
-    searchProductText: String,
-    groups: List<Group>,
-    onSearchTextChange: (String) -> Unit,
-    clearSearchText: () -> Unit,
-    onNavigateToProductView: (String) -> Unit,
-    onRefresh: () -> Unit
-) {
+fun ProductsView(productsState: ProductsState,
+                 searchProductText: String,
+                 groups: List<Group>,
+                 onSearchTextChange: (String) -> Unit,
+                 clearSearchText: () -> Unit,
+                 onNavigateToProductView: (String) -> Unit,
+                 onRefresh: () -> Unit) {
     var active by rememberSaveable { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val isRefreshing by remember { mutableStateOf(false) }
@@ -106,8 +104,8 @@ fun ProductsView(
     // -- Finally, filter products based on selections + search text --
     val filteredProducts = productsState.products?.filter { product ->
         (selectedGroup == null || product.category.group == selectedGroup) && (selectedDomain == null || product.category.domain == selectedDomain) && (selectedSubclass == null || product.category.subclass == selectedSubclass) && (searchProductText.isEmpty() || product.name.contains(
-            searchProductText, ignoreCase = true
-        ))
+                searchProductText,
+                ignoreCase = true))
     }
 
     Scaffold(modifier = Modifier
@@ -116,24 +114,19 @@ fun ProductsView(
         .navigationBarsPadding()
         .nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
         val productsTitle = stringResource(id = R.string.products_title)
-        TopAppBar(
-            title = {
-                Text(
-                    text = "$productsTitle (${filteredProducts?.size ?: 0})", maxLines = 1, overflow = TextOverflow.Ellipsis, style = titleStyle
-                )
-            }, scrollBehavior = scrollBehavior
-        )
+        TopAppBar(title = {
+            Text(text = "$productsTitle (${filteredProducts?.size ?: 0})",
+                 maxLines = 1,
+                 overflow = TextOverflow.Ellipsis,
+                 style = titleStyle)
+        }, scrollBehavior = scrollBehavior)
     }) { paddingValues ->
-        SwipeRefresh(
-            state = swipeRefreshState, onRefresh = onRefresh, modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
+        SwipeRefresh(state = swipeRefreshState, onRefresh = onRefresh, modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)) {
+            Column(Modifier
+                       .fillMaxSize()
+                       .padding(16.dp)) {
                 // -- Search Bar --
                 val searchPlaceholder = stringResource(id = R.string.search_placeholder)
                 val clearSearchTextX = stringResource(id = R.string.clear_search)
@@ -152,13 +145,15 @@ fun ProductsView(
                           },
                           trailingIcon = {
                               if (active) {
-                                  Icon(imageVector = Icons.Default.Close, contentDescription = clearSearchTextX, modifier = Modifier.clickable {
-                                      if (searchProductText.isNotEmpty()) {
-                                          clearSearchText()
-                                      } else {
-                                          active = false
-                                      }
-                                  })
+                                  Icon(imageVector = Icons.Default.Close,
+                                       contentDescription = clearSearchTextX,
+                                       modifier = Modifier.clickable {
+                                           if (searchProductText.isNotEmpty()) {
+                                               clearSearchText()
+                                           } else {
+                                               active = false
+                                           }
+                                       })
                               }
                           }) {
                     // If the user has tapped on the SearchBar, show an expanded list
@@ -176,20 +171,16 @@ fun ProductsView(
                 // -- Filters Row (Group, Domain, Subclass) --
                 val allGroupsLabel = stringResource(id = R.string.all_groups)
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     // Group Dropdown
-                    ExposedDropdownMenuBox(
-                        expanded = groupExpanded, onExpandedChange = { groupExpanded = !groupExpanded }, modifier = Modifier.weight(1f)
-                    ) {
-                        TextField(
-                            value = selectedGroup ?: allGroupsLabel,
-                            onValueChange = {},
-                            readOnly = true,
-                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = groupExpanded) },
-                            modifier = Modifier.menuAnchor()
-                        )
+                    ExposedDropdownMenuBox(expanded = groupExpanded,
+                                           onExpandedChange = { groupExpanded = !groupExpanded },
+                                           modifier = Modifier.weight(1f)) {
+                        TextField(value = selectedGroup ?: allGroupsLabel,
+                                  onValueChange = {},
+                                  readOnly = true,
+                                  trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = groupExpanded) },
+                                  modifier = Modifier.menuAnchor())
                         ExposedDropdownMenu(expanded = groupExpanded, onDismissRequest = { groupExpanded = false }) {
                             filteredGroups.forEach { group ->
                                 DropdownMenuItem(text = { Text(group.name) }, onClick = {
@@ -204,16 +195,14 @@ fun ProductsView(
 
                     // Domain Dropdown (Conditionally Displayed)
                     if (selectedGroup != null) {
-                        ExposedDropdownMenuBox(
-                            expanded = domainExpanded, onExpandedChange = { domainExpanded = !domainExpanded }, modifier = Modifier.weight(1f)
-                        ) {
-                            TextField(
-                                value = selectedDomain ?: allGroupsLabel,
-                                onValueChange = {},
-                                readOnly = true,
-                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = domainExpanded) },
-                                modifier = Modifier.menuAnchor()
-                            )
+                        ExposedDropdownMenuBox(expanded = domainExpanded,
+                                               onExpandedChange = { domainExpanded = !domainExpanded },
+                                               modifier = Modifier.weight(1f)) {
+                            TextField(value = selectedDomain ?: allGroupsLabel,
+                                      onValueChange = {},
+                                      readOnly = true,
+                                      trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = domainExpanded) },
+                                      modifier = Modifier.menuAnchor())
                             ExposedDropdownMenu(expanded = domainExpanded, onDismissRequest = { domainExpanded = false }) {
                                 filteredDomains.forEach { domain ->
                                     DropdownMenuItem(text = { Text(domain.name) }, onClick = {
@@ -228,16 +217,14 @@ fun ProductsView(
 
                     // Subclass Dropdown (Conditionally Displayed)
                     if (selectedDomain != null) {
-                        ExposedDropdownMenuBox(
-                            expanded = subclassExpanded, onExpandedChange = { subclassExpanded = !subclassExpanded }, modifier = Modifier.weight(1f)
-                        ) {
-                            TextField(
-                                value = selectedSubclass ?: allGroupsLabel,
-                                onValueChange = {},
-                                readOnly = true,
-                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = subclassExpanded) },
-                                modifier = Modifier.menuAnchor()
-                            )
+                        ExposedDropdownMenuBox(expanded = subclassExpanded,
+                                               onExpandedChange = { subclassExpanded = !subclassExpanded },
+                                               modifier = Modifier.weight(1f)) {
+                            TextField(value = selectedSubclass ?: allGroupsLabel,
+                                      onValueChange = {},
+                                      readOnly = true,
+                                      trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = subclassExpanded) },
+                                      modifier = Modifier.menuAnchor())
                             ExposedDropdownMenu(expanded = subclassExpanded, onDismissRequest = { subclassExpanded = false }) {
                                 filteredSubclasses.forEach { subclass ->
                                     DropdownMenuItem(text = { Text(subclass.name) }, onClick = {
