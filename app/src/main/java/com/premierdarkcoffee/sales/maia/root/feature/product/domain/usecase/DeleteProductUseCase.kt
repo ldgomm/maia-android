@@ -8,11 +8,7 @@ import javax.inject.Inject
 
 class DeleteProductUseCase @Inject constructor(private val productServiceable: ProductServiceable) {
 
-    operator fun invoke(
-        url: String,
-        request: DeleteProductRequest,
-        token: String
-    ): Flow<Result<MessageResponse>> {
+    operator fun invoke(url: String, request: DeleteProductRequest, token: String): Flow<Result<MessageResponse>> {
         return productServiceable.deleteProduct(url, request, token)
     }
 }

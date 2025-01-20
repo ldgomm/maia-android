@@ -7,9 +7,7 @@ import javax.inject.Inject
 
 class GetGroupsUseCase @Inject constructor(private val dataServiceable: DataServiceable) {
 
-    operator fun invoke(
-        url: String,
-    ): Flow<Result<List<Group>>> {
+    operator fun invoke(url: String): Flow<Result<List<Group>>> {
         return dataServiceable.getGroups(url)
     }
 }

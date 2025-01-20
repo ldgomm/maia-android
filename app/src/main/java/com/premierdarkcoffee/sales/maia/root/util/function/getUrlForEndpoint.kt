@@ -4,11 +4,7 @@ import android.content.ContentValues.TAG
 import android.util.Log
 import java.net.URLEncoder
 
-fun getUrlForEndpoint(
-    endpoint: String,
-    keywords: String? = null,
-    storeId: String? = null
-): String {
+fun getUrlForEndpoint(endpoint: String, keywords: String? = null, storeId: String? = null): String {
     val baseUrl = "https://www.sales.premierdarkcoffee.com/$endpoint"
     val encodedKeywords = keywords?.let { URLEncoder.encode(it, "UTF-8") }
     val encodedStoreId = storeId?.let { URLEncoder.encode(it, "UTF-8") }

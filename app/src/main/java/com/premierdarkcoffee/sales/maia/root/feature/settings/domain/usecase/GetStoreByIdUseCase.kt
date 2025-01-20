@@ -14,10 +14,7 @@ import javax.inject.Inject
 
 class GetStoreByIdUseCase @Inject constructor(private val storeServiceable: StoreServiceable) {
 
-    operator fun invoke(
-        url: String,
-        token: String
-    ): Flow<Result<StoreDto>> {
+    operator fun invoke(url: String, token: String): Flow<Result<StoreDto>> {
         return storeServiceable.getStoreById(url, token)
     }
 }
