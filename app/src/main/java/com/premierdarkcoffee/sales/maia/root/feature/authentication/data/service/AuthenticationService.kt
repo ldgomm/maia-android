@@ -21,10 +21,7 @@ import javax.inject.Inject
 
 class AuthenticationService @Inject constructor(private val httpClient: HttpClient) : AuthenticationServiceable {
 
-    override fun postStore(
-        endpoint: String,
-        request: PostStoreRequest
-    ): Flow<Result<LoginResponse>> {
+    override fun postStore(endpoint: String, request: PostStoreRequest): Flow<Result<LoginResponse>> {
         Log.d(TAG, "AuthenticationService | postStore: $endpoint")
         val jsonRequest = Json.encodeToString(request)
         Log.d(TAG, "AuthenticationService | postStore JSON: $jsonRequest")

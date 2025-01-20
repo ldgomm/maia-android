@@ -43,10 +43,7 @@ import androidx.compose.ui.unit.dp
 import com.premierdarkcoffee.sales.maia.R
 
 @Composable
-fun AuthenticationView(
-    handleSignIn: (String, String) -> Unit,
-    signInResult: Pair<Boolean, String>
-) {
+fun AuthenticationView(handleSignIn: (String, String) -> Unit, signInResult: Pair<Boolean, String>) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
@@ -82,23 +79,21 @@ fun AuthenticationView(
         }
     }
 
-    Box(
-        modifier = Modifier
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(backgroundColor)) {
+        Column(modifier = Modifier
             .fillMaxSize()
-            .background(backgroundColor)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+            .padding(16.dp),
+               verticalArrangement = Arrangement.Center,
+               horizontalAlignment = Alignment.CenterHorizontally) {
             // Logo
-            Image(
-                painter = logo, contentDescription = logoDescriptionText, modifier = Modifier
-                    .size(200.dp)
-                    .padding(bottom = 24.dp)
-                    .testTag("logoImage")
-            )
+            Image(painter = logo,
+                  contentDescription = logoDescriptionText,
+                  modifier = Modifier
+                      .size(200.dp)
+                      .padding(bottom = 24.dp)
+                      .testTag("logoImage"))
 
             // App Title
             Text(text = appNameText,
@@ -109,34 +104,35 @@ fun AuthenticationView(
                      .padding(bottom = 8.dp)
                      .semantics { heading() })
 
-            Text(
-                text = welcomeMessageText, style = MaterialTheme.typography.bodyLarge, color = Color.DarkGray
-            )
+            Text(text = welcomeMessageText, style = MaterialTheme.typography.bodyLarge, color = Color.DarkGray)
 
             Spacer(modifier = Modifier.height(32.dp))
 
             // Email Input
-            OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text(emailLabelText) }, modifier = Modifier
-                .fillMaxWidth()
-                .semantics {
-                    contentDescription = emailLabelText
-                }, singleLine = true, keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email), isError = email.isEmpty()
-            )
+            OutlinedTextField(value = email,
+                              onValueChange = { email = it },
+                              label = { Text(emailLabelText) },
+                              modifier = Modifier
+                                  .fillMaxWidth()
+                                  .semantics {
+                                      contentDescription = emailLabelText
+                                  },
+                              singleLine = true,
+                              keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+                              isError = email.isEmpty())
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Password Input
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text(passwordLabelText) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .semantics { contentDescription = passwordLabelText },
-                singleLine = true,
-                visualTransformation = PasswordVisualTransformation(),
-                isError = password.isEmpty()
-            )
+            OutlinedTextField(value = password,
+                              onValueChange = { password = it },
+                              label = { Text(passwordLabelText) },
+                              modifier = Modifier
+                                  .fillMaxWidth()
+                                  .semantics { contentDescription = passwordLabelText },
+                              singleLine = true,
+                              visualTransformation = PasswordVisualTransformation(),
+                              isError = password.isEmpty())
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -164,11 +160,15 @@ fun AuthenticationView(
 
         // Alert Dialog
         if (showAlert) {
-            AlertDialog(onDismissRequest = { showAlert = false }, confirmButton = {
-                TextButton(onClick = { showAlert = false }) {
-                    Text(okButtonText)
-                }
-            }, title = { Text(authTitleText) }, text = { Text(alertMessage) }, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Assertive })
+            AlertDialog(onDismissRequest = { showAlert = false },
+                        confirmButton = {
+                            TextButton(onClick = { showAlert = false }) {
+                                Text(okButtonText)
+                            }
+                        },
+                        title = { Text(authTitleText) },
+                        text = { Text(alertMessage) },
+                        modifier = Modifier.semantics { liveRegion = LiveRegionMode.Assertive })
         }
     }
 }

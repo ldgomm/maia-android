@@ -41,15 +41,10 @@ import com.premierdarkcoffee.sales.maia.root.feature.chat.presentation.view.chat
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatsView(
-    messages: List<Message>,
-    onConversationItemViewClicked: (String) -> Unit
-) {
+fun ChatsView(messages: List<Message>, onConversationItemViewClicked: (String) -> Unit) {
     // Group messages by clientId and sort them by the latest message date
     val sortedGroupedMessages = remember(messages) {
-        messages.groupBy { it.clientId }
-            .mapValues { entry -> entry.value.sortedBy { it.date } }
-            .toList()
+        messages.groupBy { it.clientId }.mapValues { entry -> entry.value.sortedBy { it.date } }.toList()
             .sortedByDescending { it.second.lastOrNull()?.date }
     }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -57,30 +52,19 @@ fun ChatsView(
     // Localized string for title
     val chatsTitle = stringResource(id = R.string.chats_title)
 
-    Scaffold(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.surface)
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = chatsTitle,
-                        style = titleStyle,
-                        modifier = Modifier.semantics { contentDescription = chatsTitle }
-                    )
-                }
-            )
-        }
-    ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(8.dp)
-                .fillMaxSize()
-        ) {
+    Scaffold(modifier = Modifier
+        .background(MaterialTheme.colorScheme.surface)
+        .statusBarsPadding()
+        .navigationBarsPadding()
+        .nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
+        TopAppBar(title = {
+            Text(text = chatsTitle, style = titleStyle, modifier = Modifier.semantics { contentDescription = chatsTitle })
+        })
+    }) { paddingValues ->
+        LazyColumn(modifier = Modifier
+            .padding(paddingValues)
+            .padding(8.dp)
+            .fillMaxSize()) {
             sortedGroupedMessages.forEach { (clientId, clientMessages) ->
                 item {
                     val lastMessage = clientMessages.lastOrNull()
@@ -88,11 +72,9 @@ fun ChatsView(
                         val sentOrDeliveredCount = clientMessages.count {
                             (it.status == MessageStatus.SENT || it.status == MessageStatus.DELIVERED) && it.fromClient
                         }
-                        ConversationItemView(
-                            message = message,
-                            sentOrDeliveredCount = sentOrDeliveredCount,
-                            onConversationItemViewClicked = { onConversationItemViewClicked(clientId) }
-                        )
+                        ConversationItemView(message = message,
+                                             sentOrDeliveredCount = sentOrDeliveredCount,
+                                             onConversationItemViewClicked = { onConversationItemViewClicked(clientId) })
                     }
                 }
             }

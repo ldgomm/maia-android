@@ -21,9 +21,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun BulletPointList(bulletPoints: List<String>) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         bulletPoints.forEach { point ->
             Row(modifier = Modifier.semantics { contentDescription = "Bullet Point" }) {
                 Text("•", modifier = Modifier.padding(end = 8.dp))

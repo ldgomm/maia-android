@@ -24,10 +24,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthenticationViewModel @Inject constructor(
-    application: Application,
-    private val createStoreUseCase: CreateStoreUseCase
-) : AndroidViewModel(application) {
+class AuthenticationViewModel @Inject constructor(application: Application, private val createStoreUseCase: CreateStoreUseCase) :
+    AndroidViewModel(application) {
 
     private val _isAuthenticated = MutableStateFlow(false)
     val isAuthenticated: StateFlow<Boolean> = _isAuthenticated
@@ -37,12 +35,7 @@ class AuthenticationViewModel @Inject constructor(
 
     private val storeKey = getMaiaKey(getApplication<Application>().applicationContext)
 
-    fun signInWithEmail(
-        email: String,
-        password: String,
-        onSuccess: (String) -> Unit,
-        onFailure: (Throwable) -> Unit
-    ) {
+    fun signInWithEmail(email: String, password: String, onSuccess: (String) -> Unit, onFailure: (Throwable) -> Unit) {
         if (!isValidEmail(email)) {
             onFailure(IllegalArgumentException("Invalid email address"))
             return
@@ -70,19 +63,16 @@ class AuthenticationViewModel @Inject constructor(
         }
     }
 
-    private fun handleStoreCreation(
-        userId: String,
-        onSuccess: (token: String) -> Unit,
-        onFailure: (exception: Throwable) -> Unit
-    ) {
+    private fun handleStoreCreation(userId: String,
+                                    onSuccess: (token: String) -> Unit,
+                                    onFailure: (exception: Throwable) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val store = getFakeStore(userId)
                 Log.d(TAG, "handleStoreCreation | Store: $store")
 
-                createStoreUseCase(
-                    url = getUrlForEndpoint("cronos-store"), request = PostStoreRequest(key = storeKey, store = store)
-                ).collect { result ->
+                createStoreUseCase(url = getUrlForEndpoint("cronos-store"),
+                                   request = PostStoreRequest(key = storeKey, store = store)).collect { result ->
                     result.onSuccess { response ->
                         Log.d(TAG, "handleStoreCreation | Store created successfully")
                         withContext(Dispatchers.Main) {
@@ -116,36 +106,30 @@ class AuthenticationViewModel @Inject constructor(
 
 
 fun getFakeStore(id: String): StoreDto {
-    return StoreDto(
-        id = id,
-        name = "Maia Store",
-        image = ImageDto(path = null, url = "", belongs = true),
-        address = AddressDto(
-            street = "...",
-            city = "...",
-            state = "...",
-            zipCode = "...",
-            country = "...",
-            location = GeoPointDto(type = "Point", coordinates = listOf(-78.488751, -0.227497))
-        ),
-        phoneNumber = "0",
-        emailAddress = "@",
-        website = "www",
-        description = "...",
-        returnPolicy = "...",
-        refundPolicy = "...",
-        brands = emptyList(),
-        createdAt = System.currentTimeMillis(),
-        status = StoreStatusDto(
-            isActive = false,
-            isVerified = false,
-            isPromoted = false,
-            isSuspended = false,
-            isClosed = false,
-            isPendingApproval = false,
-            isUnderReview = false,
-            isOutOfStock = false,
-            isOnSale = false
-        )
-    )
+    return StoreDto(id = id,
+                    name = "Maia Store",
+                    image = ImageDto(path = null, url = "", belongs = true),
+                    address = AddressDto(street = "...",
+                                         city = "...",
+                                         state = "...",
+                                         zipCode = "...",
+                                         country = "...",
+                                         location = GeoPointDto(type = "Point", coordinates = listOf(-78.488751, -0.227497))),
+                    phoneNumber = "0",
+                    emailAddress = "@",
+                    website = "www",
+                    description = "...",
+                    returnPolicy = "...",
+                    refundPolicy = "...",
+                    brands = emptyList(),
+                    createdAt = System.currentTimeMillis(),
+                    status = StoreStatusDto(isActive = false,
+                                            isVerified = false,
+                                            isPromoted = false,
+                                            isSuspended = false,
+                                            isClosed = false,
+                                            isPendingApproval = false,
+                                            isUnderReview = false,
+                                            isOutOfStock = false,
+                                            isOnSale = false))
 }
