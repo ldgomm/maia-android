@@ -40,30 +40,23 @@ fun AccountDeletionView(modifier: Modifier = Modifier) {
     Scaffold(topBar = {
         TopAppBar(title = { Text(text = accountDeletionTitle) })
     }) { paddingValues ->
-        LazyColumn(
-            modifier = modifier
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
+        LazyColumn(modifier = modifier
+            .padding(paddingValues)
+            .padding(horizontal = 16.dp),
+                   verticalArrangement = Arrangement.spacedBy(16.dp)) {
             // Section 1: Deletion Process
             item {
-                Text(
-                    text = deletionProcessText, style = MaterialTheme.typography.bodyMedium
-                )
+                Text(text = deletionProcessText, style = MaterialTheme.typography.bodyMedium)
             }
 
             // Section 2: Important Note
             item {
-                Text(
-                    text = importantNoteText, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold
-                )
+                Text(text = importantNoteText, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
             }
 
             // Section 3: Backup Recommendation
             item {
-                Text(
-                    text = backupRecommendationText, style = MaterialTheme.typography.bodyMedium
-                )
+                Text(text = backupRecommendationText, style = MaterialTheme.typography.bodyMedium)
             }
 
             // Section 4: Contact Information with clickable email
@@ -75,16 +68,12 @@ fun AccountDeletionView(modifier: Modifier = Modifier) {
 
             // Section 5: Response Time Notice
             item {
-                Text(
-                    text = responseTimeNoticeText, style = MaterialTheme.typography.bodyMedium
-                )
+                Text(text = responseTimeNoticeText, style = MaterialTheme.typography.bodyMedium)
             }
 
             // Footer Section
             item {
-                Text(
-                    text = footerText, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 50.dp)
-                )
+                Text(text = footerText, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 50.dp))
             }
         }
     }

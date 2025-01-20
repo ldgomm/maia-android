@@ -8,11 +8,7 @@ import javax.inject.Inject
 
 class AddProductUseCase @Inject constructor(private val productServiceable: ProductServiceable) {
 
-    operator fun invoke(
-        url: String,
-        request: PostProductRequest,
-        token: String
-    ): Flow<Result<MessageResponse>> {
+    operator fun invoke(url: String, request: PostProductRequest, token: String): Flow<Result<MessageResponse>> {
         return productServiceable.addProduct(url, request, token)
     }
 }
