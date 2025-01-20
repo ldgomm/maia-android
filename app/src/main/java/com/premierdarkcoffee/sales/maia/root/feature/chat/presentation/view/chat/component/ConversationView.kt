@@ -73,12 +73,10 @@ import java.util.TimeZone
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConversationView(
-    messages: List<Message>,
-    onSendMessageToStoreButtonClicked: (MessageDto) -> Unit,
-    markMessageAsReadLaunchedEffect: (MessageEntity) -> Unit,
-    onNavigateToProductView: (String) -> Unit
-) {
+fun ConversationView(messages: List<Message>,
+                     onSendMessageToStoreButtonClicked: (MessageDto) -> Unit,
+                     markMessageAsReadLaunchedEffect: (MessageEntity) -> Unit,
+                     onNavigateToProductView: (String) -> Unit) {
     var inputText by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
@@ -108,45 +106,35 @@ fun ConversationView(
                  modifier = Modifier.semantics { contentDescription = "$clientIdLabel ${messages.firstOrNull()?.clientId}" })
         })
     }) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-        ) {
+        Column(modifier = Modifier
+            .padding(paddingValues)
+            .fillMaxSize()) {
             // Message list with accessibility
-            Column(
-                modifier = Modifier
-                    .verticalScroll(scrollState)
-                    .weight(1f)
-            ) {
+            Column(modifier = Modifier
+                .verticalScroll(scrollState)
+                .weight(1f)) {
                 groupedMessages.forEach { (day, messages) ->
                     // Display day name in the center
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .semantics { contentDescription = "$messageDateLabel ${day.time.formatDayDate(context)}" },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = day.time.formatDayDate(context),
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .clip(RoundedCornerShape(4.dp))
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
-                                .padding(horizontal = 12.dp),
-                            textAlign = TextAlign.Center
-                        )
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .semantics { contentDescription = "$messageDateLabel ${day.time.formatDayDate(context)}" },
+                        contentAlignment = Alignment.Center) {
+                        Text(text = day.time.formatDayDate(context),
+                             style = MaterialTheme.typography.bodySmall,
+                             modifier = Modifier
+                                 .padding(4.dp)
+                                 .clip(RoundedCornerShape(4.dp))
+                                 .background(MaterialTheme.colorScheme.surfaceVariant)
+                                 .padding(horizontal = 12.dp),
+                             textAlign = TextAlign.Center)
                     }
                     messages.forEach { message ->
                         if (message.fromClient) {
                             val product: ProductDto? = Gson().fromJson(message.product, ProductDto::class.java)
-                            ClientMessageItemView(
-                                message = message,
-                                product = product?.toProduct(),
-                                markMessageAsReadLaunchedEffect = markMessageAsReadLaunchedEffect,
-                                onNavigateToProductView = onNavigateToProductView
-                            )
+                            ClientMessageItemView(message = message,
+                                                  product = product?.toProduct(),
+                                                  markMessageAsReadLaunchedEffect = markMessageAsReadLaunchedEffect,
+                                                  onNavigateToProductView = onNavigateToProductView)
                         } else {
                             StoreMessageItemView(message = message)
                         }
@@ -155,62 +143,56 @@ fun ConversationView(
             }
 
             // Input row with accessibility
-            Row(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth(),
+            Row(modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+                horizontalArrangement = Arrangement.SpaceBetween) {
                 // Input field with localization and accessibility
-                OutlinedTextField(
-                    value = inputText,
-                    onValueChange = { inputText = it },
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(8.dp)
-                        .semantics { contentDescription = typeMessageHint },
-                    placeholder = {
-                        Text(typeMessageHint, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
-                    },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Send),
-                    keyboardActions = KeyboardActions(onSend = {
-                        messages.firstOrNull()?.let { value ->
-                            val message = MessageDto(
-                                text = inputText, fromClient = false, clientId = value.clientId, storeId = value.storeId
-                            )
-                            onSendMessageToStoreButtonClicked(message)
-                            inputText = ""
-                        }
-                    })
-                )
+                OutlinedTextField(value = inputText,
+                                  onValueChange = { inputText = it },
+                                  modifier = Modifier
+                                      .weight(1f)
+                                      .padding(8.dp)
+                                      .semantics { contentDescription = typeMessageHint },
+                                  placeholder = {
+                                      Text(typeMessageHint, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                                  },
+                                  singleLine = true,
+                                  keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Send),
+                                  keyboardActions = KeyboardActions(onSend = {
+                                      messages.firstOrNull()?.let { value ->
+                                          val message = MessageDto(text = inputText,
+                                                                   fromClient = false,
+                                                                   clientId = value.clientId,
+                                                                   storeId = value.storeId)
+                                          onSendMessageToStoreButtonClicked(message)
+                                          inputText = ""
+                                      }
+                                  }))
 
                 Spacer(modifier = Modifier.width(4.dp))
 
                 // Send button with accessibility and animation
-                AnimatedVisibility(
-                    visible = inputText.isNotEmpty(),
-                    enter = expandIn(expandFrom = Alignment.Center) + fadeIn(),
-                    exit = shrinkOut(shrinkTowards = Alignment.Center) + fadeOut()
-                ) {
+                AnimatedVisibility(visible = inputText.isNotEmpty(),
+                                   enter = expandIn(expandFrom = Alignment.Center) + fadeIn(),
+                                   exit = shrinkOut(shrinkTowards = Alignment.Center) + fadeOut()) {
                     IconButton(onClick = {
                         messages.firstOrNull()?.let { value ->
-                            val message = MessageDto(
-                                text = inputText, fromClient = false, clientId = value.clientId, storeId = value.storeId
-                            )
+                            val message = MessageDto(text = inputText,
+                                                     fromClient = false,
+                                                     clientId = value.clientId,
+                                                     storeId = value.storeId)
                             onSendMessageToStoreButtonClicked(message)
                             inputText = ""
                         }
                     }, modifier = Modifier
                         .size(48.dp)
                         .semantics { contentDescription = sendButtonDescription }) {
-                        Icon(
-                            ImageVector.vectorResource(R.drawable.send),
-                            contentDescription = sendButtonDescription,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(24.dp)
-                        )
+                        Icon(ImageVector.vectorResource(R.drawable.send),
+                             contentDescription = sendButtonDescription,
+                             tint = MaterialTheme.colorScheme.primary,
+                             modifier = Modifier.size(24.dp))
                     }
                 }
             }
@@ -264,9 +246,7 @@ fun Long.formatDayDate(context: Context): String {
         else -> {
             val is24Hour = DateFormat.is24HourFormat(context)
             val pattern = if (is24Hour) "MMM d, yyyy" else "MMM d, yyyy"
-            val dateFormatter = SimpleDateFormat(
-                pattern, Locale.getDefault()
-            )
+            val dateFormatter = SimpleDateFormat(pattern, Locale.getDefault())
             dateFormatter.format(Date(this))
         }
     }

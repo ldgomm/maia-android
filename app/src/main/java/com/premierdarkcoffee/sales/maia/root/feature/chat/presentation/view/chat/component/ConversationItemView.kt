@@ -41,90 +41,63 @@ import com.premierdarkcoffee.sales.maia.root.feature.chat.domain.model.message.M
 import com.premierdarkcoffee.sales.maia.root.util.extension.formatShortDate
 
 @Composable
-fun ConversationItemView(
-    message: Message,
-    sentOrDeliveredCount: Int,
-    onConversationItemViewClicked: () -> Unit
-) {
+fun ConversationItemView(message: Message, sentOrDeliveredCount: Int, onConversationItemViewClicked: () -> Unit) {
     val messageDateLabel = stringResource(id = R.string.message_date)
     val storeIconDescription = stringResource(id = R.string.store_icon_description)
     val newMessagesLabel = stringResource(id = R.string.new_messages_label)
 
-    Row(
-        modifier = Modifier
-            .padding(vertical = 8.dp)
-            .fillMaxWidth()
-            .clickable { onConversationItemViewClicked() }
-            .semantics { contentDescription = "${message.clientId} $newMessagesLabel $sentOrDeliveredCount" }
-    ) {
+    Row(modifier = Modifier
+        .padding(vertical = 8.dp)
+        .fillMaxWidth()
+        .clickable { onConversationItemViewClicked() }
+        .semantics { contentDescription = "${message.clientId} $newMessagesLabel $sentOrDeliveredCount" }) {
         // Store icon with accessibility
-        Image(
-            painter = painterResource(lock_person),
-            contentDescription = storeIconDescription,
-            modifier = Modifier
-                .size(54.dp)
-                .clip(CircleShape)
-                .padding(12.dp),
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
-        )
+        Image(painter = painterResource(lock_person),
+              contentDescription = storeIconDescription,
+              modifier = Modifier
+                  .size(54.dp)
+                  .clip(CircleShape)
+                  .padding(12.dp),
+              colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.tertiary))
         Spacer(modifier = Modifier.width(10.dp))
 
         // Message content
         Column(modifier = Modifier.weight(1f)) {
             // Client ID with adaptive text size using theme typography
-            Text(
-                text = message.clientId.substring(startIndex = 0, endIndex = 6).lowercase(),
-                style = MaterialTheme.typography.titleMedium, // Scalable text size
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.semantics { contentDescription = "Client ID: ${message.clientId}" }
-            )
+            Text(text = message.clientId.substring(startIndex = 0, endIndex = 6).lowercase(),
+                 style = MaterialTheme.typography.titleMedium, // Scalable text size
+                 fontWeight = FontWeight.Bold,
+                 modifier = Modifier.semantics { contentDescription = "Client ID: ${message.clientId}" })
 
             // Message text with adaptive text size
-            Text(
-                text = message.text,
-                style = MaterialTheme.typography.bodyMedium, // Scalable text size
-                color = Color.Gray,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.semantics {
-                    contentDescription = "${message.text} $messageDateLabel ${message.date.formatShortDate()}"
-                }
-            )
+            Text(text = message.text, style = MaterialTheme.typography.bodyMedium, // Scalable text size
+                 color = Color.Gray, maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.semantics {
+                contentDescription = "${message.text} $messageDateLabel ${message.date.formatShortDate()}"
+            })
         }
         Spacer(modifier = Modifier.width(10.dp))
 
         // Date and Message Count Badge with Accessibility
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
             // Date with dynamic font size support
-            Text(
-                text = message.date.formatShortDate(),
-                style = MaterialTheme.typography.bodySmall, // Scalable text size
-                color = Color.Gray,
-                modifier = Modifier
-                    .padding(end = 10.dp)
-                    .semantics {
-                        contentDescription = "$messageDateLabel ${message.date.formatShortDate()}"
-                    }
-            )
+            Text(text = message.date.formatShortDate(), style = MaterialTheme.typography.bodySmall, // Scalable text size
+                 color = Color.Gray, modifier = Modifier
+                .padding(end = 10.dp)
+                .semantics {
+                    contentDescription = "$messageDateLabel ${message.date.formatShortDate()}"
+                })
 
             // Message count badge with proper scaling
             if (sentOrDeliveredCount > 0) {
-                Box(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .background(Color.DarkGray.copy(0.7f), shape = CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "$sentOrDeliveredCount",
-                        style = MaterialTheme.typography.labelSmall.copy(color = Color.White), // Scalable
-                        modifier = Modifier.semantics {
-                            contentDescription = "$sentOrDeliveredCount $newMessagesLabel"
-                        }
-                    )
+                Box(modifier = Modifier
+                    .size(24.dp)
+                    .background(Color.DarkGray.copy(0.7f), shape = CircleShape),
+                    contentAlignment = Alignment.Center) {
+                    Text(text = "$sentOrDeliveredCount",
+                         style = MaterialTheme.typography.labelSmall.copy(color = Color.White), // Scalable
+                         modifier = Modifier.semantics {
+                             contentDescription = "$sentOrDeliveredCount $newMessagesLabel"
+                         })
                 }
             }
         }

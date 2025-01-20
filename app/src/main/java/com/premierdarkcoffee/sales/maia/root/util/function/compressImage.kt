@@ -11,10 +11,7 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.OutputStream
 
-fun compressImage(
-    uri: Uri,
-    contentResolver: ContentResolver
-): Uri? {
+fun compressImage(uri: Uri, contentResolver: ContentResolver): Uri? {
     try {
         val inputStream = contentResolver.openInputStream(uri)
         val bitmap = BitmapFactory.decodeStream(inputStream)

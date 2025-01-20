@@ -12,10 +12,7 @@ import com.premierdarkcoffee.sales.maia.root.feature.chat.presentation.viewmodel
 import com.premierdarkcoffee.sales.maia.root.navigation.ConversationRoute
 import com.premierdarkcoffee.sales.maia.root.util.function.sharedViewModel
 
-fun NavGraphBuilder.conversationRoute(
-    navController: NavHostController,
-    onNavigateToProductView: (String) -> Unit
-) {
+fun NavGraphBuilder.conversationRoute(navController: NavHostController, onNavigateToProductView: (String) -> Unit) {
 
     composable<ConversationRoute> { backStackEntry ->
         val viewModel = backStackEntry.sharedViewModel<ChatViewModel>(navController = navController)
@@ -26,11 +23,9 @@ fun NavGraphBuilder.conversationRoute(
         val clientId: String = args.clientId ?: ""
         val clientMessages = groupedMessages[clientId] ?: emptyList()
 
-        ConversationView(
-            messages = clientMessages,
-            onSendMessageToStoreButtonClicked = viewModel::sendMessage,
-            markMessageAsReadLaunchedEffect = viewModel::markMessageAsReadLaunchedEffect,
-            onNavigateToProductView
-        )
+        ConversationView(messages = clientMessages,
+                         onSendMessageToStoreButtonClicked = viewModel::sendMessage,
+                         markMessageAsReadLaunchedEffect = viewModel::markMessageAsReadLaunchedEffect,
+                         onNavigateToProductView)
     }
 }

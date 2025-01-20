@@ -51,12 +51,10 @@ import com.premierdarkcoffee.sales.maia.root.feature.chat.domain.model.message.M
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Product
 
 @Composable
-fun ClientMessageItemView(
-    message: Message,
-    product: Product? = null,
-    markMessageAsReadLaunchedEffect: (MessageEntity) -> Unit,
-    onNavigateToProductView: (String) -> Unit
-) {
+fun ClientMessageItemView(message: Message,
+                          product: Product? = null,
+                          markMessageAsReadLaunchedEffect: (MessageEntity) -> Unit,
+                          onNavigateToProductView: (String) -> Unit) {
     // State to control the expanded/collapsed state of the product details
     val expanded by remember { mutableStateOf(true) }
     val context = LocalContext.current
@@ -75,75 +73,55 @@ fun ClientMessageItemView(
 
     when (message.type) {
         MessageType.TEXT -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 12.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.Start
-            ) {
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 12.dp),
+                   verticalArrangement = Arrangement.Center,
+                   horizontalAlignment = Alignment.Start) {
                 // Message Row with text and date
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(start = 8.dp)
-                        .wrapContentWidth(Alignment.Start)
-                        .padding(vertical = 4.dp),
+                Row(modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .padding(start = 8.dp)
+                    .wrapContentWidth(Alignment.Start)
+                    .padding(vertical = 4.dp),
                     horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(2.dp),
-                        horizontalAlignment = Alignment.Start,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                    ) {
+                    verticalAlignment = Alignment.CenterVertically) {
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp),
+                           horizontalAlignment = Alignment.Start,
+                           modifier = Modifier
+                               .fillMaxWidth()
+                               .wrapContentHeight()) {
                         // Message Text with Adaptive Text Size and Accessibility Support
-                        Text(
-                            text = message.text,
-                            style = MaterialTheme.typography.bodyLarge, // Scalable text size
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
-                                .padding(8.dp)
-                                .semantics {
-                                    contentDescription = message.text
-                                },
-                            textAlign = TextAlign.Start
-                        )
+                        Text(text = message.text, style = MaterialTheme.typography.bodyLarge, // Scalable text size
+                             modifier = Modifier
+                                 .clip(RoundedCornerShape(12.dp))
+                                 .background(MaterialTheme.colorScheme.surfaceVariant)
+                                 .padding(8.dp)
+                                 .semantics {
+                                     contentDescription = message.text
+                                 }, textAlign = TextAlign.Start)
 
                         // Message Date with Scalable Font and Accessibility
-                        Text(
-                            text = "$messageDateLabel ${message.date.formatMessageDate(context)}",
-                            style = MaterialTheme.typography.bodySmall, // Scalable text size
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                            modifier = Modifier
-                                .semantics {
-                                    contentDescription = "$messageDateLabel ${message.date.formatMessageDate(context)}"
-                                }
-                        )
+                        Text(text = "$messageDateLabel ${message.date.formatMessageDate(context)}",
+                             style = MaterialTheme.typography.bodySmall, // Scalable text size
+                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                             modifier = Modifier.semantics {
+                                 contentDescription = "$messageDateLabel ${message.date.formatMessageDate(context)}"
+                             })
                     }
                     Spacer(modifier = Modifier.width(60.dp))
                 }
 
                 // Product Details with Animation and Accessibility Support
-                AnimatedVisibility(
-                    visible = expanded && product != null,
-                    enter = expandVertically(animationSpec = tween(durationMillis = 500)) + fadeIn(),
-                    exit = shrinkVertically(animationSpec = tween(durationMillis = 500)) + fadeOut()
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .offset(x = (-12).dp)
-                            .padding(end = 60.dp)
-                    ) {
+                AnimatedVisibility(visible = expanded && product != null,
+                                   enter = expandVertically(animationSpec = tween(durationMillis = 500)) + fadeIn(),
+                                   exit = shrinkVertically(animationSpec = tween(durationMillis = 500)) + fadeOut()) {
+                    Column(modifier = Modifier
+                        .offset(x = (-12).dp)
+                        .padding(end = 60.dp)) {
                         Spacer(modifier = Modifier.height(4.dp))
                         product?.let {
-                            ProductItemView(
-                                product = product,
-                                onNavigateToProductView = onNavigateToProductView
-                            )
+                            ProductItemView(product = product, onNavigateToProductView = onNavigateToProductView)
                         }
                     }
                 }
@@ -151,35 +129,27 @@ fun ClientMessageItemView(
         }
 
         MessageType.IMAGE -> {
-            Text(
-                text = stringResource(id = R.string.image_message_received),
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.semantics { contentDescription = "Image message" }
-            )
+            Text(text = stringResource(id = R.string.image_message_received),
+                 style = MaterialTheme.typography.bodyLarge,
+                 modifier = Modifier.semantics { contentDescription = "Image message" })
         }
 
         MessageType.VIDEO -> {
-            Text(
-                text = stringResource(id = R.string.video_message_received),
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.semantics { contentDescription = "Video message" }
-            )
+            Text(text = stringResource(id = R.string.video_message_received),
+                 style = MaterialTheme.typography.bodyLarge,
+                 modifier = Modifier.semantics { contentDescription = "Video message" })
         }
 
         MessageType.AUDIO -> {
-            Text(
-                text = stringResource(id = R.string.audio_message_received),
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.semantics { contentDescription = "Audio message" }
-            )
+            Text(text = stringResource(id = R.string.audio_message_received),
+                 style = MaterialTheme.typography.bodyLarge,
+                 modifier = Modifier.semantics { contentDescription = "Audio message" })
         }
 
         MessageType.FILE -> {
-            Text(
-                text = stringResource(id = R.string.file_message_received),
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.semantics { contentDescription = "File message" }
-            )
+            Text(text = stringResource(id = R.string.file_message_received),
+                 style = MaterialTheme.typography.bodyLarge,
+                 modifier = Modifier.semantics { contentDescription = "File message" })
         }
     }
 }

@@ -8,10 +8,7 @@ import javax.inject.Inject
 
 class CreateStoreUseCase @Inject constructor(private val serviceable: AuthenticationServiceable) {
 
-    operator fun invoke(
-        url: String,
-        request: PostStoreRequest
-    ): Flow<Result<LoginResponse>> {
+    operator fun invoke(url: String, request: PostStoreRequest): Flow<Result<LoginResponse>> {
         return serviceable.postStore(endpoint = url, request = request)
     }
 }

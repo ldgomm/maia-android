@@ -47,8 +47,7 @@ class ChatViewModel @Inject constructor(
     fun markMessageAsReadLaunchedEffect(message: MessageEntity) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                markMessageAsReadUseCase.invoke(message) {
-                }
+                markMessageAsReadUseCase.invoke(message) {}
             }
         }
     }
