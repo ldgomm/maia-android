@@ -35,10 +35,7 @@ import javax.inject.Inject
 
 class ProductService @Inject constructor(private val httpClient: HttpClient) : ProductServiceable {
 
-    override fun getProducts(
-        endpoint: String,
-        token: String
-    ): Flow<Result<List<ProductDto>>> {
+    override fun getProducts(endpoint: String, token: String): Flow<Result<List<ProductDto>>> {
         return flow {
             try {
                 val response: HttpResponse = httpClient.get(endpoint) {
@@ -53,11 +50,7 @@ class ProductService @Inject constructor(private val httpClient: HttpClient) : P
         }
     }
 
-    override fun addProduct(
-        url: String,
-        request: PostProductRequest,
-        token: String
-    ): Flow<Result<MessageResponse>> {
+    override fun addProduct(url: String, request: PostProductRequest, token: String): Flow<Result<MessageResponse>> {
         return flow {
             try {
                 val response: HttpResponse = httpClient.post(url) {
@@ -95,11 +88,7 @@ class ProductService @Inject constructor(private val httpClient: HttpClient) : P
         }
     }
 
-    override fun updateProduct(
-        url: String,
-        request: PutProductRequest,
-        token: String
-    ): Flow<Result<MessageResponse>> {
+    override fun updateProduct(url: String, request: PutProductRequest, token: String): Flow<Result<MessageResponse>> {
         return flow {
             try {
                 val response: HttpResponse = httpClient.put(url) {
@@ -131,11 +120,7 @@ class ProductService @Inject constructor(private val httpClient: HttpClient) : P
         }
     }
 
-    override fun deleteProduct(
-        url: String,
-        request: DeleteProductRequest,
-        token: String
-    ): Flow<Result<MessageResponse>> {
+    override fun deleteProduct(url: String, request: DeleteProductRequest, token: String): Flow<Result<MessageResponse>> {
         return flow {
             try {
                 val response: HttpResponse = httpClient.put(url) {

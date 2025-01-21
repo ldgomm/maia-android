@@ -9,26 +9,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProductServiceable {
 
-    fun getProducts(
-        endpoint: String,
-        token: String
-    ): Flow<Result<List<ProductDto>>>
+    fun getProducts(endpoint: String, token: String): Flow<Result<List<ProductDto>>>
 
-    fun addProduct(
-        url: String,
-        request: PostProductRequest,
-        token: String
-    ): Flow<Result<MessageResponse>>
+    fun addProduct(url: String, request: PostProductRequest, token: String): Flow<Result<MessageResponse>>
 
-    fun updateProduct(
-        url: String,
-        request: PutProductRequest,
-        token: String
-    ): Flow<Result<MessageResponse>>
+    fun updateProduct(url: String, request: PutProductRequest, token: String): Flow<Result<MessageResponse>>
 
-    fun deleteProduct(
-        url: String,
-        request: DeleteProductRequest,
-        token: String
-    ): Flow<Result<MessageResponse>>
+    fun deleteProduct(url: String, request: DeleteProductRequest, token: String): Flow<Result<MessageResponse>>
 }

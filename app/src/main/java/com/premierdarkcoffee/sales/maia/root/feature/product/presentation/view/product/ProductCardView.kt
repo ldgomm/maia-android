@@ -43,10 +43,7 @@ import java.text.NumberFormat
 import java.util.Currency
 
 @Composable
-fun ProductCardView(
-    product: Product,
-    onNavigateToProductView: (String) -> Unit
-) {
+fun ProductCardView(product: Product, onNavigateToProductView: (String) -> Unit) {
     val numberFormat = NumberFormat.getCurrencyInstance().apply {
         currency = Currency.getInstance(product.price.currency)
     }
@@ -56,56 +53,50 @@ fun ProductCardView(
     val discountLabel = stringResource(id = R.string.discount_label, product.price.offer.discount)
     val currentPriceLabel = stringResource(id = R.string.current_price_label)
 
-    ElevatedCard(
-        onClick = { onNavigateToProductView(Gson().toJson(product)) },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
-            .semantics { contentDescription = "${product.name}, $currentPriceLabel ${numberFormat.format(product.price.amount)}" },
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.elevatedCardElevation(2.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
-        ) {
+    ElevatedCard(onClick = { onNavigateToProductView(Gson().toJson(product)) },
+                 modifier = Modifier
+                     .fillMaxWidth()
+                     .padding(vertical = 4.dp)
+                     .semantics {
+                         contentDescription = "${product.name}, $currentPriceLabel ${numberFormat.format(product.price.amount)}"
+                     },
+                 shape = RoundedCornerShape(12.dp),
+                 elevation = CardDefaults.elevatedCardElevation(2.dp)) {
+        Row(modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             // Product Image with accessibility support
-            AsyncImage(
-                model = product.image.url,
-                contentDescription = stringResource(id = R.string.product_image_description, product.name),
-                modifier = Modifier
-                    .size(72.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                contentScale = ContentScale.Crop
-            )
+            AsyncImage(model = product.image.url,
+                       contentDescription = stringResource(id = R.string.product_image_description, product.name),
+                       modifier = Modifier
+                           .size(72.dp)
+                           .clip(RoundedCornerShape(8.dp))
+                           .background(MaterialTheme.colorScheme.surfaceVariant),
+                       contentScale = ContentScale.Crop)
 
             Spacer(modifier = Modifier.width(16.dp))
 
             // Product Info Section
             Column(verticalArrangement = Arrangement.Center, modifier = Modifier.weight(1f)) {
-                Text(
-                    text = product.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface
-                )
+                Text(text = product.name,
+                     style = MaterialTheme.typography.titleMedium,
+                     fontWeight = FontWeight.Bold,
+                     color = MaterialTheme.colorScheme.onSurface)
                 product.label?.let {
-                    Text(
-                        text = it, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface
-                    )
+                    Text(text = it,
+                         style = MaterialTheme.typography.bodySmall,
+                         fontWeight = FontWeight.Bold,
+                         color = MaterialTheme.colorScheme.onSurface)
                 }
-                Text(
-                    text = product.description,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = product.date.formatDate(),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
+                Text(text = product.description,
+                     style = MaterialTheme.typography.bodySmall,
+                     color = MaterialTheme.colorScheme.onSurface,
+                     maxLines = 2,
+                     overflow = TextOverflow.Ellipsis)
+                Text(text = product.date.formatDate(),
+                     style = MaterialTheme.typography.labelSmall,
+                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                     modifier = Modifier.padding(top = 4.dp))
             }
 
             // Pricing Section
@@ -120,17 +111,14 @@ fun ProductCardView(
                              .padding(horizontal = 4.dp, vertical = 2.dp)
                              .semantics { contentDescription = discountLabel })
                 }
-                Text(
-                    text = numberFormat.format(product.price.amount),
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-                Text(
-                    text = numberFormat.format(originalPrice), style = MaterialTheme.typography.bodySmall.copy(
-                        textDecoration = TextDecoration.LineThrough
-                    ), color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 2.dp)
-                )
+                Text(text = numberFormat.format(product.price.amount),
+                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                     color = MaterialTheme.colorScheme.primary,
+                     modifier = Modifier.padding(top = 4.dp))
+                Text(text = numberFormat.format(originalPrice),
+                     style = MaterialTheme.typography.bodySmall.copy(textDecoration = TextDecoration.LineThrough),
+                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                     modifier = Modifier.padding(top = 2.dp))
             }
         }
     }
