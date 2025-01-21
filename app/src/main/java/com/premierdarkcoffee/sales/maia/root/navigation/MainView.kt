@@ -32,10 +32,7 @@ import com.premierdarkcoffee.sales.maia.R.drawable.storefront
 import com.premierdarkcoffee.sales.maia.root.util.function.shouldShowNavigationBar
 
 @Composable
-fun MainView(
-    navController: NavHostController,
-    startDestination: Any
-) {
+fun MainView(navController: NavHostController, startDestination: Any) {
     var user by remember { mutableStateOf(FirebaseAuth.getInstance().currentUser) }
 
     FirebaseAuth.getInstance().addAuthStateListener { auth ->
@@ -43,13 +40,9 @@ fun MainView(
     }
 
     Scaffold(bottomBar = {
-        AnimatedVisibility(
-            visible = user != null && shouldShowNavigationBar(navController = navController),
-            enter = fadeIn(animationSpec = tween(durationMillis = 300)) + slideInVertically(
-                initialOffsetY = { it }),
-            exit = fadeOut(animationSpec = tween(durationMillis = 300)) + slideOutVertically(
-                targetOffsetY = { it })
-        ) {
+        AnimatedVisibility(visible = user != null && shouldShowNavigationBar(navController = navController),
+                           enter = fadeIn(animationSpec = tween(durationMillis = 300)) + slideInVertically(initialOffsetY = { it }),
+                           exit = fadeOut(animationSpec = tween(durationMillis = 300)) + slideOutVertically(targetOffsetY = { it })) {
             val items = listOf(ProductsRoute,
                                SearchRoute,
                                ChatsRoute.apply { icon = ImageVector.vectorResource(chat) },
@@ -59,10 +52,7 @@ fun MainView(
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     val currentDestination = navBackStackEntry?.destination
                     NavigationBarItem(icon = {
-                        Icon(
-                            imageVector = item.icon!!,
-                            contentDescription = stringResource(id = item.resourceId)
-                        )
+                        Icon(imageVector = item.icon!!, contentDescription = stringResource(id = item.resourceId))
                     },
                                       label = { Text(text = stringResource(item.resourceId)) },
                                       selected = currentDestination?.hierarchy?.any { it == item } == true,
@@ -75,16 +65,11 @@ fun MainView(
                                               restoreState = true
                                           }
                                       },
-                                      modifier = Modifier
-                    )
+                                      modifier = Modifier)
                 }
             }
         }
     }) { paddingValues ->
-        NavigationGraph(
-            navController = navController,
-            startDestination = startDestination,
-            Modifier.padding(paddingValues)
-        )
+        NavigationGraph(navController = navController, startDestination = startDestination, Modifier.padding(paddingValues))
     }
 }

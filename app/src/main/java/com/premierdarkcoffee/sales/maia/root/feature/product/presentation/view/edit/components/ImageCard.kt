@@ -24,33 +24,24 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.premierdarkcoffee.sales.maia.R
-import javax.inject.Inject
 
 @Composable
-fun ImageCard(
-    imageUrl: String,
-    selectedImageUri: Uri?,
-    onClick: () -> Unit
-) {
+fun ImageCard(imageUrl: String, selectedImageUri: Uri?, onClick: () -> Unit) {
     // Localized string for accessibility
     val imageDescription = stringResource(id = R.string.image_card_description)
 
-    ElevatedCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp, horizontal = 11.dp),
-        shape = MaterialTheme.shapes.medium,
-        elevation = CardDefaults.elevatedCardElevation(4.dp)
-    ) {
-        AsyncImage(
-            model = selectedImageUri ?: imageUrl,
-            contentDescription = imageDescription,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(150.dp)
-                .clickable { onClick() }
-                .semantics { contentDescription = imageDescription },
-            contentScale = ContentScale.Crop
-        )
+    ElevatedCard(modifier = Modifier
+        .fillMaxWidth()
+        .padding(vertical = 6.dp, horizontal = 11.dp),
+                 shape = MaterialTheme.shapes.medium,
+                 elevation = CardDefaults.elevatedCardElevation(4.dp)) {
+        AsyncImage(model = selectedImageUri ?: imageUrl,
+                   contentDescription = imageDescription,
+                   modifier = Modifier
+                       .fillMaxWidth()
+                       .height(150.dp)
+                       .clickable { onClick() }
+                       .semantics { contentDescription = imageDescription },
+                   contentScale = ContentScale.Crop)
     }
 }

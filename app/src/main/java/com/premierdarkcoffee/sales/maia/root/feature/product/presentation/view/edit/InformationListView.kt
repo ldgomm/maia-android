@@ -11,10 +11,8 @@ import com.premierdarkcoffee.sales.maia.root.feature.product.domain.state.Inform
 @Composable
 fun InformationListView(informationResultStateList: List<InformationResultState>) {
 
-    LazyRow(
-        contentPadding = PaddingValues(horizontal = 11.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
+    LazyRow(contentPadding = PaddingValues(horizontal = 11.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)) {
         items(items = informationResultStateList.filterNot { it.isDeleted }, key = { it.id }) { resultState ->
             InformationCardView(resultState = resultState)
         }

@@ -21,22 +21,20 @@ import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.entity.conv
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.entity.message.MessageEntity
 
 @Database(entities = [MessageEntity::class], version = 1)
-@TypeConverters(
-    ProductListConverter::class,
-    CategoryConverter::class,
-    ImageConverter::class,
-    InformationConverter::class,
-    PriceConverter::class,
-    SpecificationsConverter::class,
-    StringConverter::class,
-    WarrantyConverter::class,
-    StoreConverter::class,
-    AddressConverter::class,
-    GeoPointConverter::class,
-    MessageConverter::class,
-    ProductConverter::class,
-    StoreStatusConverter::class
-)
+@TypeConverters(ProductListConverter::class,
+                CategoryConverter::class,
+                ImageConverter::class,
+                InformationConverter::class,
+                PriceConverter::class,
+                SpecificationsConverter::class,
+                StringConverter::class,
+                WarrantyConverter::class,
+                StoreConverter::class,
+                AddressConverter::class,
+                GeoPointConverter::class,
+                MessageConverter::class,
+                ProductConverter::class,
+                StoreStatusConverter::class)
 abstract class MainDatabase : RoomDatabase() {
     abstract val messageDao: MessageDao
 }
