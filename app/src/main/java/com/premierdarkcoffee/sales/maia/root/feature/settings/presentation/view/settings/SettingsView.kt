@@ -31,83 +31,59 @@ import com.premierdarkcoffee.sales.maia.root.util.helper.JwtSecurePreferencesHel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsView(
-    onNavigateToPrivacyPolicyButtonClicked: () -> Unit,
-    onNavigateToTermsOfUseButtonClicked: () -> Unit,
-    onNavigateToAccountDeletionButtonClicked: () -> Unit,
-    onLogoutButtonClicked: () -> Unit
-) {
+fun SettingsView(onNavigateToPrivacyPolicyButtonClicked: () -> Unit,
+                 onNavigateToTermsOfUseButtonClicked: () -> Unit,
+                 onNavigateToAccountDeletionButtonClicked: () -> Unit,
+                 onLogoutButtonClicked: () -> Unit) {
     val context = LocalContext.current
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(id = R.string.settings_title), style = titleStyle) }
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
-        ) {
+    Scaffold(topBar = {
+        TopAppBar(title = { Text(text = stringResource(id = R.string.settings_title), style = titleStyle) })
+    }) { paddingValues ->
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .padding(16.dp)) {
             // Section 1: General Settings
-            SettingsSection(
-                title = stringResource(id = R.string.general_title),
-                items = listOf(
-                    stringResource(id = R.string.privacy_policy) to onNavigateToPrivacyPolicyButtonClicked,
-                    stringResource(id = R.string.terms_of_use) to onNavigateToTermsOfUseButtonClicked,
-                    stringResource(id = R.string.account_deletion) to onNavigateToAccountDeletionButtonClicked
-                )
-            )
+            SettingsSection(title = stringResource(id = R.string.general_title),
+                            items = listOf(stringResource(id = R.string.privacy_policy) to onNavigateToPrivacyPolicyButtonClicked,
+                                           stringResource(id = R.string.terms_of_use) to onNavigateToTermsOfUseButtonClicked,
+                                           stringResource(id = R.string.account_deletion) to onNavigateToAccountDeletionButtonClicked))
 
             Spacer(modifier = Modifier.height(24.dp))
 
             // Section 2: Log Out Button with a red highlight for better visibility
-            SettingsSection(
-                title = stringResource(id = R.string.account_title),
-                items = listOf(
-                    stringResource(id = R.string.log_out) to {
-                        logOut(context)
-                        onLogoutButtonClicked()
-                    }
-                ),
-                buttonColors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-            )
+            SettingsSection(title = stringResource(id = R.string.account_title),
+                            items = listOf(stringResource(id = R.string.log_out) to {
+                                logOut(context)
+                                onLogoutButtonClicked()
+                            }),
+                            buttonColors = ButtonDefaults.buttonColors(containerColor = Color.Red))
         }
     }
 }
 
 @Composable
-fun SettingsSection(
-    title: String,
-    items: List<Pair<String, () -> Unit>>,
-    buttonColors: ButtonColors = ButtonDefaults.buttonColors()
-) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.titleMedium,
-        modifier = Modifier
-            .padding(bottom = 8.dp)
-            .semantics { contentDescription = title }
-    )
+fun SettingsSection(title: String,
+                    items: List<Pair<String, () -> Unit>>,
+                    buttonColors: ButtonColors = ButtonDefaults.buttonColors()) {
+    Text(text = title,
+         style = MaterialTheme.typography.titleMedium,
+         modifier = Modifier
+             .padding(bottom = 8.dp)
+             .semantics { contentDescription = title })
 
     items.forEach { (label, action) ->
-        Button(
-            onClick = action,
-            colors = buttonColors,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp)
-                .semantics { contentDescription = label }
-        ) {
-            Text(
-                text = label,
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.tertiary,
-                textAlign = TextAlign.Start
-            )
+        Button(onClick = action,
+               colors = buttonColors,
+               modifier = Modifier
+                   .fillMaxWidth()
+                   .padding(vertical = 4.dp)
+                   .semantics { contentDescription = label }) {
+            Text(text = label,
+                 modifier = Modifier.fillMaxWidth(),
+                 color = MaterialTheme.colorScheme.tertiary,
+                 textAlign = TextAlign.Start)
         }
     }
 }

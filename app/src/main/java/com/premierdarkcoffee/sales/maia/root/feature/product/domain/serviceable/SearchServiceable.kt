@@ -5,9 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface SearchServiceable {
 
-    fun getListOfData(
-        endpoint: String,
-        token: String
-    ): Flow<Result<List<ProductDto>>>
+    fun getListOfData(endpoint: String, token: String): Flow<Result<List<ProductDto>>>
 }
 

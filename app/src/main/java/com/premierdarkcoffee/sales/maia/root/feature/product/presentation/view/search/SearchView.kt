@@ -39,13 +39,11 @@ import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.p
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchView(
-    productsState: ProductsState,
-    searchText: String,
-    onSearchTextChange: (String) -> Unit,
-    clearSearchText: () -> Unit,
-    onNavigateToProductView: (String) -> Unit
-) {
+fun SearchView(productsState: ProductsState,
+               searchText: String,
+               onSearchTextChange: (String) -> Unit,
+               clearSearchText: () -> Unit,
+               onNavigateToProductView: (String) -> Unit) {
     var active by rememberSaveable { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val lazyListState = rememberLazyListState()
@@ -63,16 +61,12 @@ fun SearchView(
             Text(text = searchTitle, modifier = Modifier.fillMaxWidth(), style = titleStyle)
         }, modifier = Modifier, navigationIcon = {}, actions = {})
     }) { paddingValues ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(
-                    top = paddingValues.calculateTopPadding(),
-                    bottom = paddingValues.calculateBottomPadding(),
-                    start = paddingValues.calculateLeftPadding(LayoutDirection.Ltr),
-                    end = paddingValues.calculateRightPadding(LayoutDirection.Ltr)
-                )
-        ) {
+        Column(Modifier
+                   .fillMaxSize()
+                   .padding(top = paddingValues.calculateTopPadding(),
+                            bottom = paddingValues.calculateBottomPadding(),
+                            start = paddingValues.calculateLeftPadding(LayoutDirection.Ltr),
+                            end = paddingValues.calculateRightPadding(LayoutDirection.Ltr))) {
             SearchBar(query = searchText,
                       onQueryChange = onSearchTextChange,
                       onSearch = { active = false },
@@ -87,18 +81,20 @@ fun SearchView(
                       leadingIcon = { Icon(imageVector = Icons.Default.Search, null) },
                       trailingIcon = {
                           if (active) {
-                              Icon(imageVector = Icons.Default.Close, contentDescription = clearSearchTextLabel, modifier = Modifier.clickable {
-                                  if (searchText.isNotEmpty()) {
-                                      clearSearchText()
-                                  } else {
-                                      active = false
-                                  }
-                              })
+                              Icon(imageVector = Icons.Default.Close,
+                                   contentDescription = clearSearchTextLabel,
+                                   modifier = Modifier.clickable {
+                                       if (searchText.isNotEmpty()) {
+                                           clearSearchText()
+                                       } else {
+                                           active = false
+                                       }
+                                   })
                           }
                       }) {
-                LazyColumn(
-                    state = lazyListState, modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)
-                ) {
+                LazyColumn(state = lazyListState,
+                           modifier = Modifier.fillMaxSize(),
+                           contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)) {
                     productsState.products?.let { products ->
                         items(products.size) { index ->
                             val product = products[index]
@@ -107,9 +103,9 @@ fun SearchView(
                     }
                 }
             }
-            LazyColumn(
-                state = lazyListState, modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)
-            ) {
+            LazyColumn(state = lazyListState,
+                       modifier = Modifier.fillMaxSize(),
+                       contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)) {
                 productsState.products?.let { products ->
                     items(products.size) { index ->
                         val product = products[index]

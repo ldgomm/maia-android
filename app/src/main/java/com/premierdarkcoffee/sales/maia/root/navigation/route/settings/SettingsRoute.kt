@@ -8,21 +8,17 @@ import com.premierdarkcoffee.sales.maia.root.feature.settings.presentation.viewm
 import com.premierdarkcoffee.sales.maia.root.navigation.SettingsRoute
 import com.premierdarkcoffee.sales.maia.root.util.function.sharedViewModel
 
-fun NavGraphBuilder.settingsRoute(
-    navController: NavHostController,
-    onNavigateToPrivacyPolicyButtonClicked: () -> Unit,
-    onNavigateToTermsOfUseButtonClicked: () -> Unit,
-    onNavigateToAccountDeletionButtonClicked: () -> Unit,
-    onLogoutButtonClicked: () -> Unit
-) {
+fun NavGraphBuilder.settingsRoute(navController: NavHostController,
+                                  onNavigateToPrivacyPolicyButtonClicked: () -> Unit,
+                                  onNavigateToTermsOfUseButtonClicked: () -> Unit,
+                                  onNavigateToAccountDeletionButtonClicked: () -> Unit,
+                                  onLogoutButtonClicked: () -> Unit) {
     composable<SettingsRoute> { backStackEntry ->
         val viewModel = backStackEntry.sharedViewModel<SettingsViewModel>(navController = navController)
 
-        SettingsView(
-            onNavigateToPrivacyPolicyButtonClicked,
-            onNavigateToTermsOfUseButtonClicked,
-            onNavigateToAccountDeletionButtonClicked,
-            onLogoutButtonClicked
-        )
+        SettingsView(onNavigateToPrivacyPolicyButtonClicked,
+                     onNavigateToTermsOfUseButtonClicked,
+                     onNavigateToAccountDeletionButtonClicked,
+                     onLogoutButtonClicked)
     }
 }

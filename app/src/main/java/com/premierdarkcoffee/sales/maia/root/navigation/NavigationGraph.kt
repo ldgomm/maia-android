@@ -18,14 +18,8 @@ import com.premierdarkcoffee.sales.maia.root.navigation.route.settings.termsOfUs
 import com.premierdarkcoffee.sales.maia.root.navigation.route.storeRoute
 
 @Composable
-fun NavigationGraph(
-    navController: NavHostController,
-    startDestination: Any,
-    modifier: Modifier = Modifier
-) {
-    NavHost(
-        navController = navController, startDestination = startDestination, modifier = modifier
-    ) {
+fun NavigationGraph(navController: NavHostController, startDestination: Any, modifier: Modifier = Modifier) {
+    NavHost(navController = navController, startDestination = startDestination, modifier = modifier) {
         authenticationRoute(onNavigateToProductsViewTriggered = {
             navController.popBackStack()
             navController.navigate(ProductsRoute)
@@ -60,25 +54,20 @@ fun NavigationGraph(
             navController.navigate(ConversationRoute(clientId = clientId))
         })
 
-        conversationRoute(navController = navController,
-                          onNavigateToProductView = { productJson: String ->
-                              navController.navigate(ProductRoute(productJson))
-                          })
+        conversationRoute(navController = navController, onNavigateToProductView = { productJson: String ->
+            navController.navigate(ProductRoute(productJson))
+        })
 
         storeRoute(navController = navController,
                    onNavigateToSettingsIconButtonClicked = { navController.navigate(SettingsRoute) })
 
         settingsRoute(navController,
                       onNavigateToPrivacyPolicyButtonClicked = {
-                          navController.navigate(
-                              PrivacyPolicyRoute
-                          )
+                          navController.navigate(PrivacyPolicyRoute)
                       },
                       onNavigateToTermsOfUseButtonClicked = { navController.navigate(TermsOfUseRoute) },
                       onNavigateToAccountDeletionButtonClicked = {
-                          navController.navigate(
-                              AccountDeletionRoute
-                          )
+                          navController.navigate(AccountDeletionRoute)
                       },
                       onLogoutButtonClicked = {
                           navController.navigate(AuthenticationRoute) {
