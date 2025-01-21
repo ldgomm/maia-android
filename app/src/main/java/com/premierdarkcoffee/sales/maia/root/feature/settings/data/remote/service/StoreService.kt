@@ -23,10 +23,7 @@ import javax.inject.Inject
 
 class StoreService @Inject constructor(private val httpClient: HttpClient) : StoreServiceable {
 
-    override fun getStoreById(
-        endpoint: String,
-        token: String
-    ): Flow<Result<StoreDto>> {
+    override fun getStoreById(endpoint: String, token: String): Flow<Result<StoreDto>> {
         return flow {
             try {
                 val response: HttpResponse = httpClient.get(endpoint) {

@@ -12,8 +12,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface StoreServiceable {
 
-    fun getStoreById(
-        endpoint: String,
-        token: String
-    ): Flow<Result<StoreDto>>
+    fun getStoreById(endpoint: String, token: String): Flow<Result<StoreDto>>
 }

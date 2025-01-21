@@ -20,10 +20,7 @@ import com.premierdarkcoffee.sales.maia.root.navigation.StoreRoute
 import com.premierdarkcoffee.sales.maia.root.util.function.sharedViewModel
 import com.premierdarkcoffee.sales.maia.root.util.helper.JwtSecurePreferencesHelper
 
-fun NavGraphBuilder.storeRoute(
-    navController: NavHostController,
-    onNavigateToSettingsIconButtonClicked: () -> Unit
-) {
+fun NavGraphBuilder.storeRoute(navController: NavHostController, onNavigateToSettingsIconButtonClicked: () -> Unit) {
     composable<StoreRoute> { backStackEntry ->
         val viewModel = backStackEntry.sharedViewModel<SettingsViewModel>(navController = navController)
         val storeState by viewModel.storeState.collectAsState()

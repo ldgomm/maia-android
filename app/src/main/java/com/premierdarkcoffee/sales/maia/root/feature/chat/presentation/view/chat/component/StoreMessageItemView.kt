@@ -59,85 +59,64 @@ fun StoreMessageItemView(message: Message) {
     when (message.type) {
         TEXT -> {
             Spacer(Modifier.padding(horizontal = 60.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
+            Row(modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 12.dp, top = 8.dp)
-                        .fillMaxWidth(0.8f)
-                        .wrapContentWidth(Alignment.End),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.End
-                ) {
+                verticalAlignment = Alignment.CenterVertically) {
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 12.dp, top = 8.dp)
+                    .fillMaxWidth(0.8f)
+                    .wrapContentWidth(Alignment.End),
+                       verticalArrangement = Arrangement.Center,
+                       horizontalAlignment = Alignment.End) {
                     // Message Bubble with Adaptive Text and Accessibility
-                    Text(
-                        text = message.text,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(
-                                MaterialTheme.colorScheme.primary.copy(
-                                    if (isSystemInDarkTheme()) 0.2f else 0.9f
-                                )
-                            )
-                            .padding(8.dp)
-                            .semantics { contentDescription = message.text },
-                        color = Color.White,
-                        textAlign = TextAlign.Start
-                    )
+                    Text(text = message.text,
+                         style = MaterialTheme.typography.bodyLarge,
+                         modifier = Modifier
+                             .clip(RoundedCornerShape(12.dp))
+                             .background(MaterialTheme.colorScheme.primary.copy(if (isSystemInDarkTheme()) 0.2f else 0.9f))
+                             .padding(8.dp)
+                             .semantics { contentDescription = message.text },
+                         color = Color.White,
+                         textAlign = TextAlign.Start)
 
                     // Message Date with Accessibility
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                    Row(verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "$messageDateLabel ${message.date.formatMessageDate(context)}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                            modifier = Modifier
-                                .semantics { contentDescription = "$messageDateLabel ${message.date.formatMessageDate(context)}" }
-                        )
+                        modifier = Modifier.fillMaxWidth()) {
+                        Text(text = "$messageDateLabel ${message.date.formatMessageDate(context)}",
+                             style = MaterialTheme.typography.bodySmall,
+                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                             modifier = Modifier.semantics {
+                                 contentDescription = "$messageDateLabel ${message.date.formatMessageDate(context)}"
+                             })
                     }
                 }
             }
         }
 
         IMAGE -> {
-            Text(
-                text = imageMessageLabel,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.semantics { contentDescription = imageMessageLabel }
-            )
+            Text(text = imageMessageLabel,
+                 style = MaterialTheme.typography.bodyLarge,
+                 modifier = Modifier.semantics { contentDescription = imageMessageLabel })
         }
 
         VIDEO -> {
-            Text(
-                text = videoMessageLabel,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.semantics { contentDescription = videoMessageLabel }
-            )
+            Text(text = videoMessageLabel,
+                 style = MaterialTheme.typography.bodyLarge,
+                 modifier = Modifier.semantics { contentDescription = videoMessageLabel })
         }
 
         AUDIO -> {
-            Text(
-                text = audioMessageLabel,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.semantics { contentDescription = audioMessageLabel }
-            )
+            Text(text = audioMessageLabel,
+                 style = MaterialTheme.typography.bodyLarge,
+                 modifier = Modifier.semantics { contentDescription = audioMessageLabel })
         }
 
         FILE -> {
-            Text(
-                text = fileMessageLabel,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.semantics { contentDescription = fileMessageLabel }
-            )
+            Text(text = fileMessageLabel,
+                 style = MaterialTheme.typography.bodyLarge,
+                 modifier = Modifier.semantics { contentDescription = fileMessageLabel })
         }
     }
 }
@@ -165,27 +144,21 @@ fun Long.formatMessageDate(context: Context): String {
         diff < oneDay && currentDayOfYear == messageDayOfYear -> {
             val is24Hour = DateFormat.is24HourFormat(context)
             val pattern = if (is24Hour) "HH:mm" else "hh:mm a"
-            val dateFormatter = SimpleDateFormat(
-                pattern, Locale.getDefault()
-            )
+            val dateFormatter = SimpleDateFormat(pattern, Locale.getDefault())
             dateFormatter.format(Date(this))
         }
 
         diff < 2 * oneDay && currentDayOfYear - messageDayOfYear == 1 -> {
             val is24Hour = DateFormat.is24HourFormat(context)
             val pattern = if (is24Hour) "HH:mm" else "hh:mm a"
-            val dateFormatter = SimpleDateFormat(
-                pattern, Locale.getDefault()
-            )
+            val dateFormatter = SimpleDateFormat(pattern, Locale.getDefault())
             dateFormatter.format(Date(this))
         }
 
         else -> {
             val is24Hour = DateFormat.is24HourFormat(context)
             val pattern = if (is24Hour) "MMM d, yyyy, HH:mm" else "MMM d, yyyy, hh:mm a"
-            val dateFormatter = SimpleDateFormat(
-                pattern, Locale.getDefault()
-            )
+            val dateFormatter = SimpleDateFormat(pattern, Locale.getDefault())
             dateFormatter.format(Date(this))
         }
     }

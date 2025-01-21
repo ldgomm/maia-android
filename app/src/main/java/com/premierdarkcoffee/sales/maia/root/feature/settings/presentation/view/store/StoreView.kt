@@ -17,8 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -45,38 +45,32 @@ import com.premierdarkcoffee.sales.maia.root.util.view.MapView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StoreView(
-    store: Store,
-    onNavigateToSettingsIconButtonClicked: () -> Unit
-) {
+fun StoreView(store: Store, onNavigateToSettingsIconButtonClicked: () -> Unit) {
 
     Scaffold(topBar = {
         TopAppBar(title = { Text(text = store.name, style = titleStyle) }, actions = {
             IconButton(onClick = onNavigateToSettingsIconButtonClicked) {
-                Icon(imageVector = ImageVector.vectorResource(R.drawable.settings), contentDescription = stringResource(id = R.string.settings_icon))
+                Icon(imageVector = ImageVector.vectorResource(R.drawable.settings),
+                     contentDescription = stringResource(id = R.string.settings_icon))
             }
         })
     }) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(16.dp)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
+        Column(modifier = Modifier
+            .padding(paddingValues)
+            .padding(16.dp)
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+               verticalArrangement = Arrangement.spacedBy(16.dp)) {
             // Store Image
             if (store.image.url.isNotEmpty()) {
                 val painter = rememberAsyncImagePainter(model = store.image.url)
-                Image(
-                    painter = painter,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                        .clip(RoundedCornerShape(11.dp)),
-                    contentScale = ContentScale.Crop
-                )
+                Image(painter = painter,
+                      contentDescription = null,
+                      modifier = Modifier
+                          .fillMaxWidth()
+                          .height(300.dp)
+                          .clip(RoundedCornerShape(11.dp)),
+                      contentScale = ContentScale.Crop)
             }
 
             // Address
@@ -103,7 +97,7 @@ fun StoreView(
                 Text(text = store.website)
             }
 
-            Divider()
+            HorizontalDivider()
 
             // Description
             SectionView(title = stringResource(id = R.string.description)) {
@@ -125,7 +119,7 @@ fun StoreView(
                 Text(text = store.brands.joinToString(", "))
             }
 
-            Divider()
+            HorizontalDivider()
 
             // Status
             SectionView(title = stringResource(id = R.string.status)) {
@@ -143,7 +137,8 @@ fun StatusView(status: StoreStatus) {
         if (status.isPromoted) StatusLabel(text = stringResource(id = R.string.promoted_status), color = Color.Blue)
         if (status.isSuspended) StatusLabel(text = stringResource(id = R.string.suspended_status), color = Color.Red)
         if (status.isClosed) StatusLabel(text = stringResource(id = R.string.closed_status), color = Color.Gray)
-        if (status.isPendingApproval) StatusLabel(text = stringResource(id = R.string.pending_approval_status), color = Color.Yellow)
+        if (status.isPendingApproval) StatusLabel(text = stringResource(id = R.string.pending_approval_status),
+                                                  color = Color.Yellow)
         if (status.isUnderReview) StatusLabel(text = stringResource(id = R.string.under_review_status), color = Color.Cyan)
         if (status.isOutOfStock) StatusLabel(text = stringResource(id = R.string.out_of_stock_status), color = Color.Black)
         if (status.isOnSale) StatusLabel(text = stringResource(id = R.string.on_sale_status), color = Color.Magenta)
@@ -151,9 +146,6 @@ fun StatusView(status: StoreStatus) {
 }
 
 @Composable
-fun StatusLabel(
-    text: String,
-    color: Color
-) {
+fun StatusLabel(text: String, color: Color) {
     Text(text = text, color = color, fontWeight = FontWeight.Bold)
 }
