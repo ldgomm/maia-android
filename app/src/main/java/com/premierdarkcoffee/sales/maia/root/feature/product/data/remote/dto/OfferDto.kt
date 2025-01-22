@@ -7,6 +7,6 @@ import kotlinx.serialization.Serializable
 data class OfferDto(val isActive: Boolean, val discount: Int) {
 
     fun toOffer(): Offer {
-        return Offer(isActive = isActive, discount= discount)
+        return Offer(isActive = isActive, discount = discount)
     }
 }

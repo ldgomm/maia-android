@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -42,10 +41,7 @@ import java.text.NumberFormat
 import java.util.Currency
 
 @Composable
-fun ProductItemView(
-    product: Product,
-    onNavigateToProductView: (String) -> Unit
-) {
+fun ProductItemView(product: Product, onNavigateToProductView: (String) -> Unit) {
     // Localized strings for accessibility and internationalization
     val discountLabel = stringResource(id = R.string.discount_label)
     val originalPriceLabel = stringResource(id = R.string.original_price_label)
@@ -58,49 +54,41 @@ fun ProductItemView(
 
     val originalPrice = product.price.amount / (1 - product.price.offer.discount / 100.0)
 
-    ElevatedCard(
-        onClick = { onNavigateToProductView(Gson().toJson(product)) },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 16.dp)
-            .semantics { contentDescription = "${product.name}, $currentPriceLabel ${numberFormat.format(product.price.amount)}" },
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.elevatedCardElevation(8.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(12.dp)
-                .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
-        ) {
+    ElevatedCard(onClick = { onNavigateToProductView(Gson().toJson(product)) },
+                 modifier = Modifier
+                     .fillMaxWidth()
+                     .padding(vertical = 8.dp, horizontal = 16.dp)
+                     .semantics {
+                         contentDescription = "${product.name}, $currentPriceLabel ${numberFormat.format(product.price.amount)}"
+                     },
+                 shape = RoundedCornerShape(16.dp),
+                 elevation = CardDefaults.elevatedCardElevation(8.dp)) {
+        Row(modifier = Modifier
+            .padding(12.dp)
+            .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             // Product Image with accessibility support
-            AsyncImage(
-                model = product.image.url,
-                contentDescription = "${product.name} - ${product.model}",
-                modifier = Modifier
-                    .size(72.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .semantics { contentDescription = "${product.name} image" },
-                contentScale = ContentScale.Crop
-            )
+            AsyncImage(model = product.image.url,
+                       contentDescription = "${product.name} - ${product.model}",
+                       modifier = Modifier
+                           .size(72.dp)
+                           .clip(RoundedCornerShape(8.dp))
+                           .background(MaterialTheme.colorScheme.surfaceVariant)
+                           .semantics { contentDescription = "${product.name} image" },
+                       contentScale = ContentScale.Crop)
 
             Spacer(modifier = Modifier.width(16.dp))
 
             // Product Name and Model
             Column(verticalArrangement = Arrangement.Center, modifier = Modifier.weight(1f)) {
-                Text(
-                    text = product.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-                Text(
-                    text = product.model,
-                    style = MaterialTheme.typography.bodySmall,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                Text(text = product.name,
+                     style = MaterialTheme.typography.titleMedium,
+                     fontWeight = FontWeight.Bold,
+                     color = MaterialTheme.colorScheme.onSurface,
+                     modifier = Modifier.padding(bottom = 4.dp))
+                Text(text = product.model,
+                     style = MaterialTheme.typography.bodySmall,
+                     fontWeight = FontWeight.Medium,
+                     color = MaterialTheme.colorScheme.onSurface)
             }
 
             // Pricing and Discount Section
