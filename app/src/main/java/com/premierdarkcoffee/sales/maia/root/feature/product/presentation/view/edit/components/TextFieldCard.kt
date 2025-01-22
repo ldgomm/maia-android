@@ -21,32 +21,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import javax.inject.Inject
 
 @Composable
-fun TextFieldCard(
-    label: String,
-    text: String,
-    onTextChanged: (String) -> Unit,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    onClick: (() -> Unit)? = null
-) {
-    ElevatedCard(
-        modifier = Modifier
-            .clickable { onClick?.invoke() }
-            .fillMaxWidth()
-            .padding(vertical = 6.dp, horizontal = 11.dp),
-        shape = MaterialTheme.shapes.medium,
-        elevation = CardDefaults.elevatedCardElevation(4.dp)
-    ) {
-        TextField(
-            value = text,
-            onValueChange = onTextChanged,
-            label = { Text(label) },
-            keyboardOptions = keyboardOptions,
-            modifier = Modifier
-                .fillMaxWidth()
-                .semantics { contentDescription = label }
-        )
+fun TextFieldCard(label: String,
+                  text: String,
+                  onTextChanged: (String) -> Unit,
+                  keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+                  onClick: (() -> Unit)? = null) {
+    ElevatedCard(modifier = Modifier
+        .clickable { onClick?.invoke() }
+        .fillMaxWidth()
+        .padding(vertical = 6.dp, horizontal = 11.dp),
+                 shape = MaterialTheme.shapes.medium,
+                 elevation = CardDefaults.elevatedCardElevation(4.dp)) {
+        TextField(value = text,
+                  onValueChange = onTextChanged,
+                  label = { Text(label) },
+                  keyboardOptions = keyboardOptions,
+                  modifier = Modifier
+                      .fillMaxWidth()
+                      .semantics { contentDescription = label })
     }
 }
