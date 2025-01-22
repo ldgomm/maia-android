@@ -7,10 +7,7 @@ import javax.inject.Inject
 
 class SearchProductUseCase @Inject constructor(private val serviceable: SearchServiceable) {
 
-    operator fun invoke(
-        url: String,
-        token: String
-    ): Flow<Result<List<ProductDto>>> {
+    operator fun invoke(url: String, token: String): Flow<Result<List<ProductDto>>> {
         return serviceable.getListOfData(url, token)
     }
 }

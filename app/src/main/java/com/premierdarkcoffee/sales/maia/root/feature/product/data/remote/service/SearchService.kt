@@ -16,10 +16,7 @@ import javax.inject.Inject
 
 class SearchService @Inject constructor(private val httpClient: HttpClient) : SearchServiceable {
 
-    override fun getListOfData(
-        endpoint: String,
-        token: String
-    ): Flow<Result<List<ProductDto>>> {
+    override fun getListOfData(endpoint: String, token: String): Flow<Result<List<ProductDto>>> {
         return flow {
             try {
                 val response: HttpResponse = httpClient.get(endpoint) {

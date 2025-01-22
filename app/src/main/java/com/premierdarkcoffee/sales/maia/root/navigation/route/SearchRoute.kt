@@ -16,13 +16,9 @@ import com.premierdarkcoffee.sales.maia.root.navigation.SearchRoute
 import com.premierdarkcoffee.sales.maia.root.util.function.sharedViewModel
 import com.premierdarkcoffee.sales.maia.root.util.helper.JwtSecurePreferencesHelper
 
-fun NavGraphBuilder.searchRoute(
-    navController: NavHostController,
-    onNavigateToProductView: (String) -> Unit
-) {
+fun NavGraphBuilder.searchRoute(navController: NavHostController, onNavigateToProductView: (String) -> Unit) {
     composable<SearchRoute> { backStackEntry ->
-        val viewModel =
-            backStackEntry.sharedViewModel<ProductViewModel>(navController = navController)
+        val viewModel = backStackEntry.sharedViewModel<ProductViewModel>(navController = navController)
 
         val productsState by viewModel.searchState.collectAsState()
         val searchText by viewModel.searchText.collectAsState()
@@ -36,12 +32,10 @@ fun NavGraphBuilder.searchRoute(
             }
         }
 
-        SearchView(
-            productsState = productsState,
-            searchText = searchText,
-            onSearchTextChange = viewModel::onSearchTextChange,
-            clearSearchText = { viewModel.clearSearchText() },
-            onNavigateToProductView = onNavigateToProductView
-        )
+        SearchView(productsState = productsState,
+                   searchText = searchText,
+                   onSearchTextChange = viewModel::onSearchTextChange,
+                   clearSearchText = { viewModel.clearSearchText() },
+                   onNavigateToProductView = onNavigateToProductView)
     }
 }
