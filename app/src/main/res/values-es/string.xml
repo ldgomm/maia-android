@@ -49,6 +49,7 @@
     <string name="without_interest_label">Sin interés</string>
     <string name="with_interest_label">Con interés</string>
     <string name="free_months_label">Meses sin interés</string>
+    <string name="warranty_info_label">Información de la Garantía</string>
     <string name="legal_info_label">Información legal</string>
     <string name="warning_info_label">Información de advertencia</string>
     <string name="submit_label">Enviar</string>

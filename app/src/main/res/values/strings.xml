@@ -49,6 +49,7 @@
     <string name="without_interest_label">Without interest</string>
     <string name="with_interest_label">With interest</string>
     <string name="free_months_label">Free months</string>
+    <string name="warranty_info_label">Warranty Information</string>
     <string name="legal_info_label">Legal Information</string>
     <string name="warning_info_label">Warning Information</string>
     <string name="submit_label">Submit</string>
