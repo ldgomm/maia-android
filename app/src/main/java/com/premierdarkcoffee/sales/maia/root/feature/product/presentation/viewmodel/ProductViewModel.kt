@@ -6,12 +6,12 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Category
+import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Codes
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Image
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Information
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Price
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Product
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Specifications
-import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Warranty
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.request.DeleteProductRequest
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.request.PostProductRequest
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.request.PutProductRequest
@@ -293,6 +293,7 @@ class ProductViewModel @Inject constructor(application: Application,
             setDate(product.date)
             setOverview(product.overview)
             product.keywords?.let { setKeywords(it) }
+            product.codes?.let { setCodes(it) }
             setSpecifications(product.specifications)
             setWarranty(product.warranty)
             setLegal(product.legal)
@@ -530,6 +531,11 @@ class ProductViewModel @Inject constructor(application: Application,
         _addEditProductState.value = _addEditProductState.value.copy(keywords = updatedKeywords)
     }
 
+
+    private fun setCodes(codes: Codes) {
+        _addEditProductState.value = _addEditProductState.value.copy(codes = codes)
+    }
+
     /**
      * Sets the product specifications in the add/edit product state.
      *
@@ -544,7 +550,7 @@ class ProductViewModel @Inject constructor(application: Application,
      *
      * @param warranty The product warranty information, if any.
      */
-    private fun setWarranty(warranty: Warranty?) {
+    fun setWarranty(warranty: String?) {
         _addEditProductState.value = _addEditProductState.value.copy(warranty = warranty)
     }
 

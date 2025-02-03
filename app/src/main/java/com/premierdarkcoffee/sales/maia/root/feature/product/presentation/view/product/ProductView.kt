@@ -16,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.sharp.Edit
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -200,15 +201,15 @@ fun ProductView(product: Product,
                 }
             }
 
-            // Warranty Section
+            // Legal Information Section
             product.warranty?.let { warranty ->
                 SectionView(title = stringResource(id = R.string.warranty_label)) {
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        ProductDetailRow(label = stringResource(id = R.string.warranty_duration_label, warranty.months),
-                                         value = warranty.details.joinToString(", "))
-                    }
+                    Text(text = warranty,
+                         style = MaterialTheme.typography.bodySmall,
+                         modifier = Modifier.semantics { contentDescription = warranty })
                 }
             }
+
 
             // Legal Information Section
             product.legal?.let { legal ->

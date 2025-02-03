@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -44,6 +43,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.premierdarkcoffee.sales.maia.R
 import com.premierdarkcoffee.sales.maia.root.feature.chat.presentation.view.chat.titleStyle
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.serviceable.Group
@@ -61,7 +61,7 @@ fun ProductsView(productsState: ProductsState,
     var active by rememberSaveable { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val isRefreshing by remember { mutableStateOf(false) }
-    val swipeRefreshState = rememberPullRefreshState(isRefreshing, onRefresh =)
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing)
 
     // -- State variables for filtering --
     var selectedGroup by rememberSaveable { mutableStateOf<String?>(null) }
