@@ -4,6 +4,7 @@ import android.content.ContentValues.TAG
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Category
+import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Codes
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.CreditCard
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Image
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Information
@@ -11,7 +12,6 @@ import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.produc
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Price
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Product
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Specifications
-import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Warranty
 import com.premierdarkcoffee.sales.maia.root.util.function.ImageInfo
 import com.premierdarkcoffee.sales.maia.root.util.function.downloadImageDataFromFirebaseByReference
 
@@ -19,7 +19,7 @@ data class AddEditProductState(val id: String = "",
                                val name: String = "",
                                val label: String = "",
                                val owner: String = "",
-                               val year: String = "2024",
+                               val year: String = "2025",
                                val model: String = "",
                                val description: String = "",
                                val category: Category = Category(group = "", domain = "", subclass = ""),
@@ -34,8 +34,9 @@ data class AddEditProductState(val id: String = "",
                                val date: Long = System.currentTimeMillis(),
                                val overview: List<Information> = emptyList(),
                                val keywords: MutableList<String> = mutableListOf(),
+                               val codes: Codes = Codes(EAN = ""),
                                val specifications: Specifications? = null,
-                               val warranty: Warranty? = null,
+                               val warranty: String? = null,
                                val legal: String? = null,
                                val warning: String? = null,
                                val storeId: String? = null) {
@@ -60,6 +61,7 @@ data class AddEditProductState(val id: String = "",
                            date = System.currentTimeMillis(),
                            overview = overview,
                            keywords = keywords,
+                           codes = codes,
                            specifications = specifications,
                            warranty = warranty,
                            legal = legal,

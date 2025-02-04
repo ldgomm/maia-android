@@ -59,6 +59,7 @@ fun AddEditProductView(addEditProductState: AddEditProductState,
                        setImage: (Image) -> Unit,
                        addKeyword: (String) -> Unit,
                        deleteKeyword: (Int) -> Unit,
+                       setWarranty: (String?) -> Unit,
                        setLegal: (String?) -> Unit,
                        setWarning: (String?) -> Unit,
                        addProduct: (Product) -> Unit,
@@ -138,6 +139,7 @@ fun AddEditProductView(addEditProductState: AddEditProductState,
             }
 
             // Legal and Warning Information
+            TextFieldCard(stringResource(id = R.string.warranty_info_label), addEditProductState.warranty.orEmpty(), setWarranty)
             TextFieldCard(stringResource(id = R.string.legal_info_label), addEditProductState.legal.orEmpty(), setLegal)
             TextFieldCard(stringResource(id = R.string.warning_info_label), addEditProductState.warning.orEmpty(), setWarning)
 
