@@ -6,6 +6,7 @@ import androidx.room.TypeConverters
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.dao.MessageDao
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.entity.converter.AddressConverter
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.entity.converter.CategoryConverter
+import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.entity.converter.CodesConverter
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.entity.converter.GeoPointConverter
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.entity.converter.ImageConverter
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.entity.converter.InformationConverter
@@ -17,7 +18,6 @@ import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.entity.conv
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.entity.converter.StoreConverter
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.entity.converter.StoreStatusConverter
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.entity.converter.StringConverter
-import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.entity.converter.WarrantyConverter
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.entity.message.MessageEntity
 
 @Database(entities = [MessageEntity::class], version = 1)
@@ -28,8 +28,8 @@ import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.entity.mess
                 PriceConverter::class,
                 SpecificationsConverter::class,
                 StringConverter::class,
-                WarrantyConverter::class,
                 StoreConverter::class,
+                CodesConverter::class,
                 AddressConverter::class,
                 GeoPointConverter::class,
                 MessageConverter::class,
