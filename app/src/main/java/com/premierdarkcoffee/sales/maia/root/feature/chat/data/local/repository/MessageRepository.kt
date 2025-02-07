@@ -49,8 +49,6 @@ class MessageRepository @Inject constructor(private val database: MainDatabase) 
      *
      * @param callback A function that takes a list of [Message] objects and performs an action with them.
      */
-
-
     override suspend fun fetchMessages(callback: (List<Message>) -> Unit) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         db.whereEqualTo("storeId", userId).orderBy("date").addSnapshotListener { snapshot, error ->
@@ -72,18 +70,6 @@ class MessageRepository @Inject constructor(private val database: MainDatabase) 
             }
         }
     }
-
-//    override suspend fun fetchLocalMessages(callback: (List<Message>) -> Unit) {
-//        // Fetch local messages from the local database
-//        val localMessages = withContext(Dispatchers.IO) {
-//            runCatching {
-//                database.messageDao.getAllMessages().map { it.toMessageDto().toMessage() }
-//            }.getOrElse {
-//                emptyList()
-//            }
-//        }
-//        callback(localMessages)
-//    }
 
     override suspend fun markMessageAsRead(message: MessageEntity, onMessageUpdated: () -> Unit) {
         withContext(Dispatchers.IO) {
