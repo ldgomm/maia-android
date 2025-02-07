@@ -30,10 +30,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.google.gson.Gson
 import com.premierdarkcoffee.sales.maia.R
@@ -47,7 +49,7 @@ fun ProductCardView(product: Product, onNavigateToProductView: (String) -> Unit)
     val numberFormat = NumberFormat.getCurrencyInstance().apply {
         currency = Currency.getInstance(product.price.currency)
     }
-    val originalPrice = product.price.amount / (1 - product.price.offer.discount / 100.0)
+    val discountPrice = product.price.amount * (1 - product.price.offer.discount / 100.0)
 
     // Localized strings for accessibility and dynamic labels
     val discountLabel = stringResource(id = R.string.discount_label, product.price.offer.discount)
@@ -102,23 +104,31 @@ fun ProductCardView(product: Product, onNavigateToProductView: (String) -> Unit)
             // Pricing Section
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 if (product.price.offer.isActive) {
-                    Text(text = discountLabel,
-                         style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
-                         color = Color.White,
-                         modifier = Modifier
-                             .clip(RoundedCornerShape(4.dp))
-                             .background(Color.Red.copy(alpha = 0.7f))
-                             .padding(horizontal = 4.dp, vertical = 2.dp)
-                             .semantics { contentDescription = discountLabel })
+                    if (product.price.offer.isActive) {
+                        Text(text = "${product.price.offer.discount}% OFF",
+                             style = TextStyle(fontSize = 10.sp),
+                             color = Color.White,
+                             fontWeight = FontWeight.Bold,
+                             modifier = Modifier
+                                 .clip(RoundedCornerShape(4.dp))
+                                 .background(Color.Red.copy(alpha = 0.7f))
+                                 .padding(horizontal = 4.dp, vertical = 2.dp)
+                                 .semantics { contentDescription = "${product.price.offer.discount} percent off" })
+                    }
+                    Text(text = numberFormat.format(discountPrice),
+                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                         color = MaterialTheme.colorScheme.primary,
+                         modifier = Modifier.padding(top = 4.dp))
+                    Text(text = numberFormat.format(product.price.amount),
+                         style = MaterialTheme.typography.bodySmall.copy(textDecoration = TextDecoration.LineThrough),
+                         color = MaterialTheme.colorScheme.onSurfaceVariant,
+                         modifier = Modifier.padding(top = 2.dp))
+                } else {
+                    Text(text = numberFormat.format(product.price.amount),
+                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                         color = MaterialTheme.colorScheme.primary,
+                         modifier = Modifier.padding(top = 4.dp))
                 }
-                Text(text = numberFormat.format(product.price.amount),
-                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                     color = MaterialTheme.colorScheme.primary,
-                     modifier = Modifier.padding(top = 4.dp))
-                Text(text = numberFormat.format(originalPrice),
-                     style = MaterialTheme.typography.bodySmall.copy(textDecoration = TextDecoration.LineThrough),
-                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                     modifier = Modifier.padding(top = 2.dp))
             }
         }
     }
