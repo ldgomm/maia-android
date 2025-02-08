@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -92,23 +93,19 @@ fun SearchView(productsState: ProductsState,
                                    })
                           }
                       }) {
-                LazyColumn(state = lazyListState,
-                           modifier = Modifier.fillMaxSize(),
-                           contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)) {
-                    productsState.products?.let { products ->
-                        items(products.size) { index ->
-                            val product = products[index]
+                productsState.products?.let { products ->
+                    LazyColumn(modifier = Modifier.fillMaxSize(),
+                               contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)) {
+                        items(products) { product ->
                             ProductCardView(product = product, onNavigateToProductView)
                         }
                     }
                 }
             }
-            LazyColumn(state = lazyListState,
-                       modifier = Modifier.fillMaxSize(),
-                       contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)) {
-                productsState.products?.let { products ->
-                    items(products.size) { index ->
-                        val product = products[index]
+            productsState.products?.let { products ->
+                LazyColumn(modifier = Modifier.fillMaxSize(),
+                           contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)) {
+                    items(products) { product ->
                         ProductCardView(product = product, onNavigateToProductView)
                     }
                 }
