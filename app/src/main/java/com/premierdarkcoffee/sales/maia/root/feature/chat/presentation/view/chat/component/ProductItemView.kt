@@ -30,9 +30,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.google.gson.Gson
 import com.premierdarkcoffee.sales.maia.R
@@ -52,7 +54,7 @@ fun ProductItemView(product: Product, onNavigateToProductView: (String) -> Unit)
         this.currency = currency
     }
 
-    val originalPrice = product.price.amount / (1 - product.price.offer.discount / 100.0)
+    val discountPrice = product.price.amount * (1 - product.price.offer.discount / 100.0)
 
     ElevatedCard(onClick = { onNavigateToProductView(Gson().toJson(product)) },
                  modifier = Modifier
@@ -91,36 +93,34 @@ fun ProductItemView(product: Product, onNavigateToProductView: (String) -> Unit)
                      color = MaterialTheme.colorScheme.onSurface)
             }
 
-            // Pricing and Discount Section
+            // Pricing Section
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 if (product.price.offer.isActive) {
-                    Text(text = "$discountLabel ${product.price.offer.discount}%",
-                         style = MaterialTheme.typography.bodySmall,
-                         color = Color.White,
-                         fontWeight = FontWeight.Bold,
-                         modifier = Modifier
-                             .clip(RoundedCornerShape(7.dp))
-                             .background(Color.Red.copy(alpha = 0.7f))
-                             .padding(horizontal = 8.dp, vertical = 4.dp)
-                             .semantics { contentDescription = "$discountLabel ${product.price.offer.discount}%" })
+                    if (product.price.offer.isActive) {
+                        Text(text = "${product.price.offer.discount}% OFF",
+                             style = TextStyle(fontSize = 10.sp),
+                             color = Color.White,
+                             fontWeight = FontWeight.Bold,
+                             modifier = Modifier
+                                 .clip(RoundedCornerShape(4.dp))
+                                 .background(Color.Red.copy(alpha = 0.7f))
+                                 .padding(horizontal = 4.dp, vertical = 2.dp)
+                                 .semantics { contentDescription = "${product.price.offer.discount} percent off" })
+                    }
+                    Text(text = numberFormat.format(discountPrice),
+                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                         color = MaterialTheme.colorScheme.primary,
+                         modifier = Modifier.padding(top = 4.dp))
+                    Text(text = numberFormat.format(product.price.amount),
+                         style = MaterialTheme.typography.bodySmall.copy(textDecoration = TextDecoration.LineThrough),
+                         color = MaterialTheme.colorScheme.onSurfaceVariant,
+                         modifier = Modifier.padding(top = 2.dp))
+                } else {
+                    Text(text = numberFormat.format(product.price.amount),
+                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                         color = MaterialTheme.colorScheme.primary,
+                         modifier = Modifier.padding(top = 4.dp))
                 }
-
-                // Current Price
-                Text(text = numberFormat.format(product.price.amount),
-                     style = MaterialTheme.typography.bodyLarge,
-                     color = MaterialTheme.colorScheme.primary,
-                     fontWeight = FontWeight.SemiBold,
-                     modifier = Modifier
-                         .padding(top = 4.dp)
-                         .semantics { contentDescription = "$currentPriceLabel ${numberFormat.format(product.price.amount)}" })
-
-                // Original Price with Strikethrough (if applicable)
-                Text(text = numberFormat.format(originalPrice),
-                     style = MaterialTheme.typography.bodyMedium.copy(textDecoration = TextDecoration.LineThrough),
-                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                     modifier = Modifier
-                         .padding(top = 2.dp)
-                         .semantics { contentDescription = "$originalPriceLabel ${numberFormat.format(originalPrice)}" })
             }
         }
     }
