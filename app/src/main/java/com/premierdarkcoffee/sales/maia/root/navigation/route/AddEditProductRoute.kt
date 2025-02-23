@@ -15,7 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.google.gson.Gson
 import com.premierdarkcoffee.sales.maia.root.feature.product.data.remote.dto.ProductDto
-import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.edit.AddEditProductView
+import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.AddEditProductView
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.viewmodel.ProductViewModel
 import com.premierdarkcoffee.sales.maia.root.navigation.AddEditProductRoute
 import com.premierdarkcoffee.sales.maia.root.util.function.sharedViewModel
