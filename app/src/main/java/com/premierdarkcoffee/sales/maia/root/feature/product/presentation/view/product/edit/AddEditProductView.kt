@@ -1,4 +1,4 @@
-package com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.edit
+package com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -40,10 +40,10 @@ import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.produc
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Product
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.state.AddEditProductState
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.common.SectionView
-import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.edit.components.ImageCard
-import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.edit.components.SubmitButton
-import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.edit.components.TextFieldCard
-import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.edit.components.TopBar
+import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components.ImageCard
+import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components.SubmitButton
+import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components.TextFieldCard
+import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components.TopBar
 
 @Composable
 fun AddEditProductView(addEditProductState: AddEditProductState,
@@ -95,9 +95,17 @@ fun AddEditProductView(addEditProductState: AddEditProductState,
             // Input Fields for Product Details
             TextFieldCard(stringResource(R.string.name_label), addEditProductState.name, setName)
             TextFieldCard(stringResource(R.string.label_label), addEditProductState.label, setLabel)
-            TextFieldCard(stringResource(R.string.owner_label), addEditProductState.owner, setOwner)
+//            TextFieldCard(stringResource(R.string.owner_label),
+//                          addEditProductState.owner,
+//                          setOwner,
+//                          readOnly = true,
+//                          enabled = false)
             TextFieldCard(stringResource(R.string.year_label), addEditProductState.year, setYear)
-            TextFieldCard(stringResource(R.string.model_label), addEditProductState.model, setModel)
+//            TextFieldCard(stringResource(R.string.model_label),
+//                          addEditProductState.model,
+//                          setModel,
+//                          readOnly = true,
+//                          enabled = false)
             TextFieldCard(stringResource(R.string.description_label), addEditProductState.description, setDescription)
 
             Divider(modifier = Modifier.padding(vertical = 12.dp))
