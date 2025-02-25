@@ -1,4 +1,4 @@
-package com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.edit
+package com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
