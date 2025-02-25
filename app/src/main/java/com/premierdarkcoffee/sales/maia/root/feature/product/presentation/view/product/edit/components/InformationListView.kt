@@ -1,4 +1,4 @@
-package com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.edit
+package com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.state.InformationResultState
+import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.InformationCardView
 
 @Composable
 fun InformationListView(informationResultStateList: List<InformationResultState>) {
