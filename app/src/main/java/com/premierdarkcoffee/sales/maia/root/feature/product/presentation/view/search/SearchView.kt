@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -47,7 +46,6 @@ fun SearchView(productsState: ProductsState,
                onNavigateToProductView: (String) -> Unit) {
     var active by rememberSaveable { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val lazyListState = rememberLazyListState()
 
     val searchTitle = stringResource(id = R.string.search_title)
     val searchPlaceholder = stringResource(id = R.string.search_placeholder)
@@ -72,9 +70,7 @@ fun SearchView(productsState: ProductsState,
                       onQueryChange = onSearchTextChange,
                       onSearch = { active = false },
                       active = active,
-                      onActiveChange = {
-                          active = it
-                      },
+                      onActiveChange = { active = it },
                       modifier = Modifier
                           .fillMaxWidth()
                           .padding(horizontal = 10.dp),
