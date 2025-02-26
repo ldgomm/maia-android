@@ -35,6 +35,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -228,13 +229,16 @@ class ProductViewModel @Inject constructor(application: Application,
     @OptIn(FlowPreview::class)
     private fun observeSearchTextChanges(token: String) {
         viewModelScope.launch {
-            _searchText.debounce(100).distinctUntilChanged().collect { searchText ->
-                executeSearch(searchText, token)
-            }
+            _searchText.debounce(1000).distinctUntilChanged().filter { searchText ->
+                    // Only allow searches with >= 4 characters
+                    searchText.length >= 4
+                }.collect { searchText ->
+                    searchMainProductByKeywords(searchText, token)
+                }
         }
     }
 
-    private fun executeSearch(text: String, token: String) {
+    private fun searchMainProductByKeywords(text: String, token: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 searchProductUseCase(getUrlForEndpoint(endpoint = "maia-product/products", keywords = text),
@@ -263,7 +267,6 @@ class ProductViewModel @Inject constructor(application: Application,
     }
 
     fun onSearchTextChange(text: String) {
-        Log.d(TAG, "SearchViewModel | onSearchTextChange: $text")
         _searchText.value = text
     }
 
