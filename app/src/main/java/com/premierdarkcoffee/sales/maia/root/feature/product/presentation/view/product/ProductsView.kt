@@ -2,9 +2,7 @@ package com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,16 +15,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -48,6 +42,7 @@ import com.premierdarkcoffee.sales.maia.R
 import com.premierdarkcoffee.sales.maia.root.feature.chat.presentation.view.chat.titleStyle
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.serviceable.Group
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.state.ProductsState
+import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.compoments.HorizontalChips
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,11 +62,6 @@ fun ProductsView(productsState: ProductsState,
     var selectedGroup by rememberSaveable { mutableStateOf<String?>(null) }
     var selectedDomain by rememberSaveable { mutableStateOf<String?>(null) }
     var selectedSubclass by rememberSaveable { mutableStateOf<String?>(null) }
-
-    // -- Variables to control the dropdown menus --
-    var groupExpanded by remember { mutableStateOf(false) }
-    var domainExpanded by remember { mutableStateOf(false) }
-    var subclassExpanded by remember { mutableStateOf(false) }
 
     // Grab all products (or empty list if null)
     val allProducts = productsState.products ?: emptyList()
@@ -168,74 +158,37 @@ fun ProductsView(productsState: ProductsState,
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // -- Filters Row (Group, Domain, Subclass) --
-                val allGroupsLabel = stringResource(id = R.string.all_groups)
 
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    // Group Dropdown
-                    ExposedDropdownMenuBox(expanded = groupExpanded,
-                                           onExpandedChange = { groupExpanded = !groupExpanded },
-                                           modifier = Modifier.weight(1f)) {
-                        TextField(value = selectedGroup ?: allGroupsLabel,
-                                  onValueChange = {},
-                                  readOnly = true,
-                                  trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = groupExpanded) },
-                                  modifier = Modifier.menuAnchor())
-                        ExposedDropdownMenu(expanded = groupExpanded, onDismissRequest = { groupExpanded = false }) {
-                            filteredGroups.forEach { group ->
-                                DropdownMenuItem(text = { Text(group.name) }, onClick = {
-                                    selectedGroup = group.name
-                                    selectedDomain = null
-                                    selectedSubclass = null
-                                    groupExpanded = false
-                                })
-                            }
-                        }
-                    }
-
-                    // Domain Dropdown (Conditionally Displayed)
-                    if (selectedGroup != null) {
-                        ExposedDropdownMenuBox(expanded = domainExpanded,
-                                               onExpandedChange = { domainExpanded = !domainExpanded },
-                                               modifier = Modifier.weight(1f)) {
-                            TextField(value = selectedDomain ?: allGroupsLabel,
-                                      onValueChange = {},
-                                      readOnly = true,
-                                      trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = domainExpanded) },
-                                      modifier = Modifier.menuAnchor())
-                            ExposedDropdownMenu(expanded = domainExpanded, onDismissRequest = { domainExpanded = false }) {
-                                filteredDomains.forEach { domain ->
-                                    DropdownMenuItem(text = { Text(domain.name) }, onClick = {
-                                        selectedDomain = domain.name
+                // 1) Groups row
+                if (filteredGroups.isNotEmpty()) {
+                    HorizontalChips(items = filteredGroups.map { it.name },
+                                    selectedItem = selectedGroup,
+                                    onItemSelected = { clickedGroupName ->
+                                        selectedGroup = clickedGroupName
+                                        selectedDomain = null
                                         selectedSubclass = null
-                                        domainExpanded = false
                                     })
-                                }
-                            }
-                        }
-                    }
-
-                    // Subclass Dropdown (Conditionally Displayed)
-                    if (selectedDomain != null) {
-                        ExposedDropdownMenuBox(expanded = subclassExpanded,
-                                               onExpandedChange = { subclassExpanded = !subclassExpanded },
-                                               modifier = Modifier.weight(1f)) {
-                            TextField(value = selectedSubclass ?: allGroupsLabel,
-                                      onValueChange = {},
-                                      readOnly = true,
-                                      trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = subclassExpanded) },
-                                      modifier = Modifier.menuAnchor())
-                            ExposedDropdownMenu(expanded = subclassExpanded, onDismissRequest = { subclassExpanded = false }) {
-                                filteredSubclasses.forEach { subclass ->
-                                    DropdownMenuItem(text = { Text(subclass.name) }, onClick = {
-                                        selectedSubclass = subclass.name
-                                        subclassExpanded = false
-                                    })
-                                }
-                            }
-                        }
-                    }
                 }
+
+                // 2) Domains row
+                if (filteredDomains.isNotEmpty() && selectedGroup != null) {
+                    HorizontalChips(items = filteredDomains.map { it.name },
+                                    selectedItem = selectedDomain,
+                                    onItemSelected = { clickedDomainName ->
+                                        selectedDomain = clickedDomainName
+                                        selectedSubclass = null
+                                    })
+                }
+
+                // 3) Subclasses row
+                if (filteredSubclasses.isNotEmpty() && selectedDomain != null) {
+                    HorizontalChips(items = filteredSubclasses.map { it.name },
+                                    selectedItem = selectedSubclass,
+                                    onItemSelected = { clickedSubclassName ->
+                                        selectedSubclass = clickedSubclassName
+                                    })
+                }
+
 
                 Spacer(modifier = Modifier.height(8.dp))
 
