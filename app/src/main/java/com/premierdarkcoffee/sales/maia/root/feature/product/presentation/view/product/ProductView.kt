@@ -113,6 +113,15 @@ fun ProductView(product: Product,
                      modifier = Modifier.semantics { contentDescription = "${product.owner}, ${product.year ?: ""}" })
             }
 
+
+            // Model
+            SectionView(title = stringResource(id = R.string.model_label)) {
+                Text(text = product.model,
+                     style = MaterialTheme.typography.bodySmall,
+                     color = MaterialTheme.colorScheme.onSecondaryContainer,
+                     modifier = Modifier.semantics { contentDescription = product.model })
+            }
+
             // Description Section
             SectionView(title = stringResource(id = R.string.description_label)) {
                 Text(text = product.description,
