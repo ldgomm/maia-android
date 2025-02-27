@@ -1,4 +1,4 @@
-package com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.edit.components
+package com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components
 
 //
 //  SubmitButton.kt
