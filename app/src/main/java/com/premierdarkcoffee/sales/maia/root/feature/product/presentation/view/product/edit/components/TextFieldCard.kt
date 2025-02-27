@@ -1,4 +1,4 @@
-package com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.edit.components
+package com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components
 
 //
 //  TextFieldCard.kt
@@ -26,7 +26,10 @@ import androidx.compose.ui.unit.dp
 fun TextFieldCard(label: String,
                   text: String,
                   onTextChanged: (String) -> Unit,
+                  readOnly: Boolean = false,
+                  enabled: Boolean = true,
                   keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+
                   onClick: (() -> Unit)? = null) {
     ElevatedCard(modifier = Modifier
         .clickable { onClick?.invoke() }
@@ -40,6 +43,8 @@ fun TextFieldCard(label: String,
                   keyboardOptions = keyboardOptions,
                   modifier = Modifier
                       .fillMaxWidth()
-                      .semantics { contentDescription = label })
+                      .semantics { contentDescription = label },
+                  readOnly = readOnly,
+                  enabled = enabled)
     }
 }
