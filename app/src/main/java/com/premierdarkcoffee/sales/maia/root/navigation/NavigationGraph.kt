@@ -19,7 +19,7 @@ import com.premierdarkcoffee.sales.maia.root.navigation.route.storeRoute
 
 @Composable
 fun NavigationGraph(navController: NavHostController, startDestination: Any, modifier: Modifier = Modifier) {
-    NavHost(navController = navController, startDestination = startDestination, modifier = modifier) {
+    NavHost(navController = navController, startDestination = startDestination) {
         authenticationRoute(onNavigateToProductsViewTriggered = {
             navController.popBackStack()
             navController.navigate(ProductsRoute)
