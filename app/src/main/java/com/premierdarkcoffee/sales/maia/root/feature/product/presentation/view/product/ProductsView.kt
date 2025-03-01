@@ -116,7 +116,7 @@ fun ProductsView(productsState: ProductsState,
             .padding(paddingValues)) {
             Column(Modifier
                        .fillMaxSize()
-                       .padding(16.dp)) {
+                       .padding(horizontal = 8.dp)) {
                 // -- Search Bar --
                 val searchPlaceholder = stringResource(id = R.string.search_placeholder)
                 val clearSearchTextX = stringResource(id = R.string.clear_search)
@@ -128,6 +128,7 @@ fun ProductsView(productsState: ProductsState,
                           onActiveChange = { active = it },
                           modifier = Modifier
                               .fillMaxWidth()
+                              .height(50.dp)
                               .semantics { contentDescription = searchPlaceholder },
                           placeholder = { Text(searchPlaceholder) },
                           leadingIcon = {
@@ -157,7 +158,6 @@ fun ProductsView(productsState: ProductsState,
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
-
 
                 // 1) Groups row
                 if (filteredGroups.isNotEmpty()) {
