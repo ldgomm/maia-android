@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +29,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -40,7 +42,9 @@ import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.produc
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Product
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.state.AddEditProductState
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.common.SectionView
+import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components.DoubleTextFieldCard
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components.ImageCard
+import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components.IntTextFieldCardWithStepper
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components.SubmitButton
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components.TextFieldCard
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components.TopBar
@@ -50,9 +54,7 @@ fun AddEditProductView(addEditProductState: AddEditProductState,
                        product: Product,
                        setName: (String) -> Unit,
                        setLabel: (String) -> Unit,
-                       setOwner: (String) -> Unit,
                        setYear: (String) -> Unit,
-                       setModel: (String) -> Unit,
                        setDescription: (String) -> Unit,
                        setPrice: (Price) -> Unit,
                        setStock: (Int) -> Unit,
@@ -85,8 +87,7 @@ fun AddEditProductView(addEditProductState: AddEditProductState,
         Column(modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
-            .padding(paddingValues)
-            .padding(horizontal = 16.dp)) {
+            .padding(paddingValues)) {
             // Image Section
             ImageCard(product.image.url, selectedImageUri) {
                 photoPickerLauncher.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly))
@@ -111,35 +112,44 @@ fun AddEditProductView(addEditProductState: AddEditProductState,
             Divider(modifier = Modifier.padding(vertical = 12.dp))
 
             // Price Section
-            TextFieldCard(stringResource(R.string.price_amount_label),
-                          addEditProductState.price.amount.toString(),
-                          { setPrice(addEditProductState.price.copy(amount = it.toDoubleOrNull() ?: 0.0)) },
-                          keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
+            DoubleTextFieldCard(label = stringResource(R.string.price_amount_label),
+                                value = addEditProductState.price.amount, // This is your Double
+                                onValueChange = { newAmount ->
+                                    setPrice(addEditProductState.price.copy(amount = newAmount))
+                                },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
 
             // Offer Section
             SectionView(title = stringResource(id = R.string.offer_label)) {
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(text = stringResource(id = R.string.is_in_offer_label), style = MaterialTheme.typography.bodyLarge)
-                    Switch(checked = addEditProductState.price.offer.isActive, onCheckedChange = {
-                        setPrice(addEditProductState.price.copy(offer = Offer(it, addEditProductState.price.offer.discount)))
-                    })
+                Column {
+                    Row(horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp)) {
+                        Text(text = stringResource(id = R.string.is_in_offer_label), style = MaterialTheme.typography.bodyLarge)
+                        Switch(checked = addEditProductState.price.offer.isActive, onCheckedChange = {
+                            setPrice(addEditProductState.price.copy(offer = Offer(it, addEditProductState.price.offer.discount)))
+                        })
+                    }
+
+                    AnimatedVisibility(addEditProductState.price.offer.isActive) {
+                        IntTextFieldCardWithStepper(label = stringResource(R.string.discount_label),
+                                                    value = addEditProductState.price.offer.discount,
+                                                    onValueChange = { newDiscount ->
+                                                        setPrice(addEditProductState.price.copy(offer = Offer(true, newDiscount)))
+                                                    },
+                                                    valueRange = 0..50)
+                    }
                 }
             }
-
-            TextFieldCard(stringResource(R.string.discount_label),
-                          addEditProductState.price.offer.discount.toString(),
-                          { setPrice(addEditProductState.price.copy(offer = Offer(true, it.toIntOrNull() ?: 0))) },
-                          keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
-
             Divider(modifier = Modifier.padding(vertical = 12.dp))
 
             // Stock Section
-            TextFieldCard(stringResource(R.string.stock_label),
-                          addEditProductState.stock.toString(),
-                          { setStock(it.toIntOrNull() ?: 0) },
-                          keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
+            IntTextFieldCardWithStepper(label = stringResource(R.string.stock_label),
+                                        value = addEditProductState.stock,
+                                        onValueChange = { setStock(it) },
+                                        valueRange = 0..100)
 
             // Keyword Section
             Box(modifier = Modifier.padding(horizontal = 12.dp)) {
