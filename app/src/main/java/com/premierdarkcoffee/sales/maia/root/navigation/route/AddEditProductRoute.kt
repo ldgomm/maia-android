@@ -48,9 +48,7 @@ fun NavGraphBuilder.addEditProductRoute(navController: NavHostController, onBack
                            product = product,
                            setName = viewModel::setName,
                            setLabel = viewModel::setLabel,
-                           setOwner = viewModel::setOwner,
                            setYear = viewModel::setYear,
-                           setModel = viewModel::setModel,
                            setDescription = viewModel::setDescription,
                 // category
                            setPrice = viewModel::setPrice,
