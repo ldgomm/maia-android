@@ -1,4 +1,4 @@
-package com.premierdarkcoffee.sales.hermes.root.feature.chat.data.local.entity.product
+package com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.entity.product
 
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Offer
 
