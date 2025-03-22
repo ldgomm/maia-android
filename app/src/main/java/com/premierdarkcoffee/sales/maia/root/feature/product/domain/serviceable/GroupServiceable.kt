@@ -9,7 +9,7 @@ package com.premierdarkcoffee.sales.maia.root.feature.product.domain.serviceable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.Serializable
 
-interface DataServiceable {
+interface GroupServiceable {
 
     fun addGroup(url: String, request: Group): Flow<Result<Group>>
 
