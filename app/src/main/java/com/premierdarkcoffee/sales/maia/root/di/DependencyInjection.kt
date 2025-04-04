@@ -7,10 +7,10 @@ import com.premierdarkcoffee.sales.maia.root.feature.authentication.domain.servi
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.database.MainDatabase
 import com.premierdarkcoffee.sales.maia.root.feature.chat.data.local.repository.MessageRepository
 import com.premierdarkcoffee.sales.maia.root.feature.chat.domain.repositoriable.MessageRepositoriable
+import com.premierdarkcoffee.sales.maia.root.feature.product.data.remote.service.GroupService
 import com.premierdarkcoffee.sales.maia.root.feature.product.data.remote.service.ProductService
 import com.premierdarkcoffee.sales.maia.root.feature.product.data.remote.service.SearchService
-import com.premierdarkcoffee.sales.maia.root.feature.product.domain.serviceable.DataService
-import com.premierdarkcoffee.sales.maia.root.feature.product.domain.serviceable.DataServiceable
+import com.premierdarkcoffee.sales.maia.root.feature.product.domain.serviceable.GroupServiceable
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.serviceable.ProductServiceable
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.serviceable.SearchServiceable
 import com.premierdarkcoffee.sales.maia.root.feature.settings.data.remote.service.StoreService
@@ -87,7 +87,7 @@ object DependencyInjection {
 
     @Singleton
     @Provides
-    fun provideDataServiceable(httpClient: HttpClient): DataServiceable {
-        return DataService(httpClient)
+    fun provideDataServiceable(httpClient: HttpClient): GroupServiceable {
+        return GroupService(httpClient)
     }
 }
