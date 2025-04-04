@@ -42,9 +42,9 @@ import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.produc
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.model.product.Product
 import com.premierdarkcoffee.sales.maia.root.feature.product.domain.state.AddEditProductState
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.common.SectionView
-import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components.DoubleTextFieldCard
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components.ImageCard
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components.IntTextFieldCardWithStepper
+import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components.SmartDoubleTextFieldCard
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components.SubmitButton
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components.TextFieldCard
 import com.premierdarkcoffee.sales.maia.root.feature.product.presentation.view.product.edit.components.TopBar
@@ -112,12 +112,12 @@ fun AddEditProductView(addEditProductState: AddEditProductState,
             Divider(modifier = Modifier.padding(vertical = 12.dp))
 
             // Price Section
-            DoubleTextFieldCard(label = stringResource(R.string.price_amount_label),
-                                value = addEditProductState.price.amount, // This is your Double
-                                onValueChange = { newAmount ->
-                                    setPrice(addEditProductState.price.copy(amount = newAmount))
-                                },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
+            SmartDoubleTextFieldCard(label = stringResource(R.string.price_amount_label),
+                                     value = addEditProductState.price.amount, // This is your Double
+                                     onValueChange = { newAmount ->
+                                         setPrice(addEditProductState.price.copy(amount = newAmount))
+                                     },
+                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
 
             // Offer Section
             SectionView(title = stringResource(id = R.string.offer_label)) {
